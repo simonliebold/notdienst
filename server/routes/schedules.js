@@ -6,6 +6,7 @@ const roles = require("../roles")
 const Rrule = require("../models/Rrule")
 const Work = require("../models/Work")
 const Employee = require("../models/Employee")
+const variables = require("./../variables")
 
 const getSchedule = async (id) => {
   const schedules = await Schedule.aggregate([
@@ -422,8 +423,12 @@ const allocateWorks = async (works, employees, scheduleId) => {
     // await Work.updateOne({ _id: work._id }, { employeeIds: [bestEmployee._id] })
 
     bestEmployee.freetimes.push({
-      start: work.start,
-      end: work.end,
+      start: new Date(
+        work.start.getTime() - variables.WORK_PUFFER * 60 * 60 * 1000
+      ),
+      end: new Date(
+        work.end.getTime() + variables.WORK_PUFFER * 60 * 60 * 1000
+      ),
       work: work._id,
     })
     bestEmployee.workTime += duration
