@@ -1,6 +1,11 @@
 const db = require("./database.js")
 const models = require("./models.js")(db)
 
+const mongoose = require("mongoose")
+const Employee = require("./schemas/Employee.js")
+const Employment = require("./schemas/Employment.js")
+const Job = require("./schemas/Job.js")
+
 const express = require("express")
 const app = express()
 app.use(express.json())
@@ -40,18 +45,41 @@ const port = process.env.PORT || 3000
 app.listen(port, async () => {
   console.log("App listening on port " + port)
   try {
-    await db.sequelize.authenticate()
-    console.log(
-      "Connected to database " +
-        process.env.DB_NAME +
-        " (" +
-        process.env.DB_HOST +
-        ") successfully"
-    )
+    // await db.sequelize.authenticate()
+    // console.log(
+    //   "Connected to database " +
+    //     process.env.DB_NAME +
+    //     " (" +
+    //     process.env.DB_HOST +
+    //     ") successfully"
+    // )
+
+    await mongoose.connect(process.env.MONGO_CONN)
+    console.log("Connected to db")
+
+    await Employee.deleteMany({})
+    await Employment.deleteMany({})
+    await Job.deleteMany({})
+
+    const employee = new Employee({ short: "lbd", title: "Simon Liebold" })
+    const employment = new Employment({
+      short: "MINI",
+      title: "Minijob",
+      maxHours: 44,
+      minHours: 20,
+    })
+    const job = new Job({ short: "ÄNoD", title: "Fahrer KVWL" })
+
+    employee.employmentId = employment._id
+    employee.jobIds = [job._id]
+
+    await employee.save()
+    await job.save()
+    await employment.save()
   } catch (error) {
     console.error("Unable to connect to the database:", error)
   }
-  await db.sequelize.sync() 
+  // await db.sequelize.sync()
   // await db.sequelize.sync({ force: true })
   // require("./example.js")(models)
 })
