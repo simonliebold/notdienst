@@ -23,7 +23,6 @@ import Alert from "react-bootstrap/Alert"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import {
   faCalendarDays,
-  faDeleteLeft,
   faKey,
   faPlus,
   faSave,
@@ -64,10 +63,6 @@ const WorkCard = ({ work }) => {
       </Card>
     </Col>
   )
-}
-
-const TokenModal = ({ code, expiresAt, employee }) => {
-  return <Modal>Hallo</Modal>
 }
 
 const EmployeeModal = () => {
@@ -229,6 +224,39 @@ const EmployeeModal = () => {
     setIsButtonDisabled(!(newName || newInitials || newEmploymentId || newJobs))
   }, [name, initials, employmentId, jobs])
 
+  const [showDeleteModal, setShowDeleteModal] = useState(false)
+  const DeleteModal = () => {
+    return (
+      <Modal show={showDeleteModal} onHide={(e) => setShowDeleteModal(false)}>
+        <Modal.Header closeButton>
+          <Modal.Title>{employee.name} löschen</Modal.Title>
+        </Modal.Header>
+
+        <Modal.Body>
+          Soll <strong>{employee.name}</strong> wirklich gelöscht werden?
+        </Modal.Body>
+
+        <Modal.Footer>
+          <Button
+            variant="secondary"
+            onClick={(e) => setShowDeleteModal(false)}
+          >
+            Abbrechen
+          </Button>
+          <Button
+            variant="danger"
+            onClick={(e) => {
+              deleteEmployee()
+              setShowDeleteModal(false)
+            }}
+          >
+            Mitarbeiter endgültig löschen
+          </Button>
+        </Modal.Footer>
+      </Modal>
+    )
+  }
+
   if (!employee) return
   return (
     <Modal
@@ -237,6 +265,7 @@ const EmployeeModal = () => {
       fullscreen={"md-down"}
       className="modal-lg"
     >
+      <DeleteModal />
       <Modal.Header closeButton>
         {isLoading && (
           <Placeholder
@@ -258,7 +287,14 @@ const EmployeeModal = () => {
               {employee.initials}
             </Badge>{" "}
             {employee.name}
-            <Button as={FontAwesomeIcon} variant="danger" size="xs" className="ms-3" icon={faTrash} onClick={deleteEmployee} />
+            <Button
+              as={FontAwesomeIcon}
+              variant="danger"
+              size="xs"
+              className="ms-3"
+              icon={faTrash}
+              onClick={(e) => setShowDeleteModal(true)}
+            />
           </Modal.Title>
         )}
       </Modal.Header>
