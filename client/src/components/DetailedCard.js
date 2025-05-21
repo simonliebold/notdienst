@@ -1,5 +1,6 @@
 import React from "react"
 import Card from "react-bootstrap/Card"
+import Placeholder from "react-bootstrap/Placeholder"
 import Badge from "./Badge"
 import MultiBadge from "./MultiBadge"
 import { CardDeleteButton, CardEditButton } from "./CardButton"
@@ -7,6 +8,27 @@ import { localeString } from "../variables"
 
 const DetailedCard = ({ resource, resourceName, children }) => {
   const { id, short, title } = resource || {}
+
+  if (!resource)
+    return (
+      <Card>
+        <Placeholder as={Card.Header} animation="glow">
+          <Placeholder bg="secondary" xs={5} size="lg" />
+        </Placeholder>
+        <Placeholder as={Card.Body} animation="glow">
+          <Placeholder bg="secondary" xs={4} size="lg" />
+        </Placeholder>
+
+        <Card.Footer className="d-flex justify-content-end">
+          <CardDeleteButton
+            resource={resource}
+            resourceName={resourceName}
+            className="me-auto"
+          />
+          <CardEditButton resource={resource} resourceName={resourceName} />
+        </Card.Footer>
+      </Card>
+    )
 
   return (
     <Card className="text-decoration-none">

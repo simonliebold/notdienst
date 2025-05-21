@@ -1,9 +1,10 @@
 import React from "react"
 import BootstrapBadge from "react-bootstrap/Badge"
+import Placeholder from "react-bootstrap/Placeholder"
 import { icons } from "./../variables"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { Link } from "react-router-dom"
-import { faX } from "@fortawesome/free-solid-svg-icons"
+import { faSpinner, faX } from "@fortawesome/free-solid-svg-icons"
 
 function Badge(props) {
   const { resource, resourceName, className } = props || {}
@@ -11,7 +12,6 @@ function Badge(props) {
   const { id, short } = resource || {}
 
   const icon = icons[resourceName] || icons.default
-
 
   return (
     <BootstrapBadge
@@ -21,7 +21,7 @@ function Badge(props) {
       bg={resourceName ? "primary" : "secondary"}
     >
       {/* <FontAwesomeIcon icon={faX} className="me-3" /> */}
-      <FontAwesomeIcon icon={icon} className="me-2" />
+      {resource && <FontAwesomeIcon icon={icon} className="me-2" />}
       {short?.toString().toUpperCase()}
     </BootstrapBadge>
   )
