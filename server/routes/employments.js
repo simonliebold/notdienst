@@ -42,13 +42,12 @@ module.exports = (models) => {
         return res
           .status(400)
           .send({ error: "Anstellungsverhältnis nicht gefunden" })
-
       await models.Employment.update(
         {
-          short: req.body.short,
-          title: req.body.title,
-          minHours: req.body.minHours || null,
-          maxHours: req.body.maxHours || null,
+          short: req.body?.short,
+          title: req.body?.title,
+          minHours: req.body?.minHours,
+          maxHours: req.body?.maxHours,
         },
         {
           where: { id: req.params.id },

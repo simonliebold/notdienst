@@ -63,9 +63,9 @@ export const selectStyles = {
   control: (provided, state) => ({
     ...provided,
     backgroundColor: "transparent",
-    border: state.isFocused ? "1px solid #11306f" : "1px solid #11306f",
+    border: state.isFocused ? "1px solid lightgray" : "1px solid lightgray",
     "&:hover": {
-      border: state.isFocused ? "1px solid #11306f" : "1px solid #11306f",
+      border: state.isFocused ? "1px solid lightgray" : "1px solid lightgray",
     },
   }),
   option: (provided, state) => ({

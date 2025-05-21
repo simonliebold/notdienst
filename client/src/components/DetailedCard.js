@@ -245,7 +245,7 @@ export const EmploymentDetailedCard = ({ employment, refresh }) => {
 }
 export const EmployeeDetailedCard = ({ employee, refresh }) => {
   const { short, title, employment, works, schedules, jobs } = employee || {}
-  const [input, setInput] = useState({})
+  const [input, setInput] = useState(employee)
 
   const onInput = (label, value) => {
     setInput({ ...input, [label]: value })
