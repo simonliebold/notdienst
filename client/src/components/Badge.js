@@ -27,7 +27,7 @@ function Badge({ resource, resourceName, disabled, className }) {
   )
 }
 
-export const EditableBadge = ({ resource, resourceName }) => {
+export const EditableBadge = ({ resource, resourceName, onInput }) => {
   const { action } = useParams()
   const options = useResource(resourceName + "s")
 
@@ -53,6 +53,7 @@ export const EditableBadge = ({ resource, resourceName }) => {
           value: resource.id,
           icon: icons[resourceName],
         }}
+        onChange={item => onInput(resourceName + "Id", item.value)}
       />
     )
 

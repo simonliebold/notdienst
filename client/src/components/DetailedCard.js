@@ -204,7 +204,7 @@ export const EmployeeDetailedCard = ({ employee }) => {
       <EditableText value={title} label="title" onInput={onInput} />
       <hr />
       Anstellungsverhältnis: <br />
-      <EditableBadge resource={employment} resourceName="employment" />
+      <EditableBadge resource={employment} resourceName="employment" onInput={onInput} />
       <hr />
       Dienste:
       <MultiBadge items={works} resourceName="work" />
