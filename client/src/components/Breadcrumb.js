@@ -11,19 +11,20 @@ function Breadcrumb({ resourceName, resource }) {
   return (
     <>
       <BootstrapBreadcrumb className="mt-3">
-        {/* <BootstrapBreadcrumb.Item>
-          <FontAwesomeIcon size="sm" icon={faHome} as={Link} to="/" />
-        </BootstrapBreadcrumb.Item> */}
+        <BootstrapBreadcrumb.Item linkAs={Link} linkProps={{ to: "/" }}>
+          <FontAwesomeIcon size="sm" icon={faHome} />
+        </BootstrapBreadcrumb.Item>
         <BootstrapBreadcrumb.Item
-        // as={Link}
-        // to={"/" + resourceName + "s/"}
-        // href={"/" + resourceName + "s/"}
+          linkAs={Link}
+          linkProps={{ to: "/" + resourceName + "s" }}
         >
           {titles[resourceName]}
         </BootstrapBreadcrumb.Item>
-        <BootstrapBreadcrumb.Item>
+        <BootstrapBreadcrumb.Item
+          linkAs={Link}
+          linkProps={{ to: "/" + resourceName + "s/" + resource?.id }}
+        >
           {resource && resource?.title}
-          {/* <Badge resource={resource} resourceName={resourceName} /> */}
         </BootstrapBreadcrumb.Item>
       </BootstrapBreadcrumb>
       {/* <hr /> */}
@@ -39,16 +40,8 @@ function Breadcrumb({ resourceName, resource }) {
           </>
         )}
 
-        {/* {!resource && (
-          <FontAwesomeIcon
-            className="me-2"
-            size="sm"
-            icon={icons[resourceName]}
-          />
-        )} */}
         {!resource && titles[resourceName]}
       </h1>
-      {/* <hr /> */}
     </>
   )
 }
