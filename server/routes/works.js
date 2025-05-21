@@ -40,16 +40,32 @@ module.exports = (models) => {
   // Update one
   router.put("/:id", roles.requireAdmin, async (req, res) => {
     try {
-      const response = await models.Work.update(
-        { ...req.body },
+      const work = await models.Work.findByPk(req.params.id)
+      await models.Work.update(
+        {
+          short: req.body.short,
+          title: req.body.title,
+          start: req.body.start,
+          end: req.body.end,
+        },
         {
           where: { id: req.params.id },
         }
       )
-      if (response[0] === 0) return res.sendStatus(404)
-      return res.status(200).send({ message: "Updated successfully" })
+      if (req.body.employeeIds) {
+        await models.WorkEmployee.destroy({
+          where: { workId: work.id },
+        })
+        await models.WorkEmployee.bulkCreate(
+          req.body.employeeIds.map((employeeId) => {
+            return { workId: work.id, employeeId: employeeId }
+          })
+        )
+      }
+
+      return res.status(200).send({ message: "Änderungen gespeichert" })
     } catch (error) {
-      return res.status(400).send({ errors: error })
+      return res.status(400).send({ error: error.message })
     }
   })
 

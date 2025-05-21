@@ -5,7 +5,7 @@ import { useParams } from "react-router-dom"
 import { labels } from "../variables"
 
 // TODO: make it be controllable
-const EditableText = ({ value, label, onInput, className }) => {
+const EditableText = ({ value, label, onInput, disabled, className }) => {
   const { action } = useParams()
   const [input, setInput] = useState(value)
 
@@ -17,8 +17,8 @@ const EditableText = ({ value, label, onInput, className }) => {
   useEffect(() => {
     setInput(value)
   }, [value])
-
-  if (action !== "edit")
+  
+  if (disabled || action !== "edit")
     return (
       <p className={className}>
         {labels[label] + ": "}

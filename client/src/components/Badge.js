@@ -28,7 +28,12 @@ function Badge({ resource, resourceName, disabled, className }) {
   )
 }
 
-export const EditableBadge = ({ resource, resourceName, onInput }) => {
+export const EditableBadge = ({
+  resource,
+  resourceName,
+  onInput,
+  disabled,
+}) => {
   const { action } = useParams()
 
   const [options, updateOptions] = useResource(resourceName + "s")
@@ -37,6 +42,13 @@ export const EditableBadge = ({ resource, resourceName, onInput }) => {
     updateOptions()
   }, [resourceName])
 
+  if (action === "edit" && disabled)
+    return (
+      <p>
+        <label className="w-100">{title[resourceName]}:</label>
+        <Badge resource={resource} resourceName={resourceName} disabled />
+      </p>
+    )
   if (action === "edit")
     return (
       <p>
