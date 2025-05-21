@@ -3,7 +3,7 @@ import Badge from "./Badge"
 
 function MultiBadge({ items, resourceName }) {
   return (
-    <>
+    <div>
       {items.map((item) => {
         const { short } = item || {}
         return (
@@ -11,11 +11,11 @@ function MultiBadge({ items, resourceName }) {
             key={short + "-" + "badge"}
             resource={item}
             resourceName="employee"
-            className="me-2 text-decoration-none"
+            className="me-1"
           />
         )
       })}
-    </>
+    </div>
   )
 }
 

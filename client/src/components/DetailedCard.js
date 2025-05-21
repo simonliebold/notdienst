@@ -4,7 +4,7 @@ import Badge from "./Badge"
 import { Link } from "react-router-dom"
 import MultiBadge from "./MultiBadge"
 
-const DetailedCard = ({ resource, resourceName }) => {
+const DetailedCard = ({ resource, resourceName, children }) => {
   const { id, short, title } = resource || {}
   return (
     <Card className="text-decoration-none">
@@ -18,16 +18,7 @@ const DetailedCard = ({ resource, resourceName }) => {
       </Card.Header>
       <Card.Body>
         <div className="d-flex align-items-center">
-          <MultiBadge
-            items={[
-              { id: 1, short: "LBD" },
-              { id: 2, short: "PAP" },
-              { id: 3, short: "ESH" },
-              { id: 4, short: "EWE" },
-              { id: 5, short: "MÜL" },
-            ]}
-            resourceName="employee"
-          />
+          {children}
         </div>
       </Card.Body>
       <Card.Footer></Card.Footer>

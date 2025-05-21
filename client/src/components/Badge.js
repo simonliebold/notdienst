@@ -3,22 +3,23 @@ import BootstrapBadge from "react-bootstrap/Badge"
 import { icons } from "./../variables"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { Link } from "react-router-dom"
-
 function Badge(props) {
-  const { resource, resourceName, className } = props
+  const { resource, resourceName, className } = props || {}
 
   const { id, short } = resource || {}
 
   const icon = icons[resourceName] || icons.default
 
+
   return (
     <BootstrapBadge
-      as={Link}
+      as={resourceName ? Link : BootstrapBadge}
       to={"/" + resourceName + "/" + id}
       className={className + " text-decoration-none"}
     >
+      {/* <FontAwesomeIcon icon={faX} className="me-2" /> */}
       <FontAwesomeIcon icon={icon} className="me-2" />
-      {short}
+      {short.toString().toUpperCase()}
     </BootstrapBadge>
   )
 }
