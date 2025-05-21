@@ -9,7 +9,7 @@ const useResource = (resourceUrl) => {
     const response = await axios
       .get(process.env.REACT_APP_URL + resourceUrl)
       .catch(handleError)
-    // console.log(resourceUrl + ":", response?.data)
+    console.log(resourceUrl + ":", response?.data)
     setResource(response?.data)
   }
 

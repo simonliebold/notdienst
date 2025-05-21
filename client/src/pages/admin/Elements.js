@@ -1,8 +1,6 @@
 import React from "react"
-import Badge from "../../components/Badge"
-import { faHashtag, faUser } from "@fortawesome/free-solid-svg-icons"
 import TitleCard from "../../components/TitleCard"
-import DetailedCard, {
+import {
   EmployeeDetailedCard,
   EmploymentDetailedCard,
   FreetimeDetailedCard,
@@ -12,7 +10,6 @@ import DetailedCard, {
   ShiftDetailedCard,
   WorkDetailedCard,
 } from "../../components/DetailedCard"
-import MultiBadge from "../../components/MultiBadge"
 import useResource from "../../hooks/useResource"
 
 function Elements() {

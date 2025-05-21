@@ -6,8 +6,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { Link } from "react-router-dom"
 import { faSpinner, faX } from "@fortawesome/free-solid-svg-icons"
 
-function Badge(props) {
-  const { resource, resourceName, className } = props || {}
+function Badge({ resource, resourceName, className }) {
 
   const { id, short } = resource || {}
 

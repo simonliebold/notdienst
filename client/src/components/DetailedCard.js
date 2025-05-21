@@ -141,6 +141,7 @@ export const FreetimeDetailedCard = ({ freetime }) => {
 }
 
 export const EmploymentDetailedCard = ({ employment }) => {
+  const { employees, minHours, maxHours } = employment || {}
   const hourString = (hours) => {
     if (hours) {
       if (hours === 1) return "1 Stunde"
@@ -151,9 +152,12 @@ export const EmploymentDetailedCard = ({ employment }) => {
 
   return (
     <DetailedCard resourceName="employment" resource={employment}>
-      Minimum: {hourString(employment?.minHours)}
+      Minimum: {hourString(minHours)}
       <br />
-      Maximum: {hourString(employment?.maxHours)}
+      Maximum: {hourString(maxHours)}
+      <hr />
+      Mitarbeiter:
+      <MultiBadge items={employees} resourceName="employee" />
     </DetailedCard>
   )
 }
