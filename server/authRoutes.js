@@ -15,7 +15,7 @@ module.exports = (sequelize) => {
   })
 
   function generateAccessToken(user) {
-    const expirationDate = Math.floor(Date.now() / 1000) + 180
+    const expirationDate = Math.floor(Date.now() / 1000) + 10
     return jwt.sign(
       { ...user, exp: expirationDate },
       process.env.ACCESS_TOKEN_SECRET
@@ -162,7 +162,7 @@ module.exports = (sequelize) => {
   router.delete("/logout", async (req, res) => {
     try {
       await sequelize.models.refreshTokens.destroy({
-        where: { token: req.body.token },
+        where: { token: req.body.token },s
       })
     } catch (error) {
       return res.sendStatus(500)

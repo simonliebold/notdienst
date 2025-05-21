@@ -15,6 +15,10 @@ function Navigation() {
       name: "Mitarbeiter",
       path: "/employees",
     },
+    {
+      name: "Logout",
+      path: "/logout",
+    },
   ]
 
   if (token)
