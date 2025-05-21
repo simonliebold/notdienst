@@ -30,12 +30,13 @@ module.exports = (sequelize) => {
   })
 
   router.post("/login", async (req, res) => {
-    const user = await sequelize.models.users.findByPk(req.body.id)
+    let user = await sequelize.models.users.findByPk(req.body.id)
     if (user === undefined) return res.sendStatus(401)
-
-    const accessToken = generateAccessToken(user.dataValues)
+    user = user.dataValues
+    delete user.password
+    const accessToken = generateAccessToken(user)
     const refreshToken = jwt.sign(
-      user.dataValues,
+      user,
       process.env.REFRESH_TOKEN_SECRET
     )
     await sequelize.models.refreshTokens.create({ token: refreshToken })

@@ -17,7 +17,6 @@ function authenticateToken(req, res, next) {
   if (token == null) return res.sendStatus(401)
 
   jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
-    console.log(err)
     if (err) return res.sendStatus(403)
     req.user = user
     next()
@@ -25,8 +24,8 @@ function authenticateToken(req, res, next) {
 }
 
 const routes = require("./routes.js")(models, db.sequelize)
-// app.use("/", authenticateToken, routes)
-app.use("/", routes)
+app.use("/", authenticateToken, routes)
+// app.use("/", routes)
 
 const port = process.env.PORT || 3000
 app.listen(port, async () => {
@@ -43,7 +42,7 @@ app.listen(port, async () => {
   } catch (error) {
     console.error("Unable to connect to the database:", error)
   }
-  // await db.sequelize.sync()
-  await db.sequelize.sync({ force: true })
-  require("./example.js")(models)
+  await db.sequelize.sync()
+  // await db.sequelize.sync({ force: true })
+  // require("./example.js")(models)
 })
