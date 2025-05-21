@@ -174,10 +174,10 @@ module.exports = async (models) => {
   )
 
   await models.Freetime.bulkCreate([
-    { type: "X", date: new Date(), scheduleId: 1, employeeId: 1 },
-    { type: "T", date: new Date(), scheduleId: 1, employeeId: 1 },
-    { type: "N", date: new Date(), scheduleId: 1, employeeId: 1 },
-    { type: "S", date: new Date(), scheduleId: 1, employeeId: 1 },
-    { type: "U", date: new Date(), scheduleId: 1, employeeId: 1 },
+    { type: "Wunschfrei", date: new Date(), scheduleId: 1, employeeId: 1 },
+    { type: "Nicht Tag", date: new Date(), scheduleId: 1, employeeId: 1 },
+    { type: "Nicht Nacht", date: new Date(), scheduleId: 1, employeeId: 1 },
+    { type: "Seminar / Ausbildung", date: new Date(), scheduleId: 1, employeeId: 1 },
+    { type: "Urlaub", date: new Date(), scheduleId: 1, employeeId: 1 },
   ])
 }
