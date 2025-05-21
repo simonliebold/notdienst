@@ -11,20 +11,47 @@ module.exports = (models) => {
   router.get("/:id", async (req, res) => {
     const response = await models.Freetime.findByPk(req.params.id)
     if (response === null) res.status(404).send({ message: "Not found" })
-    else res.send({ response: response })
+    else console.log(new Date("2023-10-01T08:00:00.00"))
+    res.send({ response: response })
   })
 
   // Create one
   router.post("/", async (req, res) => {
     try {
-      const response = await models.Freetime.create({ ...req.body })
+      const params = ["start", "end", "scheduleId", "employeeId"]
+      const found = params.every((param) => req.body[param] !== undefined)
+      if (!found) throw new Error("Params missing")
+
+      const start = new Date(req.body.start)
+      const end = new Date(req.body.end)
+      if (isNaN(start.valueOf()) || isNaN(end.valueOf()))
+        throw new Error("Date invalid")
+
+      if (start >= end) throw new Error("Start must be before end")
+
+      const schedule = await models.Schedule.findByPk(req.body.scheduleId)
+      if (schedule === null) throw new Error("Schedule not found")
+
+      const employee = await models.Employee.findByPk(req.body.employeeId)
+      if (employee === null) throw new Error("Employee not found")
+
+      if (start < schedule.start || end > schedule.end)
+        throw new Error("Freetime must be during schedule time")
+
+      const response = await models.Freetime.create({
+        start: start,
+        end: end,
+        scheduleId: schedule.id,
+        employeeId: employee.id,
+      })
       res.send({ response: response })
     } catch (error) {
-      res.status(400).send({ errors: error.errors })
+      res.status(400).send({ error: error.message })
     }
   })
 
   // Update one
+  // Add error handling
   router.put("/:id", async (req, res) => {
     try {
       const response = await models.Freetime.update(
