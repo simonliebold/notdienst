@@ -10,5 +10,7 @@ module.exports = (models) => {
   const jobs = require("./routes/jobs")(models)
   router.use("/jobs", jobs)
 
+  // TODO: create routes for all models
+
   return router
 }

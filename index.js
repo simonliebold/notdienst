@@ -11,8 +11,8 @@ app.use(express.json())
 const routes = require("./routes")(models)
 app.use("/", routes)
 
-const port = process.env.PORT || 3000
 
+const port = process.env.PORT || 3000
 app.listen(port, async () => {
   console.log("App listening on port " + port)
   try {
