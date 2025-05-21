@@ -22,6 +22,8 @@ function MultiBadge({ items, resourceName }) {
             {option.label}
           </>
         )}
+        placeholder="Keine Daten gefunden"
+        noOptionsMessage={() => "Keine weiteren Optionen verfügbar"}
         options={options?.map((option) => ({
           icon: icons[resourceName],
           label: option.short,

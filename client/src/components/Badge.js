@@ -39,6 +39,8 @@ export const EditableBadge = ({ resource, resourceName }) => {
           value: option.id,
           icon: icons[resourceName],
         }))}
+        placeholder="Keine Daten gefunden"
+        noOptionsMessage={() => "Keine weiteren Optionen verfügbar"}
         getOptionLabel={(option) => (
           <>
             <FontAwesomeIcon icon={option.icon} className="me-2" />
