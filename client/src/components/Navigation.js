@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react"
+import React, { useEffect, useRef, useState } from "react"
 import { useAuth } from "../contexts/AuthContext"
 
 import Navbar from "react-bootstrap/Navbar"
@@ -15,7 +15,9 @@ import {
 } from "@fortawesome/free-solid-svg-icons"
 import { icons } from "../variables"
 
-const NavItem = ({ route, className }) => {
+import Offcanvas from "react-bootstrap/Offcanvas"
+
+const NavItem = ({ route, className, onClick }) => {
   const location = useLocation()
   const [link, setLink] = useState(false)
 
@@ -31,6 +33,7 @@ const NavItem = ({ route, className }) => {
       to={link}
       key={"navlink-" + route.name}
       className={" text-primary " + className}
+      onClick={onClick}
     >
       <>
         {route.icon && <FontAwesomeIcon icon={route.icon} className="me-2" />}
@@ -44,36 +47,40 @@ const NavItem = ({ route, className }) => {
 function Navigation() {
   const token = useAuth()
 
+  const offCanvasRef = useRef()
+
+  const closeOffCanvas = () => offCanvasRef.current.backdrop.click()
+
   const routes = [
     {
-      // name: "Startseite",
+      name: "Startseite",
       icon: faHome,
       path: "/",
     },
     {
-      // name: "Elemente",
-      icon: faCube,
-      path: "/elements",
-    },
-    {
-      // name: "Dienste",
+      name: "Dienste",
       icon: icons.work,
       path: "/works",
     },
     {
-      // name: "Mitarbeiter",
+      name: "Mitarbeiter",
       icon: icons.employee,
       path: "/employees",
     },
     {
-      // name: "Anstellungsverhältnis",
+      name: "Anstellungsverhältnis",
       icon: icons.employment,
       path: "/employments",
     },
     {
-      // name: "Dienstplanwünsche",
+      name: "Dienstplanwünsche",
       icon: icons.freetime,
       path: "/freetimes",
+    },
+    {
+      name: "Elemente",
+      icon: faCube,
+      path: "/elements",
     },
   ]
 
@@ -81,17 +88,28 @@ function Navigation() {
 
   if (token)
     return (
-      <Navbar className="border-bottom start-0 end-0">
+      <Navbar className="border-bottom start-0 end-0" expand="lg">
         <Container>
-          <Nav className="z-1 w-100">
-            {routes.map((route) => {
-              return <NavItem key={"route-" + route.path} route={route} />
-            })}
-            <NavItem
-              className="ms-auto text-secondary"
-              route={logout}
-            ></NavItem>
-          </Nav>
+          <Navbar.Toggle />
+          <Navbar.Offcanvas ref={offCanvasRef}>
+            <Offcanvas.Header closeButton>
+              <Offcanvas.Title>Navigation</Offcanvas.Title>
+            </Offcanvas.Header>
+            <Offcanvas.Body>
+              <Nav className="z-1 w-100">
+                {routes.map((route) => {
+                  return (
+                    <NavItem
+                      key={"route-" + route.path}
+                      route={route}
+                      onClick={closeOffCanvas}
+                    />
+                  )
+                })}
+              </Nav>
+            </Offcanvas.Body>
+          </Navbar.Offcanvas>
+          <NavItem className="ms-auto text-secondary" route={logout} />
         </Container>
       </Navbar>
     )
