@@ -74,8 +74,7 @@ export const CardSaveButton = ({ ...props }) => {
 }
 
 export const ConfirmDeleteButton = ({ deleting, ...props }) => {
-  if (deleting)
-    return <LoadingButton variant="danger">Löscht...</LoadingButton>
+  if (deleting) return <LoadingButton variant="danger">Löscht...</LoadingButton>
   return (
     <CardButton variant="danger" icon={faTrash} {...props}>
       Endgültig löschen
@@ -117,13 +116,18 @@ export const ConfirmCreateNewButton = ({
   )
 }
 
-export const AsyncGenerateWorksButton = ({ id, updateResource, ...props }) => {
+export const AsyncGenerateWorksButton = ({
+  schedule,
+  updateResource,
+  edit,
+  ...props
+}) => {
   const generate = useGenerateWorks()
 
   const generateWorks = useCallback(async () => {
-    await generate(id)
+    await generate(schedule?._id)
     await updateResource()
-  }, [])
+  }, [generate])
 
   return (
     <CardButton {...props} icon={faCalendarPlus} onClick={generateWorks}>
