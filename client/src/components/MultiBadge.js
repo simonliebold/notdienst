@@ -7,7 +7,7 @@ function MultiBadge({ items, resourceName }) {
   if (items?.length === 0)
     return (
       <div>
-        <Badge resource={{ short: "Keine Daten gefunden" }}> </Badge>
+        <Badge resource={{ short: "Keine Daten gefunden" }} disabled> </Badge>
       </div>
     )
   return (
