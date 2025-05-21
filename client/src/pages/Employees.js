@@ -2,8 +2,7 @@ import axios from "axios"
 import React, { useEffect, useState } from "react"
 import { Link, useNavigate, useParams } from "react-router-dom"
 
-import { useAlertUpdate } from "../contexts/AlertContext"
-import { useAuthUpdate } from "../contexts/AuthContext"
+import { useErrorMessage, useSuccessMessage } from "../contexts/AlertContext"
 
 import Select from "react-select"
 
@@ -20,7 +19,6 @@ import Form from "react-bootstrap/Form"
 import ListGroup from "react-bootstrap/ListGroup"
 import Alert from "react-bootstrap/Alert"
 import ButtonToolbar from "react-bootstrap/ButtonToolbar"
-import ButtonGroup from "react-bootstrap/ButtonGroup"
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import {
@@ -70,7 +68,9 @@ const WorkCard = ({ work }) => {
 const EmployeeModal = () => {
   const { employeeInitials } = useParams()
 
-  const addAlert = useAlertUpdate()
+  const handleError = useErrorMessage()
+  const handleSuccess = useSuccessMessage()
+
   const navigate = useNavigate()
 
   const [showModal, setShowModal] = useState(false)
@@ -108,106 +108,84 @@ const EmployeeModal = () => {
     setShowDeleteModal()
     setShowTokenModal()
 
-    try {
-      const response = await axios.get(
-        "http://localhost:3000/employees/" + employeeInitials
-      )
-      if (!response.data.employee) return
+    const response = await axios
+      .get("http://localhost:3000/employees/" + employeeInitials)
+      .catch(handleError)
+    if (!response?.data?.employee) return
 
-      setEmployee(response.data.employee)
-      setWorks(response.data.employee.works)
-      setName(response.data.employee.name)
-      setInitials(response.data.employee.initials)
-      setEmploymentId(response.data.employee.employmentId)
-      setJobs(response.data.employee.jobs.map((job) => job.id))
-      setIsButtonLoading(false)
-      setIsLoading(false)
-    } catch (error) {
-      if (error.response.data.error) {
-        addAlert(error.response.data.error)
-        close()
-      }
-    }
+    setEmployee(response.data.employee)
+    setWorks(response.data.employee.works)
+    setName(response.data.employee.name)
+    setInitials(response.data.employee.initials)
+    setEmploymentId(response.data.employee.employmentId)
+    setJobs(response.data.employee.jobs.map((job) => job.id))
+    setIsButtonLoading(false)
+    setIsLoading(false)
   }
 
   const fetchAllEmployments = async () => {
-    try {
-      const response = await axios.get("http://localhost:3000/employments/")
-      if (response.data.employments)
-        setAllEmployments(
-          response.data.employments.map((employment) => {
-            return { value: employment.id, label: employment.title }
-          })
-        )
-    } catch (error) {
-      if (error.response.data.error) addAlert(error.response.data.error)
-    }
+    const response = await axios
+      .get("http://localhost:3000/employments/")
+      .catch(handleError)
+    if (!response?.data?.employments) return
+
+    setAllEmployments(
+      response.data.employments.map((employment) => {
+        return { value: employment.id, label: employment.title }
+      })
+    )
   }
 
   const fetchAllJobs = async () => {
-    try {
-      const response = await axios.get("http://localhost:3000/jobs/")
-      if (response.data.jobs)
-        setAllJobs(
-          response.data.jobs.map((job) => {
-            return { value: job.id, label: job.title }
-          })
-        )
-    } catch (error) {
-      if (error.response.data.error) addAlert(error.response.data.error)
-    }
+    const response = await axios
+      .get("http://localhost:3000/jobs/")
+      .catch(handleError)
+    if (!response?.data?.jobs) return
+    setAllJobs(
+      response.data.jobs.map((job) => {
+        return { value: job.id, label: job.title }
+      })
+    )
   }
 
   const handleFormSubmit = async (e) => {
     e.preventDefault()
     setIsButtonLoading(true)
-    try {
-      const response = await axios.put(
-        "http://localhost:3000/employees/" + employeeInitials,
-        {
-          name: name,
-          initials: initials,
-          employmentId: employmentId,
-          jobs: jobs,
-        }
-      )
-      if (response.data.message) addAlert(response.data.message, "success")
-      close()
-    } catch (error) {
-      if (error.response.data.error) addAlert(error.response.data.error)
-      setIsButtonLoading(false)
-    }
+    const response = await axios
+      .put("http://localhost:3000/employees/" + employeeInitials, {
+        name: name,
+        initials: initials,
+        employmentId: employmentId,
+        jobs: jobs,
+      })
+      .catch(handleError)
+    if (!response?.data?.message) return
+    setIsButtonLoading(false)
+    handleSuccess(response.data.message)
+    close()
   }
 
   const createToken = async () => {
     setIsTokenLoading(true)
-    try {
-      const response = await axios.post(
-        "http://localhost:4000/credentials/generate/" + employee.id
-      )
-      if (response.data.code && response.data.expiresAt)
-        setToken({
-          code: response.data.code,
-          expiresAt: response.data.expiresAt,
-        })
-    } catch (error) {
-      if (error.response.data.error) addAlert(error.response.data.error)
-    }
+    const response = await axios
+      .post("http://localhost:4000/credentials/generate/" + employee.id)
+      .catch(handleError)
+    if (!(response?.data?.code && response?.data?.expiresAt)) return
+    setToken({
+      code: response.data.code,
+      expiresAt: response.data.expiresAt,
+    })
     setIsTokenLoading(false)
     setShowTokenModal(true)
   }
 
   const deleteEmployee = async () => {
-    try {
-      const response = await axios.delete(
-        "http://localhost:3000/employees/" + employee.id
-      )
-      close()
-      if (response.data.message) addAlert(response.data.message, "danger")
-    } catch (error) {
-      if (error.response.data.error) addAlert(error.response.data.error)
-      else addAlert(error.message)
-    }
+    const response = await axios
+      .delete("http://localhost:3000/employees/" + employee.id)
+      .catch(handleError)
+    close()
+    if (!response?.data?.message) return
+    handleSuccess(response.data.message)
   }
 
   useEffect(() => {
@@ -375,8 +353,8 @@ const EmployeeModal = () => {
             </Modal.Title>
           )}
         </Modal.Header>
-        <Modal.Body>
-          <Form onSubmit={handleFormSubmit}>
+        <Form onSubmit={handleFormSubmit}>
+          <Modal.Body>
             <Row>
               <Col xs={3}>
                 <h2 className="fs-6">Kürzel</h2>
@@ -466,44 +444,42 @@ const EmployeeModal = () => {
                   return <WorkCard key={"work-" + work.id} work={work} />
                 })}
             </Row>
-          </Form>
-        </Modal.Body>
-        <Modal.Footer className="justify-content-between">
-          {/* <ButtonToolbar > */}
-          <Button
-            variant="link"
-            className="text-secondary"
-            onClick={(e) => setShowDeleteModal(true)}
-          >
-            <FontAwesomeIcon icon={faTrash} />
-          </Button>
-          <ButtonToolbar>
+          </Modal.Body>
+          <Modal.Footer className="justify-content-between">
             <Button
-              variant="primary"
-              onClick={createToken}
-              disabled={isTokenLoading}
-              className="me-2"
+              variant="link"
+              className="text-secondary"
+              onClick={(e) => setShowDeleteModal(true)}
             >
-              <FontAwesomeIcon className="me-1" icon={faKey} /> Token
+              <FontAwesomeIcon icon={faTrash} />
             </Button>
-            {isLoading && (
-              <Placeholder as="p" animation="glow">
-                <Placeholder.Button>Lädt...</Placeholder.Button>
-              </Placeholder>
-            )}
-            {!isLoading && (
+            <ButtonToolbar>
               <Button
-                type="submit"
-                disabled={isButtonDisabled || isButtonLoading}
+                variant="primary"
+                onClick={createToken}
+                disabled={isTokenLoading}
+                className="me-2"
               >
-                <FontAwesomeIcon className="me-2" icon={faSave} />
-                {isButtonLoading && "Lädt..."}
-                {!isButtonLoading && "Speichern"}
+                <FontAwesomeIcon className="me-1" icon={faKey} /> Token
               </Button>
-            )}
-          </ButtonToolbar>
-          {/* </ButtonToolbar> */}
-        </Modal.Footer>
+              {isLoading && (
+                <Placeholder as="p" animation="glow">
+                  <Placeholder.Button>Lädt...</Placeholder.Button>
+                </Placeholder>
+              )}
+              {!isLoading && (
+                <Button
+                  type="submit"
+                  disabled={isButtonDisabled || isButtonLoading}
+                >
+                  <FontAwesomeIcon className="me-2" icon={faSave} />
+                  {isButtonLoading && "Lädt..."}
+                  {!isButtonLoading && "Speichern"}
+                </Button>
+              )}
+            </ButtonToolbar>
+          </Modal.Footer>
+        </Form>
       </Modal>
     </>
   )
@@ -531,8 +507,8 @@ const EmployeeCard = ({ employee }) => {
 
 function Employees() {
   const { employeeInitials } = useParams()
-  const addAlert = useAlertUpdate()
-  const setToken = useAuthUpdate()
+
+  const handleError = useErrorMessage()
 
   const [employees, setEmployees] = useState([])
 
@@ -540,30 +516,21 @@ function Employees() {
   const [newInitials, setNewInitials] = useState()
 
   const fetchEmployees = async () => {
-    try {
-      const response = await axios.get("http://localhost:3000/employees/")
-      if (response.data.employees) setEmployees(response.data.employees)
-      else addAlert("Keine Mitarbeiter gefunden", "secondary")
-
-      // const auth = await axios.get
-    } catch (error) {
-      if (error.response.data.error) addAlert(error.response.data.error)
-      if (error.response.status === 403) setToken(undefined)
-    }
+    const response = await axios
+      .get("http://localhost:3000/employees/")
+      .catch(handleError)
+    if (response?.data?.employees) setEmployees(response.data.employees)
   }
 
   const createNewEmployee = async () => {
-    try {
-      const response = await axios.post("http://localhost:3000/employees", {
+    const response = await axios
+      .post("http://localhost:3000/employees", {
         name: newName,
         initials: newInitials,
       })
-      if (response.data.message) addAlert(response.data.message, "success")
-    } catch (error) {
-      // if (error.response.data.error) addAlert(error.response.data.error)
-      // else
-      addAlert(error.message)
-    }
+      .catch(handleError)
+    if (!response.data?.message) return
+    handleError(response.data.message)
     fetchEmployees()
   }
 

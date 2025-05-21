@@ -1,5 +1,5 @@
 import axios from "axios"
-import { createContext, useContext, useEffect, useState } from "react"
+import { createContext, useContext, useEffect, useLayoutEffect, useState } from "react"
 
 const AuthContext = createContext()
 const AuthUpdateContext = createContext()
@@ -14,7 +14,7 @@ export const useAuthUpdate = () => {
 export const AuthProvider = ({ children }) => {
   const [token, setToken] = useState(localStorage.getItem("token"))
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (token) {
       axios.defaults.headers.common["Authorization"] = "Bearer " + token
       axios.defaults.headers.post["Authorization"] = "Bearer " + token

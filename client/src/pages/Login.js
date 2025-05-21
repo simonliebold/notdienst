@@ -1,16 +1,22 @@
-import React, { useEffect, useState } from "react"
+import React, { useState } from "react"
 import axios from "axios"
 import { useNavigate, Navigate, Link } from "react-router-dom"
 
 import { useAuth, useAuthUpdate } from "../contexts/AuthContext"
-import { useAlertUpdate } from "../contexts/AlertContext"
+import {
+  useAlertUpdate,
+  useErrorMessage,
+  useSuccessMessage,
+} from "../contexts/AlertContext"
 
 import Form from "react-bootstrap/Form"
 import Button from "react-bootstrap/Button"
 import FloatingLabel from "react-bootstrap/FloatingLabel"
 
 function Login() {
-  const addAlert = useAlertUpdate()
+  const handleError = useErrorMessage()
+  const handleSuccess = useSuccessMessage()
+
   const token = useAuth()
   const setToken = useAuthUpdate()
 
@@ -39,19 +45,16 @@ function Login() {
   const handleLogin = async (e) => {
     setLoading(true)
     e.preventDefault()
-    try {
-      const response = await axios.post("http://localhost:4000/login", {
+    const response = await axios
+      .post("http://localhost:4000/login", {
         email: email,
         password: password,
       })
-      if (!response.data.accessToken) addAlert()
-      setToken(response.data.accessToken)
-      navigate("/")
-    } catch (error) {
-      if (error.response.data.error) addAlert(error.response.data.error)
-      else addAlert(error.message)
-    }
+      .catch(handleError)
     setLoading(false)
+    if (!response?.data?.accessToken) return
+    setToken(response.data.accessToken)
+    navigate("/")
   }
 
   if (token) return <Navigate to="/" />

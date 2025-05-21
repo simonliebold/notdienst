@@ -6,7 +6,11 @@ import AuthCode from "react-auth-code-input"
 import Button from "react-bootstrap/Button"
 import Form from "react-bootstrap/Form"
 import FloatingLabel from "react-bootstrap/FloatingLabel"
-import { useAlertUpdate } from "../contexts/AlertContext"
+import {
+  useAlertUpdate,
+  useErrorMessage,
+  useSuccessMessage,
+} from "../contexts/AlertContext"
 
 function EditCredentials({ result, setLoggedIn, oldEmail }) {
   const navigate = useNavigate()
@@ -22,32 +26,26 @@ function EditCredentials({ result, setLoggedIn, oldEmail }) {
   const [isPassRepeatInvalid, setIsPassRepeatInvalid] = useState(false)
   const [isEmailInvalid, setIsEmailInvalid] = useState(false)
 
-  const addAlert = useAlertUpdate()
+  const handleError = useErrorMessage()
+  const handleSuccess = useSuccessMessage()
 
   const handleOnSubmit = async (e) => {
     e.preventDefault()
     setLoading(true)
-    try {
-      const req = {}
 
-      if (email.length > 0) req.email = email
-      if (password.length > 0) req.password = password
+    const req = {}
 
-      const res = await axios.post(
-        "http://localhost:4000/credentials/change/" + result,
-        req
-      )
+    if (email.length > 0) req.email = email
+    if (password.length > 0) req.password = password
 
-      setLoggedIn(false)
-      addAlert(res.data.message, "success")
-      navigate("/login")
-    } catch (error) {
-      if (error.response.data.error) addAlert(error.response.data.error)
-      else addAlert(error.message)
-      if (error.response.status === 404) {
-        setLoggedIn(false)
-      }
-    }
+    const res = await axios
+      .post("http://localhost:4000/credentials/change/" + result, req)
+      .catch(handleError)
+
+    // setLoggedIn(false)
+    handleSuccess(res.data.message)
+    navigate("/login")
+
     setLoading(false)
   }
 
@@ -149,12 +147,11 @@ function EditCredentials({ result, setLoggedIn, oldEmail }) {
 }
 
 function InputCode({ result, setResult, setLoggedIn, setOldEmail }) {
-  
   const [loading, setLoading] = useState(false)
-  
+
   const AuthInputRef = useRef(null)
-  const addAlert = useAlertUpdate()
-  
+  const handleError = useErrorMessage()
+
   useEffect(() => {
     if (result) checkCode()
   }, [])
@@ -165,22 +162,14 @@ function InputCode({ result, setResult, setLoggedIn, setOldEmail }) {
     e.preventDefault()
     checkCode()
   }
-  
+
   const checkCode = async () => {
     setLoading(true)
-    try {
-      const code = await axios.get(
-        "http://localhost:4000/credentials/check/" + result
-      )
-      setOldEmail(code.data.email)
-      setLoggedIn(true)
-    } catch (error) {
-      if (error.response.status === 404) {
-        addAlert(error.response.data.error)
-      } else {
-        addAlert(error.message)
-      }
-    }
+    const code = await axios
+      .get("http://localhost:4000/credentials/check/" + result)
+      .catch(handleError)
+    setOldEmail(code.data.email)
+    setLoggedIn(true)
     setLoading(false)
   }
 
