@@ -8,7 +8,7 @@ import { faCalendarDays, faUser } from "@fortawesome/free-solid-svg-icons"
 const WorkCard = ({ work }) => {
   const dateString =
     new Date(work.start).toLocaleString("de-DE", {
-      weekday: "long",
+      weekday: "short",
       year: "numeric",
       month: "numeric",
       day: "numeric",
