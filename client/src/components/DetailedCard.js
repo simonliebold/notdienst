@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 
 import { Link, useNavigate, useParams } from "react-router-dom"
 
@@ -18,6 +18,7 @@ const DetailedCard = ({
   resource,
   resourceName,
   data,
+  refresh,
   children,
   className,
 }) => {
@@ -25,8 +26,14 @@ const DetailedCard = ({
   const { action } = useParams()
   const navigate = useNavigate()
   const update = useResourceUpdate(resourceName + "s/" + resource?.id)
+  const [loading, setLoading] = useState(true)
 
-  if (!resource)
+  useEffect(() => {
+    if (resource) return setLoading(false)
+    return setLoading(true)
+  }, [resource])
+
+  if (loading)
     return (
       <Card>
         <Placeholder as={Card.Header} animation="glow">
@@ -81,7 +88,12 @@ const DetailedCard = ({
             <CardSaveButton
               resource={resource}
               resourceName={resourceName}
-              onClick={(e) => update(data)}
+              onClick={async (e) => {
+                setLoading(true)
+                await update(data)
+                await refresh()
+                setLoading(false)
+              }}
             />
           </>
         )}
@@ -202,7 +214,7 @@ export const EmploymentDetailedCard = ({ employment }) => {
     </DetailedCard>
   )
 }
-export const EmployeeDetailedCard = ({ employee }) => {
+export const EmployeeDetailedCard = ({ employee, refresh }) => {
   const { short, title, employment, works, schedules, jobs } = employee || {}
   const [data, setData] = useState({})
 
@@ -211,7 +223,12 @@ export const EmployeeDetailedCard = ({ employee }) => {
   }
 
   return (
-    <DetailedCard resourceName="employee" resource={employee} data={data}>
+    <DetailedCard
+      resourceName="employee"
+      resource={employee}
+      data={data}
+      refresh={refresh}
+    >
       <div className="">
         <EditableText
           className="flex-fill"
@@ -228,11 +245,11 @@ export const EmployeeDetailedCard = ({ employee }) => {
       </div>
       <div className="">
         Anstellungsverhältnis:
-          <EditableBadge
-            resource={employment}
-            resourceName="employment"
-            onInput={onInput}
-          />
+        <EditableBadge
+          resource={employment}
+          resourceName="employment"
+          onInput={onInput}
+        />
       </div>
       <div className="">
         Dienste:

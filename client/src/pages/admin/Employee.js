@@ -12,11 +12,12 @@ function Employee() {
   const getEmployee = useResource("employees/" + employeeId)
   const [employee, setEmployee] = useState(null)
 
+  const refresh = async () => {
+    const newEmployee = await getEmployee()
+    setEmployee(newEmployee)
+  }
+
   useEffect(() => {
-    const refresh = async () => {
-      const newEmployee = await getEmployee()
-      setEmployee(newEmployee)
-    }
     refresh()
   }, [employeeId])
 
@@ -25,7 +26,11 @@ function Employee() {
   return (
     <>
       <Breadcrumb resourceName="employee" resource={employee} />
-      <EmployeeDetailedCard employee={employee} className="mt-3" />
+      <EmployeeDetailedCard
+        employee={employee}
+        refresh={refresh}
+        className="mt-3"
+      />
     </>
   )
 }
