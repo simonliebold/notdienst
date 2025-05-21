@@ -7,7 +7,9 @@ module.exports = (sequelize) => {
   }
 
   function generateCredentialsToken(user) {
-    return jwt.sign(user, process.env.CREDENTIALS_TOKEN_SECRET, { expiresIn: "1d" })
+    return jwt.sign(user, process.env.CREDENTIALS_TOKEN_SECRET, {
+      expiresIn: "1d",
+    })
   }
 
   function authenticateCredentialsToken(req, res, next) {
@@ -36,7 +38,8 @@ module.exports = (sequelize) => {
 
   // Generate credentials token
   router.post("/credentials/:id", authenticateAccessToken, async (req, res) => {
-    if (req.user.role < 10 && req.user.id !== Math.floor(req.params.id)) return res.sendStatus(403)
+    if (req.user.role < 10 && req.user.id !== Math.floor(req.params.id))
+      return res.sendStatus(403)
     let user = await sequelize.models.users.findByPk(req.params.id)
     if (user === null) return res.sendStatus(404)
     user = user.dataValues
@@ -48,11 +51,15 @@ module.exports = (sequelize) => {
     for (let i = 0; i < 4; i++) {
       code += codeString.charAt(Math.floor(Math.random() * codeString.length))
     }
-    const credentialsToken = await sequelize.models.credentialsTokens.create({
-      code: code,
-      token: token,
-    })
-    res.send({ code: credentialsToken.code })
+    try {
+      const credentialsToken = await sequelize.models.credentialsTokens.create({
+        code: code,
+        token: token,
+      })
+      return res.send({ code: credentialsToken.code })
+    } catch (error) {
+      return res.sendStatus(400)
+    }
   })
 
   // Get credentials token by code
@@ -66,20 +73,24 @@ module.exports = (sequelize) => {
   })
 
   // Change email / password
-  router.post("/credentials", authenticateCredentialsToken, async (req, res) => {
-    try {
-      await sequelize.models.users.update(
-        {
-          email: req.body.email,
-          password: req.body.password,
-        },
-        { where: { id: req.user.id } }
-      )
-      return res.sendStatus(200)
-    } catch (error) {
-      return res.status(400).send({ error: error.message })
+  router.post(
+    "/credentials",
+    authenticateCredentialsToken,
+    async (req, res) => {
+      try {
+        await sequelize.models.users.update(
+          {
+            email: req.body.email,
+            password: req.body.password,
+          },
+          { where: { id: req.user.id } }
+        )
+        return res.sendStatus(200)
+      } catch (error) {
+        return res.status(400).send({ error: error.message })
+      }
     }
-  })
+  )
 
   // Refresh token
   router.post("/token", async (req, res) => {
