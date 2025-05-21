@@ -220,7 +220,7 @@ export const SchedulePage = () => {
       <MultiBadge items={schedule?.shifts} resourceName="shift" />
       <MultiBadge items={schedule?.employees} resourceName="employee" />
       <hr />
-      <AsyncGenerateWorksButton />
+      <AsyncGenerateWorksButton id={schedule?.id} />
     </ResourcePage>
   )
 }

@@ -11,7 +11,7 @@ const useResource = (resourceUrl) => {
       .get(process.env.REACT_APP_URL + resourceUrl)
       .catch(handleError)
     if (process.env.NODE_ENV === "development")
-      console.log("FETCH", resourceUrl + ":", response?.data)
+      console.log("useResource", resourceUrl + ":", response?.data)
 
     setData(response?.data)
   }, [handleError, resourceUrl])
@@ -34,7 +34,7 @@ export const useResourceUpdate = (resourceUrl) => {
         .catch(handleError)
       if (process.env.NODE_ENV === "development")
         console.log(
-          "PUT",
+          "useResourceUpdate",
           resourceUrl,
           updatedData,
           ":",
@@ -59,7 +59,7 @@ export const useResourceDelete = (resourceUrl) => {
       .delete(process.env.REACT_APP_URL + resourceUrl)
       .catch(handleError)
     if (process.env.NODE_ENV === "development")
-      console.log("DELETE:", resourceUrl, response?.data?.message)
+      console.log("useResourceDelete:", resourceUrl, response?.data?.message)
 
     // handleSuccess(response?.data?.message)
     return response?.data?.message
@@ -78,7 +78,7 @@ export const useResourceCreate = (resourceUrl) => {
         .post(process.env.REACT_APP_URL + resourceUrl, data)
         .catch(handleError)
       if (process.env.NODE_ENV === "development")
-        console.log("CREATE:", resourceUrl, response?.data)
+        console.log("useResourceCreate:", resourceUrl, response?.data)
 
       // handleSuccess(response?.data?.message)
       return response?.data
@@ -94,17 +94,18 @@ export const useGenerateWorks = () => {
   const handleSuccess = useSuccessMessage()
 
   const generate = useCallback(
-    // async (data) => {
-    //   const response = await axios
-    //     .post(process.env.REACT_APP_URL + resourceUrl, data)
-    //     .catch(handleError)
-    //   if (process.env.NODE_ENV === "development")
-    //     console.log("CREATE:", resourceUrl, response?.data)
+    async (scheduleId) => {
+      if(!scheduleId) return 
+      const response = await axios
+        .post(process.env.REACT_APP_URL + "schedules/" + scheduleId + "/create")
+        .catch(handleError)
+      if (process.env.NODE_ENV === "development")
+        console.log("useGenerateWorks:", response?.data)
 
-    //   // handleSuccess(response?.data?.message)
-    //   return response?.data
-    // },
-    // [handleError, handleSuccess, resourceUrl]
+      // handleSuccess(response?.data?.message)
+      return response?.data
+    },
+    [handleError, handleSuccess]
   )
 
   return generate

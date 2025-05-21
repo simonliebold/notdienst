@@ -155,33 +155,9 @@ module.exports = (models, sequelize) => {
 
   const getSchedule = async (req, res, next) => {
     const schedule = await models.Schedule.findByPk(req.params.id)
-    if (schedule === null) return res.sendStatus(404)
+    if (!schedule) return res.status(404).send({error: "Dienstplan konnte nicht gefunden"})
     req.schedule = schedule
-
-    next()
-  }
-
-  const getEvents = async (req, res, next) => {
-    const events = await models.Event.findAll({
-      include: {
-        model: models.Shift,
-        include: [
-          { model: models.Schedule, where: { id: req.params.id } },
-          { model: models.Job, include: models.Employee },
-        ],
-        required: true,
-      },
-    })
-
-    if (events.length === 0)
-      return res.status(404).send({ error: "No events found" })
-
-    const eventsObj = {}
-    for (let event of events) {
-      event = event.dataValues
-      eventsObj[event.id] = event
-    }
-    req.events = eventsObj
+    return res.send(schedule)
     next()
   }
 
@@ -232,8 +208,7 @@ module.exports = (models, sequelize) => {
     "/:id/create",
     roles.requireAdmin,
     getSchedule,
-    getEvents,
-    createWorks,
+    // createWorks,
     async (req, res) => {
       return res.send({ message: "Dienste erfolgreich generiert" })
     }
@@ -392,7 +367,7 @@ module.exports = (models, sequelize) => {
     "/:id/allocate",
     roles.requireAdmin,
     getSchedule,
-    getEvents,
+    // getEvents,
     getEmployees,
     getFreetimes,
     checkAvailability,

@@ -8,11 +8,12 @@ import {
   faX,
 } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import React from "react"
+import React, { useCallback } from "react"
 import Button from "react-bootstrap/esm/Button"
 import { Link } from "react-router-dom"
 import { title, titles } from "../variables"
 import Spinner from "react-bootstrap/esm/Spinner"
+import { useGenerateWorks } from "../hooks/useResource"
 
 function CardButton({ icon, children, ...props }) {
   return (
@@ -98,9 +99,15 @@ export const ConfirmCreateNewButton = ({
   )
 }
 
-export const AsyncGenerateWorksButton = ({ ...props }) => {
+export const AsyncGenerateWorksButton = ({ id, ...props }) => {
+  const generate = useGenerateWorks()
+
+  const generateWorks = useCallback(async () => {
+    await generate(id)
+  }, [])
+
   return (
-    <CardButton {...props} icon={faCalendarPlus} onClick={(e) => alert("Generate works!")}>
+    <CardButton {...props} icon={faCalendarPlus} onClick={generateWorks}>
       {titles.work + " generieren"}
     </CardButton>
   )
