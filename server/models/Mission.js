@@ -17,6 +17,14 @@ module.exports = (sequelize) => {
         },
       },
       title: {
+        type: Sequelize.VIRTUAL,
+        get() {
+          return (
+            this.type + " um " + new Date(this.time).toLocaleTimeString("de-DE")
+          )
+        },
+      },
+      type: {
         type: Sequelize.STRING,
       },
       info: {

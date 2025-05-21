@@ -195,7 +195,7 @@ module.exports = async (models) => {
       employeeId: 1,
     },
     {
-      title: "Arzt abgeliefert",
+      type: "Arzt abgeliefert",
       info: "Übergabe an der Wache an nächsten Fahrer",
       km: 255168,
       time: new Date(),

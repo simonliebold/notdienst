@@ -11,7 +11,7 @@ function Mission() {
   const [mission, setMission] = useState(null)
   return (
     <Resource resourceName="mission" setData={setMission}>
-      <EditableText value={mission?.title} label="title" />
+      <EditableText value={mission?.type} label="type" />
       <EditableText value={mission?.info} label="info" />
       <EditableText value={mission?.time} label="time" />
       <EditableText value={mission?.km} label="km" />

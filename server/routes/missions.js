@@ -59,7 +59,7 @@ module.exports = (models) => {
     try {
       const mission = await models.Mission.findByPk(req.params.id)
       await models.Mission.update(
-        { title: req.body.title, info: req.body.info, time: req.body.time },
+        { type: req.body.type, info: req.body.info, time: req.body.time },
         {
           where: { id: mission.id },
         }
