@@ -14,7 +14,7 @@ module.exports = (models, sequelize) => {
       include: {
         model: models.Employee,
         where: { id: req.user.id },
-        attributes: []
+        attributes: [],
       },
     })
     return res.send({ schedules: schedules })
@@ -33,7 +33,12 @@ module.exports = (models, sequelize) => {
   // TODO: add shifts
   router.post("/", roles.requireAdmin, async (req, res) => {
     try {
-      const schedule = await models.Schedule.create({ ...req.body })
+      const schedule = await models.Schedule.create({
+        title: req.body.title,
+        start: req.body.start,
+        end: req.body.end,
+        deadline: req.body.deadline,
+      })
       return res.send({ schedule: schedule })
     } catch (error) {
       return res.status(400).send({ error: error.message })
