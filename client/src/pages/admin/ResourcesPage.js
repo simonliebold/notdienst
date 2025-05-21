@@ -118,7 +118,12 @@ export const FreetimesPage = () => {
 
 export function JobsPage() {
   const [jobs] = useResource("jobs")
-  return <ResourcesPage resources={jobs} resourceName="job"></ResourcesPage>
+  return (
+    <ResourcesPage resources={jobs} resourceName="job">
+      <EditableText label="short" />
+      <EditableText label="title" />
+    </ResourcesPage>
+  )
 }
 
 export function MissionsPage() {

@@ -22,8 +22,11 @@ module.exports = (models) => {
   // Create one
   router.post("/", async (req, res) => {
     try {
-      const job = await models.Job.create({ ...req.body })
-      res.send({ job: job })
+      const job = await models.Job.create({
+        short: req?.body?.short,
+        title: req?.body?.title,
+      })
+      res.send(job)
     } catch (error) {
       res.status(400).send({ error: error })
     }
