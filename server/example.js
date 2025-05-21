@@ -74,8 +74,32 @@ module.exports = async (models) => {
       scheduleId: 1,
       rruleId: 1,
     },
+    {
+      start: new Date(2023, 12, 1, 10),
+      end: new Date(2023, 12, 1, 15),
+      scheduleId: 1,
+      rruleId: 1,
+    },
+    {
+      start: new Date(2023, 12, 1, 10),
+      end: new Date(2023, 12, 1, 15),
+      scheduleId: 1,
+      rruleId: 1,
+    },
+    {
+      start: new Date(2023, 12, 1, 10),
+      end: new Date(2023, 12, 1, 15),
+      scheduleId: 1,
+      rruleId: 1,
+    },
   ]
   works = await models.Work.bulkCreate(works)
+
+  await models.WorkEmployee.bulkCreate(
+    works.map((work) => {
+      return { workId: work.id, employeeId: 1 }
+    })
+  )
 
   // await models.JobEmployee.bulkCreate(
   //   employees.map((employee) => {
