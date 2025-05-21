@@ -150,9 +150,10 @@ router.post("/token", async (req, res) => {
 // Destroy refreshtoken
 router.delete("/logout", async (req, res) => {
   try {
-    await sequelize.models.refreshTokens.destroy({
-      where: { token: req.body.token },
-    })
+    await RefreshToken.deleteOne({ token: req.body.token })
+    // await sequelize.models.refreshTokens.destroy({
+    //   where: { token: req.body.token },
+    // })
   } catch (error) {
     return res.sendStatus(500)
   }
