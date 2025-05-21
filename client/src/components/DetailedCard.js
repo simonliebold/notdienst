@@ -13,7 +13,6 @@ const DetailedCard = ({ resource, resourceName, children, className }) => {
   const { id, short, title } = resource || {}
   const { action } = useParams()
   const navigate = useNavigate()
-  console.log(action)
 
   if (!resource)
     return (

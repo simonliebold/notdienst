@@ -9,6 +9,7 @@ import FloatingLabel from "react-bootstrap/FloatingLabel"
 import Form from "react-bootstrap/Form"
 import Select from "react-select"
 import useResource from "../hooks/useResource"
+// import { icons } from "../variables"
 
 function Badge({ resource, resourceName, disabled, className }) {
   const { id, short } = resource || {}
@@ -31,7 +32,6 @@ function Badge({ resource, resourceName, disabled, className }) {
 export const EditableBadge = ({ resource, resourceName }) => {
   const { action } = useParams()
   const options = useResource(resourceName + "s")
-  const defaultValue = { label: resource.short, value: resource.id }
 
   if (action === "edit")
     return (
@@ -39,8 +39,19 @@ export const EditableBadge = ({ resource, resourceName }) => {
         options={options?.map((option) => ({
           label: option.short,
           value: option.id,
+          icon: icons[resourceName],
         }))}
-        defaultValue={defaultValue}
+        getOptionLabel={(option) => (
+          <>
+            <FontAwesomeIcon icon={option.icon} className="me-2" />
+            {option.label}
+          </>
+        )}
+        defaultValue={{
+          label: resource.short,
+          value: resource.id,
+          icon: icons[resourceName],
+        }}
       />
     )
 
