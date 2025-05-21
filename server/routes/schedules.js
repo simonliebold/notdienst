@@ -156,14 +156,14 @@ module.exports = (models, sequelize) => {
     }
   })
 
-  const getSchedule = async (req, res, next) => {
-    const schedule = await models.Schedule.findByPk(req.params.id, {
+  // get schedule by id
+  const getSchedule = async (id) => {
+    const schedule = await models.Schedule.findByPk(id, {
       include: [models.Shift],
     })
-    if (!schedule)
-      return res.status(404).send({ error: "Dienstplan konnte nicht gefunden" })
+    if (!schedule) return null
 
-    req.schedule = {
+    return {
       id: schedule?.id,
       short: schedule?.short,
       title: schedule?.title,
@@ -173,41 +173,35 @@ module.exports = (models, sequelize) => {
       shifts: schedule?.shifts,
       shiftIds: schedule?.shifts?.map((shift) => shift.id),
     }
-    next()
   }
 
-  const getRrules = async (req, res, next) => {
+  // get rrules by shift id
+  const getRrules = async (shiftIds) => {
     const rrules = await models.Rrule.findAll({
       include: {
         model: models.Shift,
-        where: { id: { [Op.in]: req.schedule.shiftIds } },
+        where: { id: { [Op.in]: shiftIds } },
       },
     })
-    if (rrules.length === 0)
-      return res
-        .status(400)
-        .send({ error: "Es müssen aktive Schichten verknüpft werden." })
-    req.rrules = rrules
-    next()
+    if (rrules.length === 0) return null
+    return rrules
   }
 
-  const createWorks = async (req, res, next) => {
+  // create works for schedule by rrules
+  const createWorks = async (rrules, schedule) => {
     const { count, rows } = await models.Work.findAndCountAll({
-      where: { scheduleId: req.schedule.id },
+      where: { scheduleId: schedule.id },
     })
-    if (count > 0)
-      return res.status(400).send({
-        error: "Es existieren bereits Dienste für diesen Schichtplan",
-      })
+    if (count > 0) return null
 
     let works = []
 
     // TODO: fix daylight saving error
-    req.rrules.forEach((rrule) => {
-      let ruleStart = new Date(req.schedule.start.getTime())
+    rrules.forEach((rrule) => {
+      let ruleStart = new Date(schedule.start.getTime())
       ruleStart.setHours(...rrule.start.split(":"))
 
-      let ruleEnd = new Date(req.schedule.end.getTime())
+      let ruleEnd = new Date(schedule.end.getTime())
       ruleEnd.setHours(23, 59, 59)
 
       let options = RRule.parseString(rrule?.content)
@@ -228,7 +222,7 @@ module.exports = (models, sequelize) => {
           start: start,
           end: end,
           rruleId: rrule.id,
-          scheduleId: req.schedule.id,
+          scheduleId: schedule.id,
         })
       })
     })
@@ -239,8 +233,30 @@ module.exports = (models, sequelize) => {
       else return 0
     })
 
-    req.works = await models.Work.bulkCreate(works)
+    return works
+  }
 
+  const generateWorks = async (req, res, next) => {
+    const schedule = await getSchedule(req.params.id)
+
+    if (!schedule)
+      return res.status(404).send({ error: "Dienstplan konnte nicht gefunden" })
+
+    const rrules = await getRrules(schedule.shiftIds)
+
+    if (!rrules)
+      return res
+        .status(400)
+        .send({ error: "Es müssen aktive Schichten verknüpft werden." })
+
+    const works = await createWorks(rrules, schedule)
+
+    if (!works)
+      return res.status(400).send({
+        error: "Es existieren bereits Dienste für diesen Schichtplan",
+      })
+
+    await models.Work.bulkCreate(works)
     next()
   }
 
@@ -248,33 +264,27 @@ module.exports = (models, sequelize) => {
   router.post(
     "/:id/create",
     roles.requireAdmin,
-    getSchedule,
-    getRrules,
-    createWorks,
+    generateWorks,
     async (req, res) => {
-      return res.send(req.works)
+      return res.send({ message: "Erfolg" })
     }
   )
 
   // Get works
-  const getWorks = async (req, res, next) => {
+  const getWorks = async (scheduleId) => {
     const works = await models.Work.findAll({
-      where: { scheduleId: req.schedule.id },
+      where: { scheduleId: scheduleId },
       include: {
         model: models.Rrule,
         include: { model: models.Shift, include: models.Job },
       },
     })
 
-    if (works.length === 0)
-      return res
-        .status(400)
-        .send({ error: "Es wurden noch keine Dienste generiert." })
+    if (works.length === 0) return null
 
-    req.works = {}
+    const newWorks = {}
     works.forEach((work) => {
-      req.works[work.id] = {
-        // ...work.dataValues,
+      newWorks[work.id] = {
         id: work.id,
         start: new Date(work.start),
         end: new Date(work.end),
@@ -283,24 +293,24 @@ module.exports = (models, sequelize) => {
       }
     })
 
-    next()
+    return newWorks
   }
 
   // Get employees
-  const getEmployees = async (req, res, next) => {
+  const getEmployees = async (schedule) => {
     const employees = await models.Employee.findAll({
       include: [
-        { model: models.Schedule, where: { id: req.params.id } },
+        { model: models.Schedule, where: { id: schedule.id } },
         models.Employment,
         models.Job,
       ],
     })
 
-    req.employees = {}
+    const newEmployees = {}
     const employeeIds = []
 
     employees.forEach((employee) => {
-      req.employees[employee.id] = {
+      newEmployees[employee.id] = {
         // ...employee.dataValues,
         id: employee.id,
         freetimes: [],
@@ -318,25 +328,25 @@ module.exports = (models, sequelize) => {
       where: {
         [Op.and]: [
           { employeeId: { [Op.in]: employeeIds } },
-          { start: { [Op.lt]: req.schedule.end } },
-          { end: { [Op.gt]: req.schedule.start } },
+          { start: { [Op.lt]: schedule.end } },
+          { end: { [Op.gt]: schedule.start } },
         ],
       },
     })
 
     freetimes?.forEach((freetime) => {
-      req.employees[freetime.employeeId].freetimes.push(freetime.dataValues)
+      newEmployees[freetime.employeeId].freetimes.push(freetime.dataValues)
     })
 
-    next()
+    return newEmployees
   }
 
   // Add employee ids to works
-  const checkAvailability = async (req, res, next) => {
+  const getSortedWorks = async (works, employees) => {
     let newWorks = []
-    Object.values(req.works).forEach((work) => {
+    Object.values(works).forEach((work) => {
       work.employeeIds = []
-      Object.values(req.employees).forEach((employee) => {
+      Object.values(employees).forEach((employee) => {
         let hasJob = false
         for (let i = 0; i < work.jobIds.length; i++) {
           for (let j = 0; j < employee.jobIds.length; j++) {
@@ -348,7 +358,7 @@ module.exports = (models, sequelize) => {
         }
         if (!hasJob) return
 
-        const isFree = req.employees[employee.id].freetimes.every(
+        const isFree = employees[employee.id].freetimes.every(
           (freetime) =>
             new Date(freetime.end).getTime() <= work.start.getTime() ||
             new Date(freetime.start).getTime() >= work.end.getTime()
@@ -356,36 +366,32 @@ module.exports = (models, sequelize) => {
         if (isFree) {
           const duration =
             (work.end.getTime() - work.start.getTime()) / (1000 * 60 * 60)
-          req.employees[employee.id].availableTime += duration
+          employees[employee.id].availableTime += duration
           work.employeeIds.push(employee.id)
         }
       })
       newWorks.push(work)
     })
 
-    req.works = newWorks
-
-    await req.works.sort((a, b) => {
+    return await newWorks.sort((a, b) => {
       if (a.employeeIds.length < b.employeeIds.length) return -1
       else if (a.employeeIds.length > b.employeeIds.length) return 1
       else return Math.random() < 0.5 ? 1 : -1
     })
-
-    next()
   }
 
   // Find employees for work
-  const allocateWorks = async (req, res, next) => {
+  const allocateWorks = async (works, employees) => {
     let workEmployees = []
-    while (req.works.length > 0) {
+    while (works.length > 0) {
       const protocol = []
       let bestEmployee
       let bestEmployeeRemainingHours
-      const work = req.works[0]
+      const work = works[0]
       const duration =
         (work.end.getTime() - work.start.getTime()) / (1000 * 60 * 60)
       work.employeeIds.forEach((employeeId) => {
-        const employee = req.employees[employeeId]
+        const employee = employees[employeeId]
 
         employee.availableTime -= duration
 
@@ -449,29 +455,28 @@ module.exports = (models, sequelize) => {
         work: work.id,
       })
       bestEmployee.workTime += duration
-      req.works.shift()
+      works.shift()
     }
-    try {
-      req.works = await models.WorkEmployee.bulkCreate(workEmployees)
-      next()
-    } catch (error) {
-      return res.status(400).send({ error: "Dienste wurden bereits zugeteilt" })
-    }
+
+    return await models.WorkEmployee.bulkCreate(workEmployees)
+  }
+
+  const allocate = async (scheduleId) => {
+    const schedule = await getSchedule(scheduleId)
+    const works = await getWorks(schedule?.id)
+    const employees = await getEmployees(schedule)
+    const sortedWorks = await getSortedWorks(works, employees)
+    await allocateWorks(sortedWorks, employees)
+    return employees
   }
 
   // Allocate works
   router.post(
     "/:id/allocate",
     roles.requireAdmin,
-    getSchedule,
-    getRrules,
-    createWorks,
-    getWorks,
-    getEmployees,
-    checkAvailability,
-    allocateWorks,
-    async (req, res) => {
-      return res.send(req.employees)
+    generateWorks,
+    async (req, res, next) => {
+      return res.send(await allocate(req.params.id))
     }
   )
 
