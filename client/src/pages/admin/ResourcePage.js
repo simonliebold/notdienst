@@ -5,6 +5,7 @@ import DetailedCard from "../../components/DetailedCard"
 
 import useResource, { useResourceUpdate } from "../../hooks/useResource"
 import Breadcrumb from "../../components/Breadcrumb"
+import Popup, { DeletePopup } from "../../components/Popup"
 
 function ResourcePage({ resourceName, setData, children }) {
   // fetch data
@@ -53,9 +54,27 @@ function ResourcePage({ resourceName, setData, children }) {
     setEdit(false)
   }, [setEdit])
 
+  const [showDeletePopup, setShowDeletePopup] = useState(false)
+
+  const onDeleteRequest = useCallback(() => {
+    setShowDeletePopup(true)
+  }, [setShowDeletePopup])
+
+  const onDeleteConfirm = useCallback(() => {
+    alert("Löschen bestätigt")
+  }, [])
+
   return (
     <>
       <Breadcrumb resourceName={resourceName} resource={resource} />
+      <DeletePopup
+        show={showDeletePopup}
+        onConfirm={onDeleteConfirm}
+        resource={resource}
+        resourceName={resourceName}
+      >
+        Bist du sicher, dass du das löschen möchtest?
+      </DeletePopup>
       <DetailedCard
         resourceName={resourceName}
         resource={resource}
@@ -65,6 +84,7 @@ function ResourcePage({ resourceName, setData, children }) {
         edit={edit}
         onEditRequest={onEditRequest}
         onCloseRequest={onCloseRequest}
+        onDeleteRequest={onDeleteRequest}
       >
         {React.Children.map(children, (child) => {
           if (React.isValidElement(child))

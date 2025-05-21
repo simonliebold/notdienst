@@ -3,6 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import React from "react"
 import Button from "react-bootstrap/esm/Button"
 import { Link } from "react-router-dom"
+import { title } from "../variables"
 
 function CardButton({ icon, children, ...props }) {
   return (
@@ -27,14 +28,14 @@ export const CardEditButton = ({ ...props }) => {
 
 export const CardDeleteButton = ({ className, ...props }) => {
   return (
-    <CardButtonLink
+    <CardButton
       variant="link"
       icon={faTrash}
       className={"text-decoration-none text-secondary " + className}
       {...props}
     >
       Löschen
-    </CardButtonLink>
+    </CardButton>
   )
 }
 
@@ -42,6 +43,15 @@ export const CardSaveButton = ({ ...props }) => {
   return (
     <CardButton variant="primary" icon={faSave} {...props}>
       Speichern
+    </CardButton>
+  )
+}
+
+export const ConfirmDeleteButton = ({ resource, resourceName, ...props }) => {
+  return (
+    <CardButton variant="danger" icon={faTrash} {...props}>
+      {/* {title[resourceName] + " " + resource?.title + " löschen"} */}
+      Löschen bestätigen
     </CardButton>
   )
 }

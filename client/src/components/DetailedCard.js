@@ -19,6 +19,7 @@ const DetailedCard = ({
   edit,
   onEditRequest,
   onCloseRequest,
+  onDeleteRequest,
 }) => {
   const { title } = resource || {}
   if (loading || saving)
@@ -65,7 +66,7 @@ const DetailedCard = ({
       <Card.Footer className="d-flex justify-content-end align-items-center">
         {edit && (
           <>
-            <CardDeleteButton className="me-auto" />
+            <CardDeleteButton onClick={onDeleteRequest} className="me-auto" />
             <CardSaveButton onClick={onSaveRequest} />
           </>
         )}
