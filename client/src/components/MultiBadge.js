@@ -1,11 +1,9 @@
-import React, { useEffect, useState } from "react"
+import React, { useEffect } from "react"
 import Badge from "./Badge"
-import Alert from "react-bootstrap/Alert"
-import Container from "react-bootstrap/Container"
 import { useParams } from "react-router-dom"
 import Select from "react-select"
 import useResource from "../hooks/useResource"
-import { icons, selectStyles, title, titles } from "../variables"
+import { icons, selectStyles, titles } from "../variables"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 
 function MultiBadge({ items, resourceName, onInput, disabled, className }) {
@@ -15,7 +13,7 @@ function MultiBadge({ items, resourceName, onInput, disabled, className }) {
 
   useEffect(() => {
     updateOptions()
-  }, [resourceName])
+  }, [resourceName, updateOptions])
 
   const onChange = (items) => {
     if (onInput)
@@ -35,7 +33,7 @@ function MultiBadge({ items, resourceName, onInput, disabled, className }) {
           const { short } = item || {}
           return (
             <Badge
-              key={short + "-" + "badge"}
+              key={short + "-badge"}
               resource={item}
               resourceName={resourceName}
               className="me-1 mb-1"
@@ -90,7 +88,7 @@ function MultiBadge({ items, resourceName, onInput, disabled, className }) {
         const { short } = item || {}
         return (
           <Badge
-            key={short + "-" + "badge"}
+            key={short + "-badge"}
             resource={item}
             resourceName={resourceName}
             className="me-1 mb-1"
