@@ -12,7 +12,6 @@ const useResource = (resourceUrl) => {
     const response = await axios
       .get(process.env.REACT_APP_URL + resourceUrl)
       .catch(handleError)
-
     if (process.env.NODE_ENV === "development")
       console.log("useResource", resourceUrl + ":", response)
 
@@ -162,6 +161,27 @@ export const useGenerateCredentialsToken = () => {
     [handleError]
   )
   return generate
+}
+
+export const useUserResource = () => {
+  const handleError = useErrorMessage()
+  const [user, setUser] = useState(null)
+
+  const fetch = useCallback(
+    async (userId) => {
+      const response = await axios
+        .get(process.env.REACT_APP_URL + "employees/" + userId)
+        .catch(handleError)
+
+      setUser(response?.data)
+      if (process.env.NODE_ENV === "development")
+        console.log("useUserResource:", response?.data)
+      return response?.data
+    },
+    [handleError]
+  )
+
+  return [user, fetch]
 }
 
 export default useResource
