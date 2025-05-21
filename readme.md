@@ -1,14 +1,16 @@
+<!-- TODO: add return values -->
 ## Employments
 ### Get all employments
-<code>GET /employments</code>
+<pre>GET /employments</pre>
 
 ### Get one employment
-<code>GET /employments/:id</code>
+<pre>GET /employments/:id</pre>
 
 ### Create one employment
-<code>POST /employments</code>
-#### Body
 <pre>
+POST /employments
+
+content-type: application/json
 {
     title: String
     minHours: int
@@ -18,10 +20,11 @@
 
 
 ### Update one employment
-<code>PUT /employments/:id</code>
 
-#### Body
 <pre>
+PUT /employments/:id
+
+content-type: application/json
 {
     title?: String
     minHours?: int
@@ -30,20 +33,20 @@
 </pre>
 
 ### Delete one employment
-<code>DELETE /employments/:id</code>
+<pre>DELETE /employments/:id</pre>
 
 ## Employees
 ### Get all employees
-<code>GET /employees</code>
+<pre>GET /employees</pre>
 
 ### Get one employee
-<code>GET /employees/:id</code>
+<pre>GET /employees/:id</pre>
 
 ### Create one employee
-<code>POST /employees</code>
-
-#### Body
 <pre>
+POST /employees
+
+content-type: application/json
 {
     initials: String,
     name: String,
@@ -52,10 +55,11 @@
 </pre>
 
 ### Update one employee
-<code>PUT /employees/:id</code>
+<pre>PUT /employees/:id</pre>
 
 #### Body
 <pre>
+content-type: application/json
 {
     initials?: String,
     name?: String,
@@ -64,34 +68,90 @@
 </pre>
 
 ### Delete one employee
-<code>DELETE /employees/:id</code>
+<pre>DELETE /employees/:id</pre>
 
 ## Jobs
 ### Get all jobs
-<code>GET /jobs</code>
+<pre>GET /jobs</pre>
 
 ### Get one job
-<code>GET /jobs/:id</code>
+<pre>GET /jobs/:id</pre>
 
 ### Create one job
-<code>POST /jobs</code>
-
-#### Body
 <pre>
+POST /jobs
+
+content-type: application/json
 {
     title: String
 }
 </pre>
 
 ### Update one job
-<code>PUT /jobs/:id</code>
-
-#### Body
 <pre>
+PUT /jobs/:id
+
+content-type: application/json
 {
     title?: String
 }
 </pre>
 
 ### Delete one job
-<code>DELETE /jobs/:id</code>
+<pre>DELETE /jobs/:id</pre>
+
+### Get all employees from job
+<pre>GET /jobs/:id/employee</pre>
+
+### Add employees to job
+<pre>
+POST /jobs/:id/employee
+
+content-type: application/json
+{
+    employeeIds: [int]
+}
+</pre>
+
+### Delete employee from job
+<pre>
+DELETE /jobs/:id/employee
+
+content-type: application/json
+{
+    employeeIds: [int]
+}
+</pre>
+
+### Get all shifts from job
+<pre>GET /jobs/:id/employee</pre>
+
+### Add shifts to job
+<pre>
+POST /jobs/:id/employee
+
+content-type: application/json
+{
+    shiftIds: [int]
+}
+</pre>
+
+### Delete shifts from job
+<pre>
+DELETE /jobs/:id/employee
+
+content-type: application/json
+{
+    shiftIds: [int]
+}
+</pre>
+
+## Shifts
+
+## Works
+
+## Events
+
+## Freetimes
+
+## Schedules
