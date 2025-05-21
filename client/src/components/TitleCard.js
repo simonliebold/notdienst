@@ -13,7 +13,7 @@ function TitleCard({ resource, resourceName, icon }) {
         to={"/" + resourceName + "/" + id}
         className="text-decoration-none"
       >
-        <Badge className="me-2" icon={icon}>
+        <Badge className="me-2" resourceName={resourceName}>
           {short}
         </Badge>
         {title}

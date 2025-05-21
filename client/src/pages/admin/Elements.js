@@ -7,7 +7,7 @@ function Elements() {
   return (
     <>
       <h2>Badge</h2>
-      <Badge icon={faHashtag} className="">
+      <Badge icon={faHashtag} resourceName="employment" className="">
         201
       </Badge>
       <h2>TitleCard</h2>
