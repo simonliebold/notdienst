@@ -169,8 +169,11 @@ function InputCode({ result, setResult, setLoggedIn, setOldEmail }) {
     const code = await axios
       .get(process.env.REACT_APP_AUTH_URL + "credentials/check/" + result)
       .catch(handleError)
-    setOldEmail(code.data.email)
-    setLoggedIn(true)
+    if (code?.data?.email) {
+      setOldEmail(code.data.email)
+      setLoggedIn(true)
+    }
+
     setLoading(false)
   }
 

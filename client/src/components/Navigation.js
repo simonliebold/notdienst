@@ -18,11 +18,10 @@ const NavItem = ({ route, className }) => {
   const [link, setLink] = useState(false)
 
   useEffect(() => {
-    if(location.pathname === route.path) setLink(location.pathname)
+    if (location.pathname === route.path) setLink(location.pathname)
     else setLink(route.path)
-    
   }, [])
-  
+
   return (
     <Nav.Link
       as={Link}
@@ -61,7 +60,7 @@ function Navigation() {
     },
   ]
 
-  const logout = { path: "/logout", icon: faRightFromBracket }
+  const logout = { name: "Logout", path: "/logout", icon: faRightFromBracket }
 
   if (token)
     return (
@@ -71,7 +70,10 @@ function Navigation() {
             {routes.map((route) => {
               return <NavItem route={route} />
             })}
-            <NavItem className="ms-auto text-secondary" route={logout}></NavItem>
+            <NavItem
+              className="ms-auto text-secondary"
+              route={logout}
+            ></NavItem>
           </Nav>
         </Container>
       </Navbar>
