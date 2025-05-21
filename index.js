@@ -6,7 +6,8 @@ const express = require("express")
 const app = express()
 app.use(express.json())
 
-// TODO: helmet
+const helmet = require("helmet")
+app.use(helmet())
 
 // TODO: Add authentification
 

@@ -8,7 +8,6 @@ module.exports = (models) => {
   })
 
   // Get one
-  // TODO: enable finding employee by initials
   router.get("/:id", async (req, res) => {
     const response = await models.Employee.findByPk(req.params.id)
     if (response === null) res.status(404).send({ message: "Not found" })

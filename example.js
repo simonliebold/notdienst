@@ -27,19 +27,18 @@ module.exports = async (models) => {
     employmentId: 2,
   })
   
-  await models.JobEmployee.create({
-    jobId: 1,
-    employeeId: 3
-  })
-  await models.JobEmployee.create({
-    jobId: 1,
-    employeeId: 2
-  })
+  await models.JobEmployee.create({ jobId: 1, employeeId: 2 })
+  await models.JobEmployee.create({ jobId: 1, employeeId: 3 })
 
   await models.Shift.create({ title: "A1" })
   await models.Shift.create({ title: "A2" })
   await models.Shift.create({ title: "C1" })
   await models.Shift.create({ title: "C2" })
+
+  await models.JobShift.create({ jobId: 1, shiftId: 1 })
+  await models.JobShift.create({ jobId: 1, shiftId: 2 })
+  await models.JobShift.create({ jobId: 1, shiftId: 3 })
+  await models.JobShift.create({ jobId: 1, shiftId: 4 })
 
   await models.Event.create({
     title: "A1 spät Mittwoch",
@@ -127,5 +126,20 @@ module.exports = async (models) => {
     start: "2023-11-01",
     end: "2023-11-30",
     deadline: "2023-10-29",
+  })
+
+  await models.ScheduleEmployee.create({scheduleId: 1, employeeId: 2})
+  await models.ScheduleEmployee.create({scheduleId: 1, employeeId: 3})
+
+  await models.ScheduleShift.create({scheduleId: 1, shiftId: 1})
+  await models.ScheduleShift.create({scheduleId: 1, shiftId: 2})
+  await models.ScheduleShift.create({scheduleId: 1, shiftId: 3})
+  await models.ScheduleShift.create({scheduleId: 1, shiftId: 4})
+
+  await models.Freetime.create({
+    start: "2023-11-01T08:00:00.000Z",
+    end: "2023-11-01T19:00:00.000Z",
+    scheduleId: 1,
+    employeeId: 2
   })
 }
