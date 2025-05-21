@@ -16,7 +16,7 @@ function Employees() {
             <TitleCard
               key={"employee-titlecard-" + employee.id}
               resource={employee}
-              resourceName="work"
+              resourceName="employee"
             />
           )
         })}
