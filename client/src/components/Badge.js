@@ -4,15 +4,16 @@ import { icons } from "./../variables"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 
 function Badge(props) {
-  const { children, resourceName } = props
-  const icon = icons[resourceName] || icons.default
+  const { resource, resourceName } = props
 
-  if(!children) return
+  const {short} = resource || {}
+
+  const icon = icons[resourceName] || icons.default
 
   return (
     <BootstrapBadge {...props}>
       <FontAwesomeIcon icon={icon} className="me-2" />
-      {children}
+      {short}
     </BootstrapBadge>
   )
 }
