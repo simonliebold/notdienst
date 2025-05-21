@@ -412,9 +412,10 @@ export const SchedulePage = () => {
           variant="warning"
           onInput={onInput}
           edit={edit}
-        />
+          />
         <AsyncAllocateWorksButton
           schedule={schedule}
+          updateResource={refreshResource}
           className="me-3"
           onInput={onInput}
           edit={edit}

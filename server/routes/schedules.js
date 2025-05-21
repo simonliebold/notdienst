@@ -1,10 +1,11 @@
 const mongoose = require("mongoose")
 const Schedule = require("../models/Schedule")
 const router = require("express").Router()
+const { RRule } = require("rrule")
 const roles = require("../roles")
 const Rrule = require("../models/Rrule")
-const { RRule } = require("rrule")
 const Work = require("../models/Work")
+const Employee = require("../models/Employee")
 
 const getSchedule = async (id) => {
   const schedules = await Schedule.aggregate([
@@ -20,6 +21,37 @@ const getSchedule = async (id) => {
   ])
   if (!schedules || schedules.length === 0) throw new Error("Nicht gefunden")
   return schedules[0]
+}
+
+const getWorks = async (scheduleId) => {
+  const works = await Work.aggregate([
+    { $match: { scheduleId: new mongoose.Types.ObjectId(scheduleId) } },
+    // {
+    //   $lookup: {
+    //     from: "shifts",
+    //     localField: "shiftId",
+    //     foreignField: "_id",
+    //     as: "shift",
+    //   },
+    // },
+    // { $unwind: { path: "$shift", preserveNullAndEmptyArrays: true } },
+    // { $unwind: "$shift" },
+  ])
+
+  // if (works.length === 0) return null
+
+  // const newWorks = {}
+  // works.forEach((work) => {
+  //   newWorks[work.id] = {
+  //     id: work._id,
+  //     start: new Date(work.start),
+  //     end: new Date(work.end),
+  //     jobs: work.rrule.shift.jobs,
+  //     jobIds: work.rrule.shift.jobs.map((job) => job.id),
+  //   }
+  // })
+
+  return works
 }
 
 // Get all
@@ -85,12 +117,14 @@ router.delete("/:id", roles.requireAdmin, async (req, res, next) => {
   }
 })
 
-// create works for schedule by rrules
-const createWorks = async (rrules, schedule) => {
-  // const { count, rows } = await models.Work.findAndCountAll({
-  //   where: { scheduleId: schedule.id },
-  // })
-  // if (count > 0) return null
+// create works for schedule
+const createWorks = async (schedule) => {
+  if (schedule.works.length > 0)
+    throw new Error("Es existieren bereits Dienste")
+
+  const rrules = await Rrule.find({})
+  if (rrules.length === 0)
+    throw new Error("Es existieren noch keine Wiederholungsregeln")
 
   let works = []
 
@@ -136,74 +170,53 @@ const createWorks = async (rrules, schedule) => {
   return works
 }
 
-const generateWorks = async (req, res, next) => {
-  try {
-    const schedule = await getSchedule(req.params.id)
-
-    if (schedule.works.length > 0)
-      return res.status(400).send({ error: "Es existieren bereits Dienste" })
-
-    const rrules = await Rrule.find({})
-
-    await createWorks(rrules, schedule)
-    next()
-  } catch (err) {
-    return next(err)
-  }
+const generateWorks = async (scheduleId) => {
+  const schedule = await getSchedule(scheduleId)
+  await createWorks(schedule)
 }
 
 // Create works
-router.post(
-  "/:id/create",
-  roles.requireAdmin,
-  generateWorks,
-  async (req, res) => {
-    return res.send({ message: "Erfolg" })
+router.post("/:id/create", roles.requireAdmin, async (req, res, next) => {
+  try {
+    await generateWorks(req.params.id)
+  } catch (err) {
+    return next(err)
   }
-)
-
-// Get works
-const getWorks = async (scheduleId) => {
-  const works = await models.Work.findAll({
-    where: { scheduleId: scheduleId },
-    include: {
-      model: models.Rrule,
-      include: { model: models.Shift, include: models.Job },
-    },
-  })
-
-  if (works.length === 0) return null
-
-  const newWorks = {}
-  works.forEach((work) => {
-    newWorks[work.id] = {
-      id: work.id,
-      start: new Date(work.start),
-      end: new Date(work.end),
-      jobs: work.rrule.shift.jobs,
-      jobIds: work.rrule.shift.jobs.map((job) => job.id),
-    }
-  })
-
-  return newWorks
-}
+  return res.send({ message: "Erfolg" })
+})
 
 // Get employees
 const getEmployees = async (schedule) => {
-  const employees = await models.Employee.findAll({
-    include: [
-      { model: models.Schedule, where: { id: schedule.id } },
-      models.Employment,
-      models.Job,
-    ],
-  })
+  const employees = await Employee.aggregate([
+    {
+      $lookup: {
+        from: "freetimes",
+        let: { employeeId: "$_id" },
+        pipeline: [
+          {
+            $match: {
+              $expr: {
+                $and: [
+                  { $lt: ["$start", schedule.end] },
+                  { $gt: ["$end", schedule.start] },
+                ],
+              },
+            },
+          },
+        ],
+        as: "freetimes",
+      },
+    },
+    // {$match: {}}
+  ])
+
+  return employees
 
   const newEmployees = {}
   const employeeIds = []
 
   employees.forEach((employee) => {
     newEmployees[employee.id] = {
-      // ...employee.dataValues,
       id: employee.id,
       freetimes: [],
       jobIds: employee.jobs.map((job) => job.id),
@@ -216,19 +229,19 @@ const getEmployees = async (schedule) => {
   })
 
   // Get freetimes
-  const freetimes = await models.Freetime.findAll({
-    where: {
-      [Op.and]: [
-        { employeeId: { [Op.in]: employeeIds } },
-        { start: { [Op.lt]: schedule.end } },
-        { end: { [Op.gt]: schedule.start } },
-      ],
-    },
-  })
+  // const freetimes = await models.Freetime.findAll({
+  //   where: {
+  //     [Op.and]: [
+  //       { employeeId: { [Op.in]: employeeIds } },
+  //       { start: { [Op.lt]: schedule.end } },
+  //       { end: { [Op.gt]: schedule.start } },
+  //     ],
+  //   },
+  // })
 
-  freetimes?.forEach((freetime) => {
-    newEmployees[freetime.employeeId].freetimes.push(freetime.dataValues)
-  })
+  // freetimes?.forEach((freetime) => {
+  //   newEmployees[freetime.employeeId].freetimes.push(freetime.dataValues)
+  // })
 
   return newEmployees
 }
@@ -355,21 +368,23 @@ const allocateWorks = async (works, employees) => {
 
 const allocate = async (scheduleId) => {
   const schedule = await getSchedule(scheduleId)
-  const works = await getWorks(schedule?.id)
+  const works = await getWorks(schedule?._id)
   const employees = await getEmployees(schedule)
-  const sortedWorks = await getSortedWorks(works, employees)
-  await allocateWorks(sortedWorks, employees)
-  return employees
+  return { works, employees }
+  // const employees = await getEmployees(schedule)
+  // const sortedWorks = await getSortedWorks(works, employees)
+  // await allocateWorks(sortedWorks, employees)
+  // return employees
 }
 
 // Allocate works
-router.post(
-  "/:id/allocate",
-  roles.requireAdmin,
-  generateWorks,
-  async (req, res) => {
+router.post("/:id/allocate", roles.requireAdmin, async (req, res, next) => {
+  try {
+    await generateWorks(req.params.id)
     return res.send(await allocate(req.params.id))
+  } catch (err) {
+    return next(err)
   }
-)
+})
 
 module.exports = router
