@@ -13,3 +13,35 @@
 
 ### Delete one employment
 <pre>DELETE /employments/:id</pre>
+
+## Employees
+### Get all employees
+<pre>GET /employees</pre>
+
+### Get one employee
+<pre>GET /employees/:id</pre>
+
+### Create one employee
+<pre>POST /employees</pre>
+
+### Update one employee
+<pre>PUT /employees/:id</pre>
+
+### Delete one employee
+<pre>DELETE /employees/:id</pre>
+
+## Jobs
+### Get all jobs
+<pre>GET /jobs</pre>
+
+### Get one job
+<pre>GET /jobs/:id</pre>
+
+### Create one job
+<pre>POST /jobs</pre>
+
+### Update one job
+<pre>PUT /jobs/:id</pre>
+
+### Delete one job
+<pre>DELETE /jobs/:id</pre>

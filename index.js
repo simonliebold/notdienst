@@ -6,8 +6,16 @@ const express = require("express")
 const app = express()
 app.use(express.json())
 
-const employments = require("./routes/employments.js")(models)
+// TODO: Add authentification
+
+const employments = require("./routes/employments")(models)
 app.use("/employments", employments)
+
+const employees = require("./routes/employees")(models)
+app.use("/employees", employees)
+
+const jobs = require("./routes/jobs")(models)
+app.use("/jobs", jobs)
 
 const port = process.env.PORT || 3000
 

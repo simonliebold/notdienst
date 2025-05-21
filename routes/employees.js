@@ -3,13 +3,13 @@ module.exports = (models) => {
 
   // Get all
   router.get("/", async (req, res) => {
-    const response = await models.Employment.findAll()
+    const response = await models.Employee.findAll()
     res.send({ response: response })
   })
 
   // Get one
   router.get("/:id", async (req, res) => {
-    const response = await models.Employment.findByPk(req.params.id)
+    const response = await models.Employee.findByPk(req.params.id)
     if (response === null) res.status(404).send({ message: "Not found" })
     else res.send({ response: response })
   })
@@ -17,7 +17,7 @@ module.exports = (models) => {
   // Create one
   router.post("/", async (req, res) => {
     try {
-      const response = await models.Employment.create({ ...req.body })
+      const response = await models.Employee.create({ ...req.body })
       res.send({ response: response })
     } catch (error) {
       res.status(400).send({ errors: error.errors })
@@ -27,7 +27,7 @@ module.exports = (models) => {
   // Update one
   router.put("/:id", async (req, res) => {
     try {
-      const response = await models.Employment.update(
+      const response = await models.Employee.update(
         { ...req.body },
         {
           where: { id: req.params.id },
@@ -46,7 +46,7 @@ module.exports = (models) => {
   // Delete one
   router.delete("/:id", async (req, res) => {
     try {
-      const response = await models.Employment.destroy({
+      const response = await models.Employee.destroy({
         where: { id: req.params.id },
       })
       response > 0
