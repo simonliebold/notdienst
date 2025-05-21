@@ -226,14 +226,36 @@ const EmployeeModal = () => {
 
   const [showDeleteModal, setShowDeleteModal] = useState(false)
   const DeleteModal = () => {
+    const [confirm, setConfirm] = useState()
     return (
-      <Modal show={showDeleteModal} onHide={(e) => setShowDeleteModal(false)}>
+      <Modal
+        show={showDeleteModal}
+        onHide={(e) => setShowDeleteModal(false)}
+        backdrop="static"
+        keyboard={false}
+        className="modal-2"
+        style={{ zIndex: 1057 }}
+      >
         <Modal.Header closeButton>
-          <Modal.Title>{employee.name} löschen</Modal.Title>
+          <Modal.Title>
+            <Badge className="me-2">
+              <FontAwesomeIcon icon={faUser} className="me-2" />
+              {employee.initials}
+            </Badge>{" "}
+            {employee.name} löschen
+          </Modal.Title>
         </Modal.Header>
 
         <Modal.Body>
-          Soll <strong>{employee.name}</strong> wirklich gelöscht werden?
+          Soll <strong>{employee.name}</strong> wirklich endgültig gelöscht
+          werden? <hr />
+          Um diese Aktion zu bestätigen, gib bitte{" "}
+          <strong>{employee.initials}</strong> in das Eingabefeld ein:
+          <Form.Control
+            className="mt-3"
+            placeholder={employee.initials}
+            onChange={(e) => setConfirm(e.target.value)}
+          ></Form.Control>
         </Modal.Body>
 
         <Modal.Footer>
@@ -245,12 +267,13 @@ const EmployeeModal = () => {
           </Button>
           <Button
             variant="danger"
+            disabled={confirm !== employee.initials}
             onClick={(e) => {
               deleteEmployee()
               setShowDeleteModal(false)
             }}
           >
-            Mitarbeiter endgültig löschen
+            Endgültig löschen
           </Button>
         </Modal.Footer>
       </Modal>
@@ -258,203 +281,214 @@ const EmployeeModal = () => {
   }
 
   if (!employee) return
+  if (showDeleteModal) return <DeleteModal />
   return (
-    <Modal
-      show={showModal}
-      onHide={close}
-      fullscreen={"md-down"}
-      className="modal-lg"
-    >
-      <DeleteModal />
-      <Modal.Header closeButton>
-        {isLoading && (
-          <Placeholder
-            as={Modal.Title}
-            className="d-inline-flex"
-            animation="glow"
-          >
-            <Placeholder as={Badge} className="text-primary me-2">
-              <FontAwesomeIcon icon={faUser} className="me-1" />
-              MUS
-            </Placeholder>
-            <Placeholder>Max Mustermann</Placeholder>
-          </Placeholder>
-        )}
-        {!isLoading && (
-          <Modal.Title>
-            <Badge className="me-2">
-              <FontAwesomeIcon icon={faUser} className="me-2" />
-              {employee.initials}
-            </Badge>{" "}
-            {employee.name}
-            <Button
-              as={FontAwesomeIcon}
-              variant="danger"
-              size="xs"
-              className="ms-3"
-              icon={faTrash}
-              onClick={(e) => setShowDeleteModal(true)}
-            />
-          </Modal.Title>
-        )}
-      </Modal.Header>
-      <Modal.Body>
-        <Form onSubmit={handleFormSubmit}>
-          <Row>
-            <Col xs={3}>
-              <h2 className="fs-6">Kürzel</h2>
-              {isLoading && (
-                <Placeholder as="p" animation="glow">
-                  <Placeholder disabled as={Form.Control} />
-                </Placeholder>
-              )}
-              {!isLoading && (
-                <Form.Control
-                  defaultValue={employee.initials}
-                  onChange={(e) => setInitials(e.target.value)}
-                />
-              )}
-            </Col>
-            <Col>
-              <h2 className="fs-6">Name</h2>
-              {isLoading && (
-                <Placeholder as="p" animation="glow">
-                  <Placeholder disabled as={Form.Control} />
-                </Placeholder>
-              )}
-              {!isLoading && (
-                <Form.Control
-                  defaultValue={employee.name}
-                  onChange={(e) => setName(e.target.value)}
-                />
-              )}
-            </Col>
-          </Row>
-          <h2 className="fs-6 mt-3">Anstellungsverhältnis</h2>
+    <>
+      <Modal
+        show={showModal}
+        onHide={close}
+        fullscreen={"md-down"}
+        className="modal-lg"
+        backdrop="static"
+        keyboard={false}
+      >
+        <Modal.Header closeButton>
           {isLoading && (
-            <Placeholder as="p" animation="glow">
-              <Placeholder disabled as={Form.Control} />
+            <Placeholder
+              as={Modal.Title}
+              className="d-inline-flex"
+              animation="glow"
+            >
+              <Placeholder as={Badge} className="text-primary me-2">
+                <FontAwesomeIcon icon={faUser} className="me-1" />
+                MUS
+              </Placeholder>
+              <Placeholder>Max Mustermann</Placeholder>
             </Placeholder>
           )}
           {!isLoading && (
-            <Select
-              defaultValue={
-                employee.employment && {
-                  value: employee.employment.id,
-                  label: employee.employment.title,
+            <Modal.Title>
+              <Badge className="me-2">
+                <FontAwesomeIcon icon={faUser} className="me-2" />
+                {employee.initials}
+              </Badge>{" "}
+              {employee.name}
+              <Button
+                as={FontAwesomeIcon}
+                variant="danger"
+                size="xs"
+                className="ms-3"
+                icon={faTrash}
+                onClick={(e) => setShowDeleteModal(true)}
+              />
+            </Modal.Title>
+          )}
+        </Modal.Header>
+        <Modal.Body>
+          <Form onSubmit={handleFormSubmit}>
+            <Row>
+              <Col xs={3}>
+                <h2 className="fs-6">Kürzel</h2>
+                {isLoading && (
+                  <Placeholder as="p" animation="glow">
+                    <Placeholder disabled as={Form.Control} />
+                  </Placeholder>
+                )}
+                {!isLoading && (
+                  <Form.Control
+                    defaultValue={employee.initials}
+                    onChange={(e) => setInitials(e.target.value)}
+                  />
+                )}
+              </Col>
+              <Col>
+                <h2 className="fs-6">Name</h2>
+                {isLoading && (
+                  <Placeholder as="p" animation="glow">
+                    <Placeholder disabled as={Form.Control} />
+                  </Placeholder>
+                )}
+                {!isLoading && (
+                  <Form.Control
+                    defaultValue={employee.name}
+                    onChange={(e) => setName(e.target.value)}
+                  />
+                )}
+              </Col>
+            </Row>
+            <h2 className="fs-6 mt-3">Anstellungsverhältnis</h2>
+            {isLoading && (
+              <Placeholder as="p" animation="glow">
+                <Placeholder disabled as={Form.Control} />
+              </Placeholder>
+            )}
+            {!isLoading && (
+              <Select
+                defaultValue={
+                  employee.employment && {
+                    value: employee.employment.id,
+                    label: employee.employment.title,
+                  }
                 }
-              }
-              name="employment"
-              options={allEmployments}
-              className="basic-multi-select"
-              classNamePrefix="select"
-              onChange={(value) => setEmploymentId(value.value)}
-            />
-          )}
-          <h2 className="fs-6 mt-3">Jobs</h2>
-          {isLoading && (
-            <Placeholder as="p" animation="glow">
-              <Placeholder disabled as={Form.Control} />
-            </Placeholder>
-          )}
-          {!isLoading && (
-            <Select
-              defaultValue={employee.jobs.map((job) => {
-                return { value: job.id, label: job.title }
-              })}
-              isMulti
-              name="jobs"
-              options={allJobs}
-              className="basic-multi-select"
-              classNamePrefix="select"
-              onChange={(values) =>
-                setJobs(
-                  values.map((value) => {
-                    return value.value
-                  })
-                )
-              }
-            />
-          )}
-          {isLoading && (
-            <Placeholder as="p" animation="glow">
-              <Placeholder.Button className="mt-3">Lädt...</Placeholder.Button>
-            </Placeholder>
-          )}
-          {!isLoading && (
-            <Button
-              className="mt-3"
-              type="submit"
-              disabled={isButtonDisabled || isButtonLoading}
-            >
-              <FontAwesomeIcon className="me-2" icon={faSave} />
-              {isButtonLoading && "Lädt..."}
-              {!isButtonLoading && "Speichern"}
-            </Button>
-          )}
-          <hr />
-          <h2 className="fs-6 mt-3">Account-Daten ändern</h2>
-          {!token && (
-            <Button
-              onClick={createToken}
-              variant="primary"
-              disabled={isTokenLoading}
-            >
-              <FontAwesomeIcon className="me-2" icon={faKey} />
-              {isTokenLoading && <>Token lädt...</>}
-              {!isTokenLoading && <>Neuen Token generieren</>}
-            </Button>
-          )}
-          {token && (
-            <Card bg="" text="">
-              <Card.Body>
-                <Row>
-                  <Col>
-                    <Card.Title>
-                      <Badge className="me-2">
-                        <FontAwesomeIcon icon={faKey} className="me-2" />
-                        {token.code}
-                      </Badge>
-                      Account-Daten Token
-                    </Card.Title>
-                    E-Mail und Passwort können über den QR-Code festgelegt
-                    werden:
-                    <br />
-                    <a href={"http://localhost:3001/credentials/" + token.code}>
-                      {"http://localhost:3001/credentials/" + token.code}
-                    </a>
-                  </Col>
-                  <Col sm="auto" className="order-first order-sm-last">
-                    <QRCode
-                      as={Card.Image}
-                      className="w-100 m-2"
-                      size="100"
-                      value={"http://localhost:3001/credentials/" + token.code}
-                    />
-                  </Col>
-                </Row>
-              </Card.Body>
-              <Card.Footer>
-                Gültig bis: {new Date(token.expiresAt).toLocaleString("de-DE")}
-              </Card.Footer>
-            </Card>
-          )}
-          <hr />
-          <h2 className="fs-6 mt-3">Arbeitsplanung</h2>
-          {(isLoading || works.length === 0) && (
-            <Alert variant="secondary">
-              Keine aktuellen Schichten gefunden
-            </Alert>
-          )}
-          <Row className="g-3" xs={1} lg={2}>
-            {!isLoading &&
-              works.map((work) => {
-                return <WorkCard key={"work-" + work.id} work={work} />
-              })}
-          </Row>
-        </Form>
-      </Modal.Body>
-    </Modal>
+                name="employment"
+                options={allEmployments}
+                className="basic-multi-select"
+                classNamePrefix="select"
+                onChange={(value) => setEmploymentId(value.value)}
+              />
+            )}
+            <h2 className="fs-6 mt-3">Jobs</h2>
+            {isLoading && (
+              <Placeholder as="p" animation="glow">
+                <Placeholder disabled as={Form.Control} />
+              </Placeholder>
+            )}
+            {!isLoading && (
+              <Select
+                defaultValue={employee.jobs.map((job) => {
+                  return { value: job.id, label: job.title }
+                })}
+                isMulti
+                name="jobs"
+                options={allJobs}
+                className="basic-multi-select"
+                classNamePrefix="select"
+                onChange={(values) =>
+                  setJobs(
+                    values.map((value) => {
+                      return value.value
+                    })
+                  )
+                }
+              />
+            )}
+            {isLoading && (
+              <Placeholder as="p" animation="glow">
+                <Placeholder.Button className="mt-3">
+                  Lädt...
+                </Placeholder.Button>
+              </Placeholder>
+            )}
+            {!isLoading && (
+              <Button
+                className="mt-3"
+                type="submit"
+                disabled={isButtonDisabled || isButtonLoading}
+              >
+                <FontAwesomeIcon className="me-2" icon={faSave} />
+                {isButtonLoading && "Lädt..."}
+                {!isButtonLoading && "Speichern"}
+              </Button>
+            )}
+            <hr />
+            <h2 className="fs-6 mt-3">Account-Daten ändern</h2>
+            {!token && (
+              <Button
+                onClick={createToken}
+                variant="primary"
+                disabled={isTokenLoading}
+              >
+                <FontAwesomeIcon className="me-2" icon={faKey} />
+                {isTokenLoading && <>Token lädt...</>}
+                {!isTokenLoading && <>Neuen Token generieren</>}
+              </Button>
+            )}
+            {token && (
+              <Card bg="" text="">
+                <Card.Body>
+                  <Row>
+                    <Col>
+                      <Card.Title>
+                        <Badge className="me-2">
+                          <FontAwesomeIcon icon={faKey} className="me-2" />
+                          {token.code}
+                        </Badge>
+                        Account-Daten Token
+                      </Card.Title>
+                      E-Mail und Passwort können über den QR-Code festgelegt
+                      werden:
+                      <br />
+                      <a
+                        href={"http://localhost:3001/credentials/" + token.code}
+                      >
+                        {"http://localhost:3001/credentials/" + token.code}
+                      </a>
+                    </Col>
+                    <Col sm="auto" className="order-first order-sm-last">
+                      <QRCode
+                        as={Card.Image}
+                        className="w-100 m-2"
+                        size={100}
+                        value={
+                          "http://localhost:3001/credentials/" + token.code
+                        }
+                      />
+                    </Col>
+                  </Row>
+                </Card.Body>
+                <Card.Footer>
+                  Gültig bis:{" "}
+                  {new Date(token.expiresAt).toLocaleString("de-DE")}
+                </Card.Footer>
+              </Card>
+            )}
+            <hr />
+            <h2 className="fs-6 mt-3">Arbeitsplanung</h2>
+            {(isLoading || works.length === 0) && (
+              <Alert variant="secondary">
+                Keine aktuellen Schichten gefunden
+              </Alert>
+            )}
+            <Row className="g-3" xs={1} lg={2}>
+              {!isLoading &&
+                works.map((work) => {
+                  return <WorkCard key={"work-" + work.id} work={work} />
+                })}
+            </Row>
+          </Form>
+        </Modal.Body>
+      </Modal>
+    </>
   )
 }
 
