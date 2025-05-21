@@ -1,23 +1,15 @@
-import React, { useCallback, useEffect, useState } from "react"
+import React from "react"
 import Form from "react-bootstrap/Form"
 import FloatingLabel from "react-bootstrap/esm/FloatingLabel"
 import { labels } from "../variables"
+import useInputField from "../hooks/useInputField"
 
 const EditableText = ({ value, label, onInput, className, edit }) => {
-  const [input, setInput] = useState(value)
-
-  const onChange = useCallback((e) => {
-    setInput(e.target.value)
-    if (onInput) onInput(label, e.target.value)
-  }, [label, onInput])
-
-  useEffect(() => {
-    setInput(value)
-  }, [value])
+  const [input, onChange] = useInputField(value, label, onInput)
 
   if (!edit)
     return (
-      <p className={"mb-3 "+className}>
+      <p className={"mb-3 " + className}>
         {labels[label] + ": "}
         {value !== null && value}
         {value === null && "Kein Wert gesetzt"}
@@ -25,7 +17,7 @@ const EditableText = ({ value, label, onInput, className, edit }) => {
     )
   else
     return (
-      <FloatingLabel label={labels[label]} className={"mb-3 "+className}>
+      <FloatingLabel label={labels[label]} className={"mb-3 " + className}>
         <Form.Control
           placeholder=""
           value={input}
