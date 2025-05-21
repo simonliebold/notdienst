@@ -121,13 +121,13 @@ module.exports = (models, sequelize) => {
         where: { scheduleId: req.params.id },
       })
 
-      const newEmployees =
+      const newWorks =
         req.body?.values?.map((employeeId) => ({
           scheduleId: req.params.id,
           employeeId: employeeId,
         })) || []
 
-      await models.ScheduleEmployee.bulkCreate(newEmployees)
+      await models.ScheduleEmployee.bulkCreate(newWorks)
 
       return res.send({ message: "Erfolgreich aktualisiert" })
     } catch (error) {
@@ -230,6 +230,12 @@ module.exports = (models, sequelize) => {
       })
     })
 
+    works.sort((a, b) => {
+      if (a.start.getTime() < b.start.getTime()) return -1
+      else if (a.start.getTime() > b.start.getTime()) return 1
+      else return 0
+    })
+
     req.works = await models.Work.bulkCreate(works)
 
     next()
@@ -296,8 +302,8 @@ module.exports = (models, sequelize) => {
         freetimes: [],
         minHours: employee.employment.minHours,
         maxHours: employee.employment.maxHours,
-        possibleHours: 0,
-        workHours: 0,
+        availableTime: 0,
+        workTime: 0,
       }
       employeeIds.push(employee.id)
     })
@@ -307,7 +313,8 @@ module.exports = (models, sequelize) => {
       where: {
         [Op.and]: [
           { employeeId: { [Op.in]: employeeIds } },
-          { date: { [Op.between]: [req.schedule.start, req.schedule.end] } },
+          { start: { [Op.lt]: req.schedule.end } },
+          { end: { [Op.gt]: req.schedule.start } },
         ],
       },
     })
@@ -321,36 +328,33 @@ module.exports = (models, sequelize) => {
 
   // Add employee ids to works
   const checkAvailability = async (req, res, next) => {
-    let workEmployees = []
+    let newWorks = []
     Object.values(req.works).forEach((work) => {
       work.employeeIds = []
       Object.values(req.employees).forEach((employee) => {
         const isFree = req.employees[employee.id].freetimes.every(
           (freetime) =>
-          new Date(freetime.end).getTime() <= work.start.getTime() ||
-          new Date(freetime.start).getTime() >= work.end.getTime()
-          )
-          console.log(work.id, employee.id, isFree)
+            new Date(freetime.end).getTime() <= work.start.getTime() ||
+            new Date(freetime.start).getTime() >= work.end.getTime()
+        )
         if (isFree) {
-          // req.employees[employee.id].possibleHours += duration
+          const duration =
+            (work.end.getTime() - work.start.getTime()) / (1000 * 60 * 60)
+          req.employees[employee.id].availableTime += duration
           work.employeeIds.push(employee.id)
         }
       })
-      workEmployees.push(work)
+      newWorks.push(work)
     })
 
-    req.works = workEmployees
-    next()
-  }
+    req.works = newWorks
 
-  // Order works by possible employee count
-  // TODO: order by possible hours count
-  const orderWorks = (req, res, next) => {
     req.works.sort((a, b) => {
       if (a.employeeIds.length < b.employeeIds.length) return -1
       else if (a.employeeIds.length < b.employeeIds.length) return 1
-      else return 0
+      else return Math.random() < 0.5 ? 1 : -1
     })
+
     next()
   }
 
@@ -361,18 +365,25 @@ module.exports = (models, sequelize) => {
     while (req.works.length > 0) {
       let bestEmployee
       let bestEmployeeRemainingHours
-
-      req.works[0].employeeIds.forEach((employeeId) => {
+      const work = req.works[0]
+      const duration =
+        (work.end.getTime() - work.start.getTime()) / (1000 * 60 * 60)
+      work.employeeIds.forEach((employeeId) => {
         const employee = req.employees[employeeId]
-        employee.possibleHours -= req.works[0].duration
+
+        // remove work from available time
+        employee.availableTime -= duration
+
+        //
         let employeeRemainingHours = employee.maxHours
         if (employee.minHours !== null)
-          employeeRemainingHours = employee.minHours - employee.workHours
+          employeeRemainingHours = employee.minHours - employee.workTime
 
-        const newWorkHours = employee.workHours + req.works[0].duration
+        const newWorkHours = employee.workTime + duration
 
         const maxHoursCorrect =
           employee.maxHours === null || newWorkHours <= employee.maxHours
+
         const isBest =
           bestEmployee === undefined ||
           employeeRemainingHours >= bestEmployeeRemainingHours
@@ -382,11 +393,12 @@ module.exports = (models, sequelize) => {
           bestEmployeeRemainingHours = employeeRemainingHours
         }
       })
+      if(!bestEmployee)return res.status(400).send({error: "Es stehen zu wenig Mitarbeiter zur Verfügung"})
       workEmployees.push({
-        workId: req.works[0].id,
+        workId: work.id,
         employeeId: bestEmployee.id,
       })
-      bestEmployee.workHours += req.works[0].duration
+      bestEmployee.workTime += duration
       req.works.shift()
     }
     try {
@@ -405,10 +417,9 @@ module.exports = (models, sequelize) => {
     getWorks,
     getEmployees,
     checkAvailability,
-    // orderWorks,
-    // allocateWorks,
+    allocateWorks,
     async (req, res) => {
-      return res.send(req.works)
+      return res.send({ works: req.works, employees: req.employees })
     }
   )
 

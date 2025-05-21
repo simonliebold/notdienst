@@ -159,7 +159,6 @@ export const FreetimePage = () => {
       <EditableText value={freetime?.type} label="type" />
       <hr />
       <EditableBadge resource={freetime?.employee} resourceName="employee" />
-      <EditableBadge resource={freetime?.schedule} resourceName="schedule" />
     </ResourcePage>
   )
 }

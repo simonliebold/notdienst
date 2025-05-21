@@ -146,39 +146,39 @@ module.exports = async (models) => {
     deadline: "2023-12-10 9:00",
   })
 
-  let works = [
-    {
-      start: new Date(2023, 12, 1, 10),
-      end: new Date(2023, 12, 1, 15),
-      scheduleId: 1,
-      rruleId: 1,
-    },
-    {
-      start: new Date(2023, 12, 1, 10),
-      end: new Date(2023, 12, 1, 15),
-      scheduleId: 1,
-      rruleId: 1,
-    },
-    {
-      start: new Date(2023, 12, 1, 10),
-      end: new Date(2023, 12, 1, 15),
-      scheduleId: 1,
-      rruleId: 1,
-    },
-    {
-      start: new Date(2023, 12, 1, 10),
-      end: new Date(2023, 12, 1, 15),
-      scheduleId: 1,
-      rruleId: 1,
-    },
-  ]
-  works = await models.Work.bulkCreate(works)
+  // let works = [
+  //   {
+  //     start: new Date(2023, 12, 1, 10),
+  //     end: new Date(2023, 12, 1, 15),
+  //     scheduleId: 1,
+  //     rruleId: 1,
+  //   },
+  //   {
+  //     start: new Date(2023, 12, 1, 10),
+  //     end: new Date(2023, 12, 1, 15),
+  //     scheduleId: 1,
+  //     rruleId: 1,
+  //   },
+  //   {
+  //     start: new Date(2023, 12, 1, 10),
+  //     end: new Date(2023, 12, 1, 15),
+  //     scheduleId: 1,
+  //     rruleId: 1,
+  //   },
+  //   {
+  //     start: new Date(2023, 12, 1, 10),
+  //     end: new Date(2023, 12, 1, 15),
+  //     scheduleId: 1,
+  //     rruleId: 1,
+  //   },
+  // ]
+  // works = await models.Work.bulkCreate(works)
 
-  await models.WorkEmployee.bulkCreate(
-    works.map((work) => {
-      return { workId: work.id, employeeId: 1 }
-    })
-  )
+  // await models.WorkEmployee.bulkCreate(
+  //   works.map((work) => {
+  //     return { workId: work.id, employeeId: 1 }
+  //   })
+  // )
 
   await models.JobEmployee.bulkCreate(
     jobs.map((job) => {
@@ -210,20 +210,20 @@ module.exports = async (models) => {
   await models.Freetime.bulkCreate([
     {
       type: "Wunschfrei",
-      start: new Date(2024, 1, 1),
-      end: new Date(2024, 1, 1),
+      start: new Date(2024, 0, 1),
+      end: new Date(2024, 0, 1, 23, 59, 59),
       employeeId: 1,
     },
     {
       type: "Nicht Tag",
-      start: new Date(2024, 1, 2),
-      end: new Date(2024, 1, 2),
+      start: new Date(2024, 0, 2),
+      end: new Date(2024, 0, 2, 23, 59, 59),
       employeeId: 2,
     },
     {
       type: "Nicht Nacht",
-      start: new Date(2024, 1, 3),
-      end: new Date(2024, 1, 3),
+      start: new Date(2024, 0, 3),
+      end: new Date(2024, 0, 3, 23, 59, 59),
       employeeId: 3,
     },
     // {
@@ -240,21 +240,21 @@ module.exports = async (models) => {
     // },
   ])
 
-  await models.Mission.bulkCreate([
-    {
-      type: "Arzt aufgenommen",
-      km: 255090,
-      time: new Date("2024-01-17 20:00:00"),
-      workId: 1,
-      employeeId: 1,
-    },
-    {
-      type: "Arzt abgeliefert",
-      info: "Übergabe an der Wache an nächsten Fahrer",
-      km: 255168,
-      time: new Date("2024-01-18 08:00:00"),
-      workId: 1,
-      employeeId: 1,
-    },
-  ])
+  // await models.Mission.bulkCreate([
+  //   {
+  //     type: "Arzt aufgenommen",
+  //     km: 255090,
+  //     time: new Date("2024-01-17 20:00:00"),
+  //     workId: 1,
+  //     employeeId: 1,
+  //   },
+  //   {
+  //     type: "Arzt abgeliefert",
+  //     info: "Übergabe an der Wache an nächsten Fahrer",
+  //     km: 255168,
+  //     time: new Date("2024-01-18 08:00:00"),
+  //     workId: 1,
+  //     employeeId: 1,
+  //   },
+  // ])
 }
