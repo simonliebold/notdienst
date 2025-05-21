@@ -32,7 +32,6 @@ const EditableText = ({ value, label, onInput, className }) => {
           <Form.Control
             placeholder=""
             value={input}
-            defaultValue={value}
             onChange={onChange}
           ></Form.Control>
         </FloatingLabel>
