@@ -1,0 +1,48 @@
+module.exports = (models) => {
+  const express = require("express")
+  const router = express.Router()
+
+  // Get all
+  router.get("/", async (req, res) => {
+    const response = await models.Employment.findAll()
+    res.send({ response: response })
+  })
+
+  // Get one
+  router.get("/:id", async (req, res) => {
+    const response = await models.Employment.findByPk(req.params.id)
+    if (response === null) res.status(404).send({ message: "Not found" })
+    else res.send({ response: response })
+  })
+
+  // Create one
+  router.post("/", async (req, res) => {
+    try {
+      const response = await models.Employment.create({ ...req.body })
+      res.send({ response: response })
+    } catch (error) {
+      res.status(400).send({ errors: error.errors })
+    }
+  })
+
+  // Update one
+  router.put("/:id", async (req, res) => {
+    try {
+      const response = await models.Employment.update(
+        { ...req.body },
+        {
+          where: { id: req.params.id },
+        }
+      )
+      response[0] > 0
+        ? res
+            .status(200)
+            .send({ message: "Updated successfully", rows: response[0] })
+        : res.status(404).send({ message: "Not found", rows: response[0] })
+    } catch (error) {
+      res.status(400).send({ errors: error })
+    }
+  })
+
+  return router
+}
