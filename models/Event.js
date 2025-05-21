@@ -28,5 +28,9 @@ module.exports = (sequelize) => {
       type: Sequelize.INTEGER,
       allowNull: true,
     },
+    shiftId: {
+      type: Sequelize.INTEGER,
+      allowNull: false,
+    },
   })
 }

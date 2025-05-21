@@ -17,5 +17,9 @@ module.exports = (sequelize) => {
       type: Sequelize.STRING,
       allowNull: false,
     },
+    employmentId: {
+      type: Sequelize.INTEGER,
+      allowNull: false,
+    }
   })
 }

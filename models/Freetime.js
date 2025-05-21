@@ -16,5 +16,13 @@ module.exports = (sequelize) => {
       type: Sequelize.DATEONLY,
       allowNull: false,
     },
+    scheduleId: {
+      type: Sequelize.INTEGER,
+      allowNull: false,
+    },
+    employeeId: {
+      type: Sequelize.INTEGER,
+      allowNull: false,
+    },
   })
 }
