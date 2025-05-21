@@ -1,5 +1,6 @@
 const Employee = require("./schemas/Employee")
 const Employment = require("./schemas/Employment")
+const Freetime = require("./schemas/Freetime")
 const Job = require("./schemas/Job")
 const Schedule = require("./schemas/Schedule")
 const Shift = require("./schemas/Shift")
@@ -12,6 +13,7 @@ const loadTestData = async () => {
   await Shift.deleteMany({})
   await Work.deleteMany({})
   await Schedule.deleteMany({})
+  await Freetime.deleteMany({})
 
   const minijob = new Employment({
     short: "MINI",
@@ -37,9 +39,17 @@ const loadTestData = async () => {
     title: "Simon Liebold",
     employmentId: minijob._id,
     jobIds: [anod._id],
-    freetimes: [{ start: new Date(), end: new Date() }],
   })
   lbd.save()
+
+  const freetime = new Freetime({
+    short: "Free 1",
+    title: "Urlaub heute",
+    start: new Date(),
+    end: new Date(),
+    employeeId: lbd._id,
+  })
+  freetime.save()
 
   const a1Nacht = new Shift({
     short: "A1 Nacht",
@@ -57,7 +67,7 @@ const loadTestData = async () => {
 
   const jan24 = new Schedule({
     short: "Jan 24",
-    title: "Januar 2024"
+    title: "Januar 2024",
   })
   jan24.save()
 

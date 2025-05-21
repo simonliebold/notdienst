@@ -141,7 +141,7 @@ export const EmployeePage = () => {
           resourceName="employment"
         />
         <MultiBadge items={employee?.jobs} resourceName="job" />
-        <MultiTitleCard items={employee?.freetimes} resourceName="freetime" />
+        {/* <ContainsItems resources={employee?.freetimes} resourceName="freetime" /> */}
       </ResourcePage>
       <EmployeeCalendar employee={employee} />
     </>

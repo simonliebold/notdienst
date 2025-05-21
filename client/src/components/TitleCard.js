@@ -4,7 +4,7 @@ import Placeholder from "react-bootstrap/Placeholder"
 import { Link } from "react-router-dom"
 import Badge from "./Badge"
 
-function TitleCard({ resource, resourceName, className }) {
+function TitleCard({ resource, resourceName, disabled, className }) {
   const { title } = resource || {}
   // TODO: return a badge for each associated component
   if (!resource)
@@ -18,9 +18,9 @@ function TitleCard({ resource, resourceName, className }) {
   return (
     <Card
       className={"text-decoration-none " + className}
-      as={Link}
-      to={"/" + resourceName + "s/" + resource?._id}
-      href={"/" + resourceName + "s/" + resource?._id}
+      as={!disabled ? (Link) : Card}
+      to={!disabled ? ("/" + resourceName + "s/" + resource?._id) : ""}
+      href={!disabled ? ("/" + resourceName + "s/" + resource?._id) : ""}
     >
       <Card.Header>
         <Badge
@@ -28,6 +28,7 @@ function TitleCard({ resource, resourceName, className }) {
           className="me-2"
           resource={resource}
           resourceName={resourceName}
+          disabled={disabled}
         />
         {title}
       </Card.Header>

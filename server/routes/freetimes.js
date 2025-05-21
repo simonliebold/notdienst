@@ -1,72 +1,63 @@
-module.exports = (models) => {
+const { default: mongoose } = require("mongoose")
+const Freetime = require("../schemas/Freetime")
+
+module.exports = () => {
   const router = require("express").Router()
-  const roles = require("./../roles")
+  const roles = require("../roles")
 
   // Get all
-  router.get("/", roles.requireAdmin, async (req, res) => {
-    const freetimes = await models.Freetime.findAll({
-      include: [models.Employee],
-    })
+  router.get("/", roles.requireAdmin, async (req, res, next) => {
+    const freetimes = await Freetime.find({}).catch(next)
+    if (!freetimes) return next(new Error("Nicht gefunden"))
     return res.send(freetimes)
   })
 
   // Get one
-  router.get("/:id", roles.requireAdmin, async (req, res) => {
-    const freetime = await models.Freetime.findByPk(req.params.id, {
-      include: [models.Employee],
-    })
-    if (freetime === null) return res.sendStatus(404)
-    return res.send(freetime)
+  router.get("/:id", roles.requireAdmin, async (req, res, next) => {
+    const freetime = await Freetime.aggregate([
+      { $match: { _id: new mongoose.Types.ObjectId(req.params.id) } },
+      {
+        $lookup: {
+          from: "employees",
+          localField: "employeeId",
+          foreignField: "_id",
+          as: "employee",
+        },
+      },
+      { $unwind: "$employee" },
+    ]).catch(next)
+    if (!freetime) return next(new Error("Nicht gefunden"))
+    return res.send(freetime[0])
   })
 
   // Create one
-  // TODO: check if freetime is in schedule bounds
-  router.post("/", async (req, res) => {
-    try {
-      const freetime = await models.Freetime.create({
-        type: req?.body?.type,
-        start: req?.body?.start,
-        end: req?.body?.end,
-        employeeId: req?.body?.employeeId,
-      })
-      return res.send(freetime)
-    } catch (error) {
-      return res.status(400).send({ error: error.message })
-    }
+  router.post("/", roles.requireAdmin, async (req, res, next) => {
+    const { short, title, employmentId, jobIds } = req?.body || {}
+    const freetime = new Freetime({
+      short,
+      title,
+    })
+
+    await freetime.save().catch(next)
+
+    return res.send(freetime)
   })
 
   // Update one
-  router.put("/:id", roles.requireAdmin, async (req, res) => {
-    try {
-      const response = await models.Freetime.update(
-        { ...req.body },
-        {
-          where: { id: req.params.id },
-        }
-      )
-      if (response[0] === 0) return res.sendStatus(404)
-      return res.status(200).send({ message: "Updated successfully" })
-    } catch (error) {
-      return res.status(400).send({ error: error.message })
-    }
+  router.put("/:id", roles.requireAdmin, async (req, res, next) => {
+    const { short, title, employmentId, jobIds } = req?.body || {}
+    await Freetime.findByIdAndUpdate(req.params.id, {
+      short,
+      title,
+    }).catch(next)
+
+    return res.send({ message: "Erfolgreich aktualisiert" })
   })
 
   // Delete one
-  router.delete("/:id", roles.requireAdmin, async (req, res) => {
-    try {
-      const freetime = await models.Freetime.destroy({
-        where: { id: req.params.id },
-      })
-      if (freetime === 0)
-        return res
-          .status(404)
-          .send({ error: "Dienstplanwunsch nicht gefunden" })
-      return res
-        .status(200)
-        .send({ message: "Dienstplanwunsch erfolgreich gelöscht" })
-    } catch (error) {
-      res.status(400).send({ error: error.message })
-    }
+  router.delete("/:id", roles.requireAdmin, async (req, res, next) => {
+    await Freetime.findByIdAndDelete(req.params.id).catch(next)
+    return res.send({ message: "Endgültig gelöscht" })
   })
 
   return router
