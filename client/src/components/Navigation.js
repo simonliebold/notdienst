@@ -12,6 +12,10 @@ function Navigation() {
 
   const routes = [
     {
+      name: "Home",
+      path: "/",
+    },
+    {
       name: "Mitarbeiter",
       path: "/employees",
     },
