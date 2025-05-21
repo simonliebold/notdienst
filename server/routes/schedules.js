@@ -7,7 +7,7 @@ const Rrule = require("../models/Rrule")
 const Work = require("../models/Work")
 const Employee = require("../models/Employee")
 const variables = require("./../variables")
-const { spawn } = require("child_process");
+const { spawn } = require("child_process")
 
 const getSchedule = async (id) => {
   const schedules = await Schedule.aggregate([
@@ -246,60 +246,45 @@ const createWorks = async (schedule) => {
   if (rrules.length === 0)
     throw new Error("Es existieren noch keine Wiederholungsregeln")
 
-  let works = []
-
-  // TODO: fix daylight saving error
-  rrules.forEach((rrule) => {
-    let ruleStart = new Date(schedule.start.getTime())
+  const works = rrules.flatMap((rrule) => {
+    const ruleStart = new Date(schedule.start)
     ruleStart.setHours(...rrule.start.split(":"))
 
-    let ruleEnd = new Date(schedule.end.getTime())
+    const ruleEnd = new Date(schedule.end)
     ruleEnd.setHours(23, 59, 59)
 
-    let options = RRule.parseString(rrule?.content)
-    options.dtstart = new Date(ruleStart.getTime())
-    options.until = new Date(ruleEnd.getTime())
-    const dates = new RRule(options).all()
+    const options = {
+      ...RRule.parseString(rrule.content),
+      dtstart: ruleStart,
+      until: ruleEnd,
+    }
 
-    dates.forEach((start) => {
-      let end = new Date(start.getTime())
+    return new RRule(options).all().map((start) => {
+      const end = new Date(start)
       end.setHours(...rrule.end.split(":"))
-
       if (end < start) end.setDate(end.getDate() + 1)
 
-      works.push({
-        // title: rrule.short,
-        title: rrule.title + " am " + start.toLocaleDateString("de-DE"),
+      return {
+        title: `${rrule.title} am ${start.toLocaleDateString("de-DE")}`,
         short: rrule.short,
-        start: start,
-        end: end,
+        start,
+        end,
         shiftId: rrule.shiftId,
         scheduleId: schedule._id,
-      })
+      }
     })
   })
 
-  works.sort((a, b) => {
-    if (a.start.getTime() < b.start.getTime()) return -1
-    else if (a.start.getTime() > b.start.getTime()) return 1
-    else return 0
-  })
-
-  // await Work.insertMany(works)
-
+  works.sort((a, b) => a.start - b.start)
   return works
-}
-
-const generateWorks = async (scheduleId) => {
-  const schedule = await getSchedule(scheduleId)
-  const works = await createWorks(schedule)
-  await Work.insertMany(works)
 }
 
 // Create works
 router.post("/:id/create", roles.requireAdmin, async (req, res, next) => {
   try {
-    await generateWorks(req.params.id)
+    const schedule = await getSchedule(req.params.id)
+    const works = await createWorks(schedule)
+    await Work.insertMany(works)
   } catch (err) {
     return next(err)
   }
@@ -458,44 +443,38 @@ const allocate = async (schedule) => {
 
 router.post("/:id/allocate", roles.requireAdmin, async (req, res, next) => {
   try {
-    const schedule = await getSchedule(req.params.id);
-    const works = await getWorks(schedule?._id);
-    const employees = await getEmployees(schedule);
+    const schedule = await getSchedule(req.params.id)
+    const works = await getWorks(schedule?._id)
+    const employees = await getEmployees(schedule)
 
-    // Prepare data to send to Python
-    const inputData = JSON.stringify({ works, employees });
+    const inputData = JSON.stringify({ works, employees })
 
-    // Spawn a Python process
-    const pythonProcess = spawn("python3", ["python/solver.py"]);
+    const pythonProcess = spawn("python3", ["python/solver.py"])
 
-    // Send data to Python via stdin
-    pythonProcess.stdin.write(inputData);
-    pythonProcess.stdin.end();
+    pythonProcess.stdin.write(inputData)
+    pythonProcess.stdin.end()
 
-    let pythonOutput = "";
-    let jsonStarted = false;
+    let pythonOutput = ""
+    let jsonStarted = false
 
-    // Collect Python's stdout
     pythonProcess.stdout.on("data", (data) => {
-      const output = data.toString();
+      const output = data.toString()
 
-      // Check for the marker
       if (jsonStarted) {
-        pythonOutput += output;
+        pythonOutput += output
       } else if (output.includes("START_JSON_OUTPUT")) {
-        jsonStarted = true;
-        pythonOutput += output.split("START_JSON_OUTPUT")[1]; // Start collecting after the marker
+        jsonStarted = true
+        pythonOutput += output.split("START_JSON_OUTPUT")[1]
       }
-    });
+    })
 
-    // Handle Python process completion
     pythonProcess.on("close", async (code) => {
       if (code !== 0) {
-        return next(new Error("Python script failed with code " + code));
+        return next(new Error("Python script failed with code " + code))
       }
 
       try {
-        const result = JSON.parse(pythonOutput.trim()); // Parse Python's output
+        const result = JSON.parse(pythonOutput.trim())
 
         const bulkUpdateOperations = result.map(({ employeeId, workId }) => ({
           updateOne: {
@@ -503,25 +482,42 @@ router.post("/:id/allocate", roles.requireAdmin, async (req, res, next) => {
             update: { $addToSet: { employeeIds: employeeId } },
           },
         }))
-      
+
         await Work.bulkWrite(bulkUpdateOperations)
 
         return res.send({
-          message: "Allocation successful",
+          message: "Dienste erfolgreich verteilt",
           result,
-        });
+        })
       } catch (err) {
-        return next(new Error("Failed to parse Python output: " + err.message));
+        return next(new Error("Failed to parse Python output: " + err.message))
       }
-    });
+    })
 
-    // Handle Python errors
     pythonProcess.stderr.on("data", (data) => {
-      console.error("Python error:", data.toString());
-    });
+      console.error("Python error:", data.toString())
+    })
   } catch (err) {
-    return next(err);
+    return next(err)
   }
-});
+})
+
+router.delete("/:id/works", roles.requireAdmin, async (req, res, next) => {
+  try {
+    const schedule = await getSchedule(req.params.id)
+    const condition = schedule?.works.length == 0
+    if (condition) {
+      throw new Error("Dieser Dienstplan besitzt keine Dienste")
+    }
+
+    await Work.deleteMany({
+      scheduleId: new mongoose.Types.ObjectId(req.params.id),
+    })
+
+    res.send({ message: "Dienste erfolgreich gelöscht" })
+  } catch (err) {
+    return next(err)
+  }
+})
 
 module.exports = router
