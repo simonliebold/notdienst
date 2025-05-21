@@ -1,9 +1,8 @@
 import React from "react"
 import Card from "react-bootstrap/Card"
-import ListGroup from "react-bootstrap/ListGroup"
 import Badge from "./Badge"
-import { Link } from "react-router-dom"
 import MultiBadge from "./MultiBadge"
+import { CardDeleteButton, CardEditButton } from "./CardButton"
 
 const DetailedCard = ({ resource, resourceName, children }) => {
   const { id, short, title } = resource || {}
@@ -18,27 +17,52 @@ const DetailedCard = ({ resource, resourceName, children }) => {
         {title}
       </Card.Header>
       <Card.Body>{children}</Card.Body>
-      <Card.Footer></Card.Footer>
+      <Card.Footer className="d-flex justify-content-end">
+        <CardDeleteButton
+          resource={resource}
+          resourceName={resourceName}
+          className="me-auto"
+        />
+        <CardEditButton resource={resource} resourceName={resourceName} />
+      </Card.Footer>
     </Card>
   )
 }
 
 export const EmployeeDetailedCard = ({ employee }) => {
-  const {id, short, title, works, employment} = employee || {}
+  const { works, employment } = employee || {}
+
   return (
     <DetailedCard resourceName="employee" resource={employee}>
-      {/* Id: {id}
-      <br />
-      Short: {short}
-      <br />
-      Title: {title}
-      <hr /> */}
-      Stunden: {employment.title} <br/> 
+      Stunden: {employment.title} <br />
       <Badge resource={employment} resourceName="employment" />
       <hr />
       Dienste:
       <MultiBadge items={works} resourceName="work" />
       {/* <hr /> */}
+    </DetailedCard>
+  )
+}
+export const ScheduleDetailedCard = ({ schedule }) => {
+  const { employees, shifts, works } = schedule || {}
+
+  const start = new Date(schedule.start).toLocaleString("de-DE") || {}
+  const end = new Date(schedule.end).toLocaleString("de-DE") || {}
+  const deadline = new Date(schedule.deadline).toLocaleString("de-DE") || {}
+
+  return (
+    <DetailedCard resourceName="schedule" resource={schedule}>
+      Start: {new Date(start).toLocaleString("de-DE")}
+      <br />
+      Ende: {end} <br />
+      Deadline: {deadline}
+      <hr />
+      Dienste:
+      <MultiBadge items={works} resourceName="work" />
+      <hr />
+      Schichten:
+      <MultiBadge items={shifts} resourceName="shift" />
+      <hr />
     </DetailedCard>
   )
 }

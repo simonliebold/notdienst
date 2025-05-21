@@ -29,9 +29,9 @@ module.exports = (models, sequelize) => {
     if (schedule === null) return res.sendStatus(404)
     const works = await models.Work.findAll({
       where: { scheduleId: req.params.id },
-      include: [models.Event, models.Employee],
+      include: [models.Employee],
     })
-    return res.send({ schedule: schedule, works: works })
+    return res.send({ schedule: {...schedule.dataValues, works} })
   })
 
   // Create one
