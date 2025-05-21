@@ -377,6 +377,7 @@ module.exports = (models, sequelize) => {
   const allocateWorks = async (req, res, next) => {
     let workEmployees = []
     while (req.works.length > 0) {
+      const protocol = []
       let bestEmployee
       let bestEmployeeRemainingHours
       const work = req.works[0]
@@ -393,9 +394,11 @@ module.exports = (models, sequelize) => {
 
         const newWorkHours = employee.workTime + duration
 
+        // Unter Max Stunden
         const maxHoursCorrect =
           employee.maxHours === null || newWorkHours <= employee.maxHours
 
+        // Platz zum Minimum
         const isBest =
           bestEmployee === undefined ||
           employeeRemainingHours >= bestEmployeeRemainingHours
@@ -407,19 +410,20 @@ module.exports = (models, sequelize) => {
         )
 
         // TODO: Generierungsbericht
-        // console.log({
-        //   workId: work.id,
-        //   employeeId: employee.id,
-        //   isFree: isFree,
-        //   maxHoursCorrect: maxHoursCorrect,
-        //   freetimes: employee.freetimes
-        //     .filter(
-        //       (freetime) =>
-        //         new Date(freetime.end).getTime() > work.start.getTime() &&
-        //         new Date(freetime.start).getTime() < work.end.getTime()
-        //     )
-        //     .map((freetime) => freetime.work || "Wunschfrei"),
-        // })
+        protocol.push({
+          workId: work.id,
+          employeeId: employee.id,
+          isFree: isFree,
+          isBest: isBest,
+          maxHoursCorrect: maxHoursCorrect,
+          freetimes: employee.freetimes
+            .filter(
+              (freetime) =>
+                new Date(freetime.end).getTime() > work.start.getTime() &&
+                new Date(freetime.start).getTime() < work.end.getTime()
+            )
+            .map((freetime) => freetime.work || "Wunschfrei"),
+        })
 
         if (maxHoursCorrect && isBest && isFree) {
           bestEmployee = employee
@@ -430,6 +434,7 @@ module.exports = (models, sequelize) => {
         return res.status(400).send({
           error:
             "Es stehen zu wenig Mitarbeiter für die Anzahl an Diensten zur Verfügung.",
+          protocol: protocol,
         })
       workEmployees.push({
         workId: work.id,
@@ -456,6 +461,8 @@ module.exports = (models, sequelize) => {
     "/:id/allocate",
     roles.requireAdmin,
     getSchedule,
+    getRrules,
+    createWorks,
     getWorks,
     getEmployees,
     checkAvailability,

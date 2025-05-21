@@ -15,13 +15,14 @@ module.exports = async (models) => {
     {
       title: "Minijob",
       short: "MINIJOB",
+      minHours: 20,
       maxHours: 40,
     },
     {
       title: "Teilzeit",
       short: "TEILZEIT",
       minHours: 80,
-      maxHours: 100,
+      maxHours: 160,
     },
     {
       title: "Vollzeit",
@@ -35,11 +36,17 @@ module.exports = async (models) => {
 
   let employees = [
     { short: "BEC", title: "Markus Becker", employmentId: 1 },
-    { short: "KRÄ", title: "Emilia Krämer", employmentId: 1 },
-    { short: "KLU", title: "Antje Kluge", employmentId: 2 },
-    { short: "SCH", title: "Noah Schuster", employmentId: 2 },
+    { short: "KRÄ", title: "Emilia Krämer", employmentId: 3 },
+    { short: "KLU", title: "Antje Kluge", employmentId: 3 },
+    { short: "SCH", title: "Noah Schuster", employmentId: 3 },
     { short: "KAI", title: "Lina Kaiser", employmentId: 3 },
     { short: "ZIM", title: "Adam Zimmermann", employmentId: 3 },
+    { short: "SMT", title: "Carla Schmidt", employmentId: 3 },
+    { short: "KÄS", title: "Wolfgang Kästner", employmentId: 3 },
+    { short: "EGG", title: "Markus Egger", employmentId: 3 },
+    // { short: "BÄR", title: "Sebastian Bär", employmentId: 3 },
+    // { short: "WOL", title: "Jennifer Wolf", employmentId: 3 },
+    // { short: "SER", title: "Caroline Scherer", employmentId: 3 },
   ]
 
   employees = await models.Employee.bulkCreate(employees)
@@ -185,10 +192,10 @@ module.exports = async (models) => {
   // )
 
   await models.JobEmployee.bulkCreate(
-    jobs.map((job) => {
+    employees.map((employee) => {
       return {
-        jobId: job.id,
-        employeeId: 1,
+        jobId: 1,
+        employeeId: employee.id,
       }
     })
   )
