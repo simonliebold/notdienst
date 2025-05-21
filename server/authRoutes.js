@@ -66,12 +66,19 @@ module.exports = (sequelize) => {
 
   // Check if token is expired
   router.get("/credentials/check/:code", async (req, res) => {
-    const credentialsCode = await sequelize.models.credentialsCodes.findOne({
+    let credentialsCode = await sequelize.models.credentialsCodes.findOne({
       where: { code: req.params.code },
+      include: sequelize.models.users,
     })
     if (credentialsCode === null || credentialsCode.expiresAt < Date.now())
-      return res.sendStatus(404)
-    return res.sendStatus(200)
+      return res
+        .status(404)
+        .send({ error: "Der eingegebene Code konnte nicht gefunden werden." })
+    credentialsCode = credentialsCode.dataValues
+    return res.send({
+      code: credentialsCode.code,
+      email: credentialsCode.user.email,
+    })
   })
 
   // Change email / password
@@ -80,7 +87,9 @@ module.exports = (sequelize) => {
       req.params.code
     )
     if (credentialsCode === null || credentialsCode.expiresAt < Date.now())
-      return res.sendStatus(404)
+      return res
+        .status(404)
+        .send({ error: "Der eingegebene Code konnte nicht gefunden werden." })
 
     try {
       const [count, users] = await sequelize.models.users.update(
@@ -90,16 +99,22 @@ module.exports = (sequelize) => {
         },
         { where: { id: credentialsCode.userId }, individualHooks: true }
       )
-      if (count < 1) return res.sendStatus(400)
+      if (count < 1)
+        return res.status(400).send({
+          error:
+            "Es wurden keine Änderungen vorgenommen.",
+        })
       await sequelize.models.credentialsCodes.destroy({
         where: { code: req.params.code },
       })
-      await transporter.sendMail({
-        from: '"ASB" <asb@lie-bold.de>',
-        to: users[0].email,
-        subject: "Account-Daten erfolgreich geändert",
-      })
-      return res.sendStatus(200)
+      // await transporter.sendMail({
+      //   from: '"ASB" <asb@lie-bold.de>',
+      //   to: users[0].email,
+      //   subject: "Account-Daten erfolgreich geändert",
+      // })
+      return res
+        .status(200)
+        .send({ message: "Account-Daten erfolgreich geändert" })
     } catch (error) {
       return res.status(400).send({ error: error.message })
     }

@@ -5,15 +5,23 @@ import Form from "react-bootstrap/Form"
 import InputGroup from "react-bootstrap/InputGroup"
 import Container from "react-bootstrap/Container"
 import Button from "react-bootstrap/Button"
+import { useAuth } from "../provider/authProvider"
 
 function Login() {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
 
+  const { token, setToken } = useAuth()
+
   const handleLogin = async () => {
     try {
-      const response = await axios.post(process.env.AUTH_URL+"login", {})
-      console.log(response)
+      const response = await axios.post("http://localhost:4000/login", {
+        email: email,
+        password: password,
+      })
+      // TODO: check if token is being returned
+      // TODO: create route that redirects users that are logged in
+      setToken(response.data.accessToken)
     } catch (error) {
       // TODO: ERROR
     }

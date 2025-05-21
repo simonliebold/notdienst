@@ -3,8 +3,22 @@
 // $body-bg: #fed700;
 // $secondary: #c80a14;
 
-#content {
+@import "~bootstrap/scss/bootstrap";
+
+.center {
     height: 100vh;
 }
 
-@import "~bootstrap/scss/bootstrap";
+.signupinput {
+  width: 45px;
+  height: 45px;
+  padding: 0;
+  font-size: 24px;
+  text-align: center;
+  margin-right: 8px;
+  text-transform: uppercase;
+  // color: ;
+  border: 1px solid #d6d6d6;
+  border-radius: 4px;
+  background-clip: padding-box;
+}
