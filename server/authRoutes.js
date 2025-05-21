@@ -107,7 +107,9 @@ module.exports = (sequelize) => {
       if (users[0].password === null || users[0].password === null)
         return res
           .status(400)
-          .send({ error: "Bitte lege eine E-Mail-Adresse und ein Passwort fest." })
+          .send({
+            error: "Bitte lege eine E-Mail-Adresse und ein Passwort fest.",
+          })
       await sequelize.models.credentialsCodes.destroy({
         where: { code: req.params.code },
       })
@@ -156,13 +158,20 @@ module.exports = (sequelize) => {
   // Login by email and password
   router.post("/login", async (req, res) => {
     if (req.body.email === undefined || req.body.password === undefined)
-      return res.sendStatus(401)
+      return res
+        .status(401)
+        .send({ error: "E-Mail-Adresse oder Passwort sind nicht korrekt." })
     let user = await sequelize.models.users.findOne({
       where: { email: req.body.email },
     })
-    if (!user) return res.sendStatus(401)
+    if (!user)
+      return res
+        .status(401)
+        .send({ error: "E-Mail-Adresse oder Passwort sind nicht korrekt." })
     if (!(await validPassword(user.password, req.body.password)))
-      return res.sendStatus(401)
+      return res
+        .status(401)
+        .send({ error: "E-Mail-Adresse oder Passwort sind nicht korrekt." })
     user = user.dataValues
     delete user.password
     const accessToken = generateAccessToken(user)

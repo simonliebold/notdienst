@@ -6,8 +6,7 @@ import AuthCode from "react-auth-code-input"
 import Button from "react-bootstrap/Button"
 import Form from "react-bootstrap/Form"
 import FloatingLabel from "react-bootstrap/FloatingLabel"
-import AlertBox from "../components/AlertBox"
-import { useAlert, useAlertUpdate } from "../contexts/AlertContext"
+import { useAlertUpdate } from "../contexts/AlertContext"
 
 function EditCredentials({ result, setLoggedIn, oldEmail }) {
   const navigate = useNavigate()
@@ -41,6 +40,7 @@ function EditCredentials({ result, setLoggedIn, oldEmail }) {
 
       setLoggedIn(false)
       addAlert(res.data.message, "success")
+      navigate("/login")
     } catch (error) {
       if (error.response.data.error) addAlert(error.response.data.error)
       else addAlert(error.message)
