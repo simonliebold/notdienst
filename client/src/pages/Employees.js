@@ -101,7 +101,7 @@ const EmployeeModal = ({ allEmployments, allJobs }) => {
     setShowTokenModal()
 
     const response = await axios
-      .get("http://localhost:3000/employees/" + employeeInitials)
+      .get(process.env.REACT_APP_URL+"employees/" + employeeInitials)
       .catch(handleError)
     if (!response?.data?.employee) return
 
@@ -120,7 +120,7 @@ const EmployeeModal = ({ allEmployments, allJobs }) => {
       e.preventDefault()
       setIsButtonLoading(true)
       const response = await axios
-        .put("http://localhost:3000/employees/" + employeeInitials, {
+        .put(process.env.REACT_APP_URL+"employees/" + employeeInitials, {
           name: name,
           initials: initials,
           employmentId: employmentId,
@@ -147,7 +147,7 @@ const EmployeeModal = ({ allEmployments, allJobs }) => {
   const createToken = useCallback(async () => {
     setIsTokenLoading(true)
     const response = await axios
-      .post("http://localhost:4000/credentials/generate/" + employee.id)
+      .post(process.env.REACT_APP_AUTH_URL+"credentials/generate/" + employee.id)
       .catch(handleError)
     if (!response?.data?.code && !response?.data?.expiresAt) return
     setToken({
@@ -160,7 +160,7 @@ const EmployeeModal = ({ allEmployments, allJobs }) => {
 
   const deleteEmployee = useCallback(async () => {
     const response = await axios
-      .delete("http://localhost:3000/employees/" + employee.id)
+      .delete(process.env.REACT_APP_URL+"employees/" + employee.id)
       .catch(handleError)
     if (!response?.data?.message) return
     handleSuccess(response.data.message)
@@ -499,14 +499,14 @@ function Employees() {
 
   const fetchEmployees = useCallback(async () => {
     const response = await axios
-      .get("http://localhost:3000/employees/")
+      .get(process.env.REACT_APP_URL+"employees/")
       .catch(handleError)
     if (response?.data?.employees) setEmployees(response.data.employees)
   }, [handleError])
 
   const fetchAllEmployments = useCallback(async () => {
     const response = await axios
-      .get("http://localhost:3000/employments/")
+      .get(process.env.REACT_APP_URL+"employments/")
       .catch(handleError)
     if (!response?.data?.employments) return
 
@@ -519,7 +519,7 @@ function Employees() {
 
   const fetchAllJobs = useCallback(async () => {
     const response = await axios
-      .get("http://localhost:3000/jobs/")
+      .get(process.env.REACT_APP_URL+"jobs/")
       .catch(handleError)
     if (!response?.data?.jobs) return
     setAllJobs(
@@ -531,7 +531,7 @@ function Employees() {
 
   const createNewEmployee = useCallback(async () => {
     const response = await axios
-      .post("http://localhost:3000/employees", {
+      .post(process.env.REACT_APP_URL+"employees", {
         name: newName,
         initials: newInitials,
       })

@@ -46,7 +46,7 @@ function Login() {
     setLoading(true)
     e.preventDefault()
     const response = await axios
-      .post("http://localhost:4000/login", {
+      .post(process.env.REACT_APP_AUTH_URL+"login", {
         email: email,
         password: password,
       })

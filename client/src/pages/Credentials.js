@@ -39,7 +39,10 @@ function EditCredentials({ result, setLoggedIn, oldEmail }) {
     if (password.length > 0) req.password = password
 
     const res = await axios
-      .post("http://localhost:4000/credentials/change/" + result, req)
+      .post(
+        process.env.REACT_APP_AUTH_URL + "credentials/change/" + result,
+        req
+      )
       .catch(handleError)
 
     // setLoggedIn(false)
@@ -166,7 +169,7 @@ function InputCode({ result, setResult, setLoggedIn, setOldEmail }) {
   const checkCode = async () => {
     setLoading(true)
     const code = await axios
-      .get("http://localhost:4000/credentials/check/" + result)
+      .get(process.env.REACT_APP_AUTH_URL+"credentials/check/" + result)
       .catch(handleError)
     setOldEmail(code.data.email)
     setLoggedIn(true)
