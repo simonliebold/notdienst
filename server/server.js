@@ -1,6 +1,3 @@
-const db = require("./database.js")
-const models = require("./models.js")(db)
-
 const mongoose = require("mongoose")
 
 const express = require("express")
@@ -41,9 +38,8 @@ const handleError = (err, req, res, next) => {
   return res.status(400).send({ error: err.message })
 }
 
-const routes = require("./routes.js")(models, db.sequelize)
+const routes = require("./routes.js")
 app.use("/", authenticateToken, routes, handleError)
- 
 
 const port = process.env.PORT || 3000
 app.listen(port, async () => {
@@ -51,14 +47,10 @@ app.listen(port, async () => {
   try {
     await mongoose.connect(process.env.MONGO_CONN)
     console.log("Connected to db")
-    
+
     await loadTestData()
     console.log("Test data loaded")
-
   } catch (error) {
     console.error("Unable to connect to the database:", error)
   }
-  // await db.sequelize.sync()
-  // await db.sequelize.sync({ force: true })
-  // require("./example.js")(models)
 })
