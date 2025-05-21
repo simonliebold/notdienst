@@ -186,12 +186,13 @@ function InputCode({ result, setResult, setLoggedIn, setOldEmail }) {
           onChange={handleOnChange}
           ref={AuthInputRef}
           isInvalid={true}
+          length={4}
         />
         <Button
           className="mt-4"
           size="lg"
           type="submit"
-          disabled={loading || result.length !== 6}
+          disabled={loading || result.length !== 4}
         >
           {loading && <>Lädt...</>}
           {!loading && <>Bestätigen</>}

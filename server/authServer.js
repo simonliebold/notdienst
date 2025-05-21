@@ -21,7 +21,7 @@ const CredentialsCode = sequelize.define(
   "credentialsCodes",
   {
     code: {
-      type: DataTypes.STRING(6),
+      type: DataTypes.STRING(4),
       allowNull: false,
       primaryKey: true,
     },

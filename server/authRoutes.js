@@ -44,7 +44,7 @@ module.exports = (sequelize) => {
       const expiresAt = now.setDate(now.getDate() + 1)
       const codeString = "ABCDEFGHIJKLMNPQRSTUVWXYZ123456789"
       let code = ""
-      for (let i = 0; i < 6; i++) {
+      for (let i = 0; i < 4; i++) {
         code += codeString.charAt(Math.floor(Math.random() * codeString.length))
       }
       try {
