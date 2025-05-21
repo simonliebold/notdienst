@@ -4,6 +4,7 @@ const RefreshToken = require("./models/RefreshToken")
 
 const router = require("express").Router()
 const jwt = require("jsonwebtoken")
+const CredentialsToken = require("./models/CredentialsToken")
 
 function generateAccessToken(user) {
   const expirationDate = Math.floor(Date.now() / 1000) + 180000
@@ -88,49 +89,49 @@ router.get("/credentials/check/:code", async (req, res) => {
 
 // Change email / password
 router.post("/credentials/change/:code", async (req, res) => {
-  const credentialsCode = await sequelize.models.credentialsCodes.findByPk(
-    req.params.code
-  )
+  const credentialsCode = await CredentialsToken.findOne({
+    code: req.body.code,
+  })
+  // const credentialsCode = await sequelize.models.credentialsCodes.findByPk(
+  //   req.params.code
+  // )
   if (credentialsCode === null || credentialsCode.expiresAt < Date.now())
     return res
       .status(404)
       .send({ error: "Der eingegebene Code konnte nicht gefunden werden." })
 
-  try {
-    const [count, users] = await sequelize.models.users.update(
-      {
-        email: req.body.email,
-        password: req.body.password,
-      },
-      { where: { id: credentialsCode.userId }, individualHooks: true }
-    )
-    if (count < 1)
-      return res.status(400).send({
-        error: "Es wurden keine Änderungen vorgenommen.",
-      })
-
-    if (users[0].password === null || users[0].password === null)
-      return res.status(400).send({
-        error: "Bitte lege eine E-Mail-Adresse und ein Passwort fest.",
-      })
-    await sequelize.models.credentialsCodes.destroy({
-      where: { code: req.params.code },
+  if (req.body.password === null || req.body.password === null)
+    return res.status(400).send({
+      error: "Bitte lege eine E-Mail-Adresse und ein Passwort fest.",
     })
-    // await transporter.sendMail({
-    //   from: '"ASB" <asb@lie-bold.de>',
-    //   to: users[0].email,
-    //   subject: "Account-Daten erfolgreich geändert",
+
+  try {
+    await User.updateOne(
+      { _id: credentialsCode.userId },
+      { email: req.body.email, password: req.body.password }
+    )
+    // const [count, users] = await sequelize.models.users.update(
+    //   {
+    //     email: req.body.email,
+    //     password: req.body.password,
+    //   },
+    //   { where: { id: credentialsCode.userId }, individualHooks: true }
+    // )
+    // if (count < 1)
+    //   return res.status(400).send({
+    //     error: "Es wurden keine Änderungen vorgenommen.",
+    //   })
+
+    await CredentialsToken.deleteOne({ code: req.params.code })
+    // await sequelize.models.credentialsCodes.destroy({
+    //   where: { code: req.params.code },
     // })
+
     return res
       .status(200)
       .send({ message: "Account-Daten erfolgreich festgelegt" })
   } catch (error) {
-    if (error.name === "SequelizeUniqueConstraintError")
-      return res.status(400).send({
-        error:
-          "E-Mail-Adresse wird bereits von einem anderen Account verwendet.",
-      })
-    return res.status(400).send({ error: error.message })
+    next(error)
   }
 })
 
