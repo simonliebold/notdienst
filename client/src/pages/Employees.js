@@ -19,6 +19,8 @@ import Modal from "react-bootstrap/Modal"
 import Form from "react-bootstrap/Form"
 import ListGroup from "react-bootstrap/ListGroup"
 import Alert from "react-bootstrap/Alert"
+import ButtonToolbar from "react-bootstrap/ButtonToolbar"
+import ButtonGroup from "react-bootstrap/ButtonGroup"
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import {
@@ -228,6 +230,7 @@ const EmployeeModal = () => {
   }, [name, initials, employmentId, jobs])
 
   const [showDeleteModal, setShowDeleteModal] = useState(false)
+
   const DeleteModal = () => {
     const [confirm, setConfirm] = useState("")
     return (
@@ -255,7 +258,7 @@ const EmployeeModal = () => {
           <strong>{employee.initials}</strong> in das Eingabefeld ein:
           <Form.Control
             className="mt-3"
-            placeholder={employee.initials}
+            varian="danger"
             value={confirm}
             onChange={(e) => setConfirm(e.target.value.toUpperCase())}
           ></Form.Control>
@@ -450,24 +453,6 @@ const EmployeeModal = () => {
                 }
               />
             )}
-            {isLoading && (
-              <Placeholder as="p" animation="glow">
-                <Placeholder.Button className="mt-3">
-                  Lädt...
-                </Placeholder.Button>
-              </Placeholder>
-            )}
-            {!isLoading && (
-              <Button
-                className="mt-3"
-                type="submit"
-                disabled={isButtonDisabled || isButtonLoading}
-              >
-                <FontAwesomeIcon className="me-2" icon={faSave} />
-                {isButtonLoading && "Lädt..."}
-                {!isButtonLoading && "Speichern"}
-              </Button>
-            )}
             <hr />
             <h2 className="fs-6 mt-3">Arbeitsplanung</h2>
             {(isLoading || works.length === 0) && (
@@ -483,15 +468,41 @@ const EmployeeModal = () => {
             </Row>
           </Form>
         </Modal.Body>
-        <Modal.Footer className="justify-content-end">
-          <Button variant="primary" onClick={createToken}>
-            <FontAwesomeIcon className="me-2" icon={faKey} />
-            {isTokenLoading && <>Token lädt...</>}
-            {!isTokenLoading && <>Token generieren</>}
+        <Modal.Footer className="justify-content-between">
+          {/* <ButtonToolbar > */}
+          <Button
+            variant="link"
+            className="text-secondary"
+            onClick={(e) => setShowDeleteModal(true)}
+          >
+            <FontAwesomeIcon icon={faTrash} />
           </Button>
-          <Button variant="secondary" onClick={(e) => setShowDeleteModal(true)}>
-            <FontAwesomeIcon className="me-1" icon={faTrash} /> Löschen
-          </Button>
+          <ButtonToolbar>
+            <Button
+              variant="primary"
+              onClick={createToken}
+              disabled={isTokenLoading}
+              className="me-2"
+            >
+              <FontAwesomeIcon className="me-1" icon={faKey} /> Token
+            </Button>
+            {isLoading && (
+              <Placeholder as="p" animation="glow">
+                <Placeholder.Button>Lädt...</Placeholder.Button>
+              </Placeholder>
+            )}
+            {!isLoading && (
+              <Button
+                type="submit"
+                disabled={isButtonDisabled || isButtonLoading}
+              >
+                <FontAwesomeIcon className="me-2" icon={faSave} />
+                {isButtonLoading && "Lädt..."}
+                {!isButtonLoading && "Speichern"}
+              </Button>
+            )}
+          </ButtonToolbar>
+          {/* </ButtonToolbar> */}
         </Modal.Footer>
       </Modal>
     </>
