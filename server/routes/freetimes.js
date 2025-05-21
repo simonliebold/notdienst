@@ -4,8 +4,10 @@ module.exports = (models) => {
 
   // Get all
   router.get("/", roles.requireAdmin, async (req, res) => {
-    const freetimes = await models.Freetime.findAll()
-    return res.send({ freetimes: freetimes })
+    const freetimes = await models.Freetime.findAll(req.params.id, {
+      include: [models.Schedule, models.Employee],
+    })
+    return res.send(freetimes)
   })
 
   // Get one

@@ -70,6 +70,11 @@ function Navigation() {
       icon: icons.employment,
       path: "/employments",
     },
+    {
+      // name: "Dienstplanwünsche",
+      icon: icons.freetime,
+      path: "/freetimes",
+    },
   ]
 
   const logout = { name: "Logout", path: "/logout", icon: faRightFromBracket }

@@ -4,19 +4,19 @@ import { EmployeeDetailedCard, EmploymentDetailedCard, WorkDetailedCard } from "
 import TitleCard from "../../components/TitleCard"
 import CardList from "../../components/CardList"
 
-function Employment() {
-  const employments = useResource("employments")
+function Freetimes() {
+  const freetimes = useResource("freetimes")
 
   return (
     <>
       <CardList className="mt-2">
-        {employments?.map((employment) => {
+        {freetimes?.map((freetime) => {
             // return <EmploymentDetailedCard key={"employment-" + employment.id} employment={employment} />
           return (
             <TitleCard
-              key={"employment-titlecard-" + employment.id}
-              resource={employment}
-              resourceName="work"
+              key={"freetime-titlecard-" + freetime.id}
+              resource={freetime}
+              resourceName="freetime"
             />
           )
         })}
@@ -25,4 +25,4 @@ function Employment() {
   )
 }
 
-export default Employment
+export default Freetimes
