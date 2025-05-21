@@ -12,13 +12,13 @@ export const useAlertUpdate = () => {
 }
 
 export const AlertProvider = ({ children }) => {
-  const [alerts, setAlerts] = useState(null)
+  const [alert, setAlert] = useState(undefined)
 
   const addAlert = (message, variant) => {
-    setAlerts({ message: message, variant: variant })
+    setAlert({ message: message, variant: variant })
   }
   return (
-    <AlertContext.Provider value={alerts}>
+    <AlertContext.Provider value={alert}>
       <AlertUpdateContext.Provider value={addAlert}>
         {children}
       </AlertUpdateContext.Provider>

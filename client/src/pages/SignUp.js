@@ -38,7 +38,7 @@ function EditCredentials({ result, setLoggedIn, oldEmail }) {
         "http://localhost:4000/credentials/change/" + result,
         req
       )
-      
+
       setLoggedIn(false)
       addAlert(res.data.message, "success")
     } catch (error) {
@@ -204,31 +204,27 @@ function SignUp() {
   const [result, setResult] = useState("")
   const [loggedIn, setLoggedIn] = useState(false)
   const [oldEmail, setOldEmail] = useState("")
-  const alert = useAlert()
 
   return (
-    <div className="position-relative">
-      <AlertBox alert={alert} />
-      <div
-        className="position-absolute d-flex flex-column row-cols-lg-2 justify-content-center w-100"
-        style={{ height: "100vh" }}
-      >
-        {loggedIn && (
-          <EditCredentials
-            result={result}
-            oldEmail={oldEmail}
-            setLoggedIn={setLoggedIn}
-          />
-        )}
-        {!loggedIn && (
-          <InputCode
-            result={result}
-            setResult={setResult}
-            setLoggedIn={setLoggedIn}
-            setOldEmail={setOldEmail}
-          />
-        )}
-      </div>
+    <div
+      className="position-absolute d-flex flex-column row-cols-lg-2 justify-content-center w-100"
+      style={{ height: "100vh" }}
+    >
+      {loggedIn && (
+        <EditCredentials
+          result={result}
+          oldEmail={oldEmail}
+          setLoggedIn={setLoggedIn}
+        />
+      )}
+      {!loggedIn && (
+        <InputCode
+          result={result}
+          setResult={setResult}
+          setLoggedIn={setLoggedIn}
+          setOldEmail={setOldEmail}
+        />
+      )}
     </div>
   )
 }
