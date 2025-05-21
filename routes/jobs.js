@@ -43,6 +43,14 @@ module.exports = (models) => {
     }
   })
 
+  // Get all employees
+  router.get("/:id/employee", async (req, res) => {
+    const response = await models.JobEmployee.findAll({
+      where: { jobId: req.params.id },
+    })
+    res.send({ response: response })
+  })
+
   // Add Employee to Job
   router.post("/:id/employee", async (req, res) => {
     try {
@@ -68,6 +76,14 @@ module.exports = (models) => {
     } catch (error) {
       res.status(400).send({ error: error })
     }
+  })
+
+  // Get all shifts
+  router.get("/:id/shift", async (req, res) => {
+    const response = await models.JobShift.findAll({
+      where: { jobId: req.params.id },
+    })
+    res.send({ response: response })
   })
 
   // Add Shift to Job
@@ -111,8 +127,6 @@ module.exports = (models) => {
     }
   })
 
-  // TODO: get all employees
-  // TODO: get all shifts
   // TODO: enable adding / removing multiple employees / shifts
 
   return router
