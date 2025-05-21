@@ -23,9 +23,11 @@ import Alert from "react-bootstrap/Alert"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import {
   faCalendarDays,
+  faDeleteLeft,
   faKey,
   faPlus,
   faSave,
+  faTrash,
   faUser,
 } from "@fortawesome/free-solid-svg-icons"
 
@@ -195,6 +197,19 @@ const EmployeeModal = () => {
     setIsTokenLoading(false)
   }
 
+  const deleteEmployee = async () => {
+    try {
+      const response = await axios.delete(
+        "http://localhost:3000/employees/" + employee.id
+      )
+      close()
+      if (response.data.message) addAlert(response.data.message, "danger")
+    } catch (error) {
+      if (error.response.data.error) addAlert(error.response.data.error)
+      else addAlert(error.message)
+    }
+  }
+
   useEffect(() => {
     if (!employeeInitials) return
     fetchEmployee()
@@ -243,6 +258,7 @@ const EmployeeModal = () => {
               {employee.initials}
             </Badge>{" "}
             {employee.name}
+            <Button as={FontAwesomeIcon} variant="danger" size="xs" className="ms-3" icon={faTrash} onClick={deleteEmployee} />
           </Modal.Title>
         )}
       </Modal.Header>
@@ -455,8 +471,7 @@ function Employees() {
         name: newName,
         initials: newInitials,
       })
-      if (response.data.message)
-        addAlert(response.data.message, "success")
+      if (response.data.message) addAlert(response.data.message, "success")
     } catch (error) {
       // if (error.response.data.error) addAlert(error.response.data.error)
       // else

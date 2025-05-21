@@ -106,8 +106,11 @@ module.exports = (models) => {
       const response = await models.Employee.destroy({
         where: { id: req.params.id },
       })
-      if (response === 0) return res.sendStatus(404)
-      return res.status(200).send({ message: "Deleted successfully" })
+      if (response === 0)
+        return res
+          .status(404)
+          .send({ error: "Mitarbeiter konnte nicht gefunden werden" })
+      return res.status(200).send({ message: "Mitarbeiter gelöscht" })
     } catch (error) {
       return res.status(400).send({ error: error.message })
     }
