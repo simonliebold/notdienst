@@ -356,6 +356,7 @@ module.exports = (models, sequelize) => {
   }
 
   // Order works by possible employee count
+  // TODO: order by possible hours count
   const orderWorks = (req, res, next) => {
     req.works.sort((a, b) => {
       if (a.employeeIds.length < b.employeeIds.length) return -1
@@ -400,7 +401,7 @@ module.exports = (models, sequelize) => {
       bestEmployee.workHours += req.works[0].duration
       req.works.shift()
     }
-    await models.WorkEmployee.bulkCreate(workEmployees)
+    req.works = await models.WorkEmployee.bulkCreate(workEmployees)
     next()
   }
 
