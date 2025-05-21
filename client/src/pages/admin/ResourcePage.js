@@ -233,7 +233,7 @@ export const SchedulePage = () => {
         <MultiBadge items={schedule?.employees} resourceName="employee" />
         <AsyncAllocateWorksButton schedule={schedule} className="me-3" />
       </ResourcePage>
-      <ScheduleCalendar schedule={schedule} />
+      <ScheduleCalendar schedule={schedule} className="my-3" />
     </>
   )
 }

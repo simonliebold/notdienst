@@ -41,44 +41,46 @@ function Calendar({ works, view, ...props }) {
 
   if (!works) return <MultiBadge resourceName="work" />
   return (
-    <FullCalendar
-      //   {...props}
-      plugins={[timeGridPlugin, listPlugin]}
-      initialView={initialView()}
-      headerToolbar={{
-        right: "prev,next",
-        // left: "timeGridWeek,timeGridDay,listWeek",
-      }}
-      views={{
-        three: {
-          type: "timeGrid",
-          duration: { days: 3 },
-        },
-      }}
-      // buttonText={{
-      //   today: "Heute",
-      //   month: "Monat",
-      //   week: "Woche",
-      //   day: "Tag",
-      //   list: "Liste",
-      // }}
-      height={"auto"}
-      allDaySlot={false}
-      eventClick={(e) => navigate("./../../works/" + e.event.id)}
-      events={works.map((work) => {
-        return {
-          id: work.id,
-          start: work.start,
-          end: work.end,
-          title: work.short,
-          // color: "#fff",
-          work: work,
-          // abcd: "rcftvgzh"
-        }
-      })}
-      locale="de"
-      eventContent={event}
-    />
+    <div {...props}>
+      <FullCalendar
+        //   {...props}
+        plugins={[timeGridPlugin, listPlugin]}
+        initialView={initialView()}
+        headerToolbar={{
+          right: "prev,next",
+          // left: "timeGridWeek,timeGridDay,listWeek",
+        }}
+        views={{
+          three: {
+            type: "timeGrid",
+            duration: { days: 3 },
+          },
+        }}
+        // buttonText={{
+        //   today: "Heute",
+        //   month: "Monat",
+        //   week: "Woche",
+        //   day: "Tag",
+        //   list: "Liste",
+        // }}
+        height={"auto"}
+        allDaySlot={false}
+        eventClick={(e) => navigate("./../../works/" + e.event.id)}
+        events={works.map((work) => {
+          return {
+            id: work.id,
+            start: work.start,
+            end: work.end,
+            title: work.short,
+            // color: "#fff",
+            work: work,
+            // abcd: "rcftvgzh"
+          }
+        })}
+        locale="de"
+        eventContent={event}
+      />
+    </div>
   )
 }
 
@@ -90,11 +92,7 @@ export const ScheduleCalendar = ({
 }) => {
   if (!schedule) return
   if (!schedule.works || schedule.works.length === 0) return
-  return (
-    <div className="mt-4">
-      <Calendar works={schedule?.works} view="timeGridWeek" {...props} />
-    </div>
-  )
+  return <Calendar works={schedule?.works} view="timeGridWeek" {...props} />
 }
 
 export default Calendar
