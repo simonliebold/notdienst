@@ -1,21 +1,16 @@
 import React, { useState, useRef, useEffect } from "react"
 import axios from "axios"
+import { useNavigate } from "react-router-dom"
 
 import AuthCode from "react-auth-code-input"
 import Button from "react-bootstrap/Button"
-import Container from "react-bootstrap/Container"
-import Alert from "react-bootstrap/Alert"
 import Form from "react-bootstrap/Form"
-import Row from "react-bootstrap/Row"
 import FloatingLabel from "react-bootstrap/FloatingLabel"
+import AlertBox from "../components/AlertBox"
+import { useAlert, useAlertUpdate } from "../contexts/AlertContext"
 
-function EditCredentials({
-  result,
-  setLoggedIn,
-  oldEmail,
-  setError,
-  setSuccess,
-}) {
+function EditCredentials({ result, setLoggedIn, oldEmail }) {
+  const navigate = useNavigate()
   const [email, setEmail] = useState(oldEmail)
   const [password, setPassword] = useState("")
   const [passwordRepeat, setPasswordRepeat] = useState("")
@@ -28,14 +23,12 @@ function EditCredentials({
   const [isPassRepeatInvalid, setIsPassRepeatInvalid] = useState(false)
   const [isEmailInvalid, setIsEmailInvalid] = useState(false)
 
+  const addAlert = useAlertUpdate()
+
   const handleOnSubmit = async (e) => {
     e.preventDefault()
     setLoading(true)
-
     try {
-      if (password !== passwordRepeat)
-        return setError("Die eingegebenen Passwörter stimmen nicht überein.")
-
       const req = {}
 
       if (email.length > 0) req.email = email
@@ -45,20 +38,20 @@ function EditCredentials({
         "http://localhost:4000/credentials/change/" + result,
         req
       )
-      if (res.status === 200) {
-        setLoggedIn(false)
-        // TODO: add redirect
-      }
+      
+      setLoggedIn(false)
+      addAlert(res.data.message, "success")
     } catch (error) {
-      setError(error.response.data.error)
-      if (error.response.status === 404) setLoggedIn(false)
+      if (error.response.data.error) addAlert(error.response.data.error)
+      else addAlert(error.message)
+      if (error.response.status === 404) {
+        setLoggedIn(false)
+      }
     }
     setLoading(false)
   }
 
   useEffect(() => {
-    setError("")
-
     if (
       password.length > 0 &&
       !password.match(/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/)
@@ -81,7 +74,7 @@ function EditCredentials({
   }, [password, passwordRepeat, email])
 
   return (
-    <>
+    <div className="">
       <h1 className="mb-2 fw-bold">Account-Daten ändern</h1>
       <p className="text-muted mb-4">
         Gib bitte die Daten ein, die geändert werden sollen.
@@ -149,20 +142,17 @@ function EditCredentials({
           {!loading && <>Daten ändern</>}
         </Button>
       </Form>
-    </>
+    </div>
   )
 }
 
-function InputCode({ result, setResult, setLoggedIn, setOldEmail, setError }) {
+function InputCode({ result, setResult, setLoggedIn, setOldEmail }) {
   const handleOnChange = (res) => setResult(res)
 
   const [loading, setLoading] = useState(false)
 
   const AuthInputRef = useRef(null)
-
-  useEffect(() => {
-    setError("")
-  }, [result])
+  const addAlert = useAlertUpdate()
 
   const handleOnSubmit = async (e) => {
     setLoading(true)
@@ -175,7 +165,9 @@ function InputCode({ result, setResult, setLoggedIn, setOldEmail, setError }) {
       setLoggedIn(true)
     } catch (error) {
       if (error.response.status === 404) {
-        setError("Der eingegebene Code konnte nicht gefunden werden")
+        addAlert(error.response.data.error)
+      } else {
+        addAlert(error.message)
       }
     }
     setLoading(false)
@@ -183,7 +175,6 @@ function InputCode({ result, setResult, setLoggedIn, setOldEmail, setError }) {
 
   return (
     <>
-    {/* TODO: change text body color dynamically */}
       <h1 className="mb-2 fw-bold">Code eingeben</h1>
       <p className="text-muted mb-4">
         Um die Account-Daten zu ändern, gib bitte den sechsstelligen Code ein.
@@ -213,44 +204,32 @@ function SignUp() {
   const [result, setResult] = useState("")
   const [loggedIn, setLoggedIn] = useState(false)
   const [oldEmail, setOldEmail] = useState("")
-  const [error, setError] = useState("")
-  const [success, setSuccess] = useState("")
+  const alert = useAlert()
 
   return (
-    <Container>
-      <Row className="row-cols-1 row-cols-lg-2">
-        <div className="center d-flex flex-column justify-content-center">
-          {loggedIn && (
-            <EditCredentials
-              result={result}
-              oldEmail={oldEmail}
-              setLoggedIn={setLoggedIn}
-              setError={setError}
-              setSuccess={setSuccess}
-            />
-          )}
-          {!loggedIn && (
-            <InputCode
-              result={result}
-              setResult={setResult}
-              setLoggedIn={setLoggedIn}
-              setOldEmail={setOldEmail}
-              setError={setError}
-            />
-          )}
-          {error.length > 0 && (
-            <Alert className="mt-4" variant="danger">
-              {error}
-            </Alert>
-          )}
-          {success.length > 0 && (
-            <Alert className="mt-4" variant="success">
-              {success}
-            </Alert>
-          )}
-        </div>
-      </Row>
-    </Container>
+    <div className="position-relative">
+      <AlertBox alert={alert} />
+      <div
+        className="position-absolute d-flex flex-column row-cols-lg-2 justify-content-center w-100"
+        style={{ height: "100vh" }}
+      >
+        {loggedIn && (
+          <EditCredentials
+            result={result}
+            oldEmail={oldEmail}
+            setLoggedIn={setLoggedIn}
+          />
+        )}
+        {!loggedIn && (
+          <InputCode
+            result={result}
+            setResult={setResult}
+            setLoggedIn={setLoggedIn}
+            setOldEmail={setOldEmail}
+          />
+        )}
+      </div>
+    </div>
   )
 }
 

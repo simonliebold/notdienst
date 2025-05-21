@@ -5,13 +5,14 @@ import Form from "react-bootstrap/Form"
 import InputGroup from "react-bootstrap/InputGroup"
 import Container from "react-bootstrap/Container"
 import Button from "react-bootstrap/Button"
-import { useAuth } from "../provider/authProvider"
+import { useAuth, useAuthUpdate } from "../contexts/AuthContext"
 
 function Login() {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
 
-  const { token, setToken } = useAuth()
+  const token = useAuth()
+  const setToken = useAuthUpdate()
 
   const handleLogin = async () => {
     try {
