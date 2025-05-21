@@ -101,9 +101,13 @@ module.exports = (sequelize) => {
       )
       if (count < 1)
         return res.status(400).send({
-          error:
-            "Es wurden keine Änderungen vorgenommen.",
+          error: "Es wurden keine Änderungen vorgenommen.",
         })
+
+      if (users[0].password === null || users[0].password === null)
+        return res
+          .status(400)
+          .send({ error: "Bitte lege eine E-Mail-Adresse und ein Passwort fest." })
       await sequelize.models.credentialsCodes.destroy({
         where: { code: req.params.code },
       })

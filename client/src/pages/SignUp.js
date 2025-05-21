@@ -62,6 +62,7 @@ function EditCredentials({ result, setLoggedIn, oldEmail }) {
     else setIsPassRepeatInvalid(false)
 
     if (
+      email === null ||
       email.length === 0 ||
       !email
         .toLowerCase()
