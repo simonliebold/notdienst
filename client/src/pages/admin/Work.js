@@ -24,7 +24,7 @@ function Work() {
       />
       <hr />
       <span>{titles.mission}:</span>
-      <MultiTitleCard resources={work?.missions} resourceName="work" />
+      <MultiTitleCard resources={work?.missions} resourceName="mission" />
     </Resource>
   )
 }

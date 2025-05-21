@@ -57,14 +57,14 @@ export const ConfirmDeleteButton = ({ resource, resourceName, ...props }) => {
   return (
     <CardButton variant="danger" icon={faTrash} {...props}>
       {/* {title[resourceName] + " " + resource?.title + " löschen"} */}
-      Löschen bestätigen
+      Endgültig löschen
     </CardButton>
   )
 }
 
 export const CancelButton = ({ ...props }) => {
   return (
-    <CardButton variant="secondary" {...props}>
+    <CardButton variant="link text-decoration-none text-secondary" {...props}>
       {/* {title[resourceName] + " " + resource?.title + " löschen"} */}
       Abbrechen
     </CardButton>

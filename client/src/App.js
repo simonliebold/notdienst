@@ -193,7 +193,7 @@ function App() {
               <Route path="employments/:id/" element={employment} />
 
               <Route path="missions" element={missions} />
-              <Route path="mission/:id/" element={mission} />
+              <Route path="missions/:id/" element={mission} />
             </Routes>
           </div>
         </Container>
