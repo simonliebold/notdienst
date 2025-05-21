@@ -25,7 +25,8 @@ function authenticateToken(req, res, next) {
 }
 
 const routes = require("./routes.js")(models, db.sequelize)
-app.use("/", authenticateToken, routes)
+// app.use("/", authenticateToken, routes)
+app.use("/", routes)
 
 const port = process.env.PORT || 3000
 app.listen(port, async () => {

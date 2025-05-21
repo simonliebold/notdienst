@@ -226,9 +226,9 @@ module.exports = async (models) => {
     ["Nicole Huber", 2],
     ["Martin Wolf", 2],
     ["Monika Herrmann", 2],
-    ["Richard Krüger", 2],
-    ["Doris Landwehr", 2],
-    ["Peter Kurz", 2],
+    ["Richard Krüger", 1],
+    ["Doris Landwehr", 1],
+    ["Peter Kurz", 1],
   ]
   const generateEmployees = () => {
     let employees = []
@@ -258,29 +258,20 @@ module.exports = async (models) => {
 
   await models.Employment.create({
     title: "Minijob",
-    minHours: 30,
     maxHours: 40,
   })
   await models.Employment.create({
     title: "Teilzeit",
     minHours: 80,
-    maxHours: 100,
   })
   await models.Employment.create({
     title: "Vollzeit",
     minHours: 160,
-    maxHours: 170,
+    maxHours: 180
   })
   const employees = await generateEmployees()
   for (const employee in employees) {
     await models.Employee.create(employees[employee])
-  }
-
-  for (let i = 1; i <= names.length; i++) {
-    await models.JobEmployee.create({
-      jobId: 1,
-      employeeId: i,
-    })
   }
 
   // Math.floor(Math.random() * 3) + 1
@@ -296,26 +287,30 @@ module.exports = async (models) => {
   await models.Shift.create({ title: "C1 spät" })
   await models.Shift.create({ title: "C2 spät" })
 
-  for (let i = 1; i <= 10; i++) {
-    await models.JobShift.create({
-      jobId: 1,
-      shiftId: i,
-    })
-  }
-
   for (let i = 0; i < events.length; i++) {
     await models.Event.create(events[i])
   }
 
   await models.Schedule.create({
     title: "November ÄNoD",
-    start: "2023-11-01",
-    end: "2023-11-30",
+    start: "2023-10-01",
+    end: "2023-10-31",
     deadline: "2023-10-29",
   })
 
+  for (let i = 1; i <= names.length; i++) {
+    await models.JobEmployee.create({
+      jobId: 1,
+      employeeId: i,
+    })
+  }
+
   for (let i = 1; i <= 10; i++) {
     await models.ScheduleShift.create({ scheduleId: 1, shiftId: i })
+    await models.JobShift.create({
+      jobId: 1,
+      shiftId: i,
+    })
   }
 
   for (let i = 3; i <= 5; i++) {
@@ -330,6 +325,12 @@ module.exports = async (models) => {
     await models.Freetime.create({
       start: "2023-10-01T06:00:00.000Z",
       end: "2023-10-01T17:00:00.000Z",
+      scheduleId: 1,
+      employeeId: i,
+    })
+  }
+  for (let i = 1; i <= names.length; i++) {
+    await models.ScheduleEmployee.create({
       scheduleId: 1,
       employeeId: i,
     })

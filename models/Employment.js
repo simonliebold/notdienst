@@ -17,11 +17,11 @@ module.exports = (sequelize) => {
       },
       minHours: {
         type: Sequelize.INTEGER,
-        allowNull: false,
+        allowNull: true,
       },
       maxHours: {
         type: Sequelize.INTEGER,
-        allowNull: false,
+        allowNull: true,
       },
     },
     { timestamps: false }

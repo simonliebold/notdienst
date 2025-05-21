@@ -1,4 +1,6 @@
+// TODO: add return to res.status
 module.exports = (models, sequelize) => {
+  const { Op } = require("sequelize")
   const router = require("express").Router()
 
   // Get all
@@ -15,6 +17,8 @@ module.exports = (models, sequelize) => {
   })
 
   // Create one
+  // TODO: add employees
+  // TODO: add shifts
   router.post("/", async (req, res) => {
     try {
       const response = await models.Schedule.create({ ...req.body })
@@ -65,7 +69,7 @@ module.exports = (models, sequelize) => {
     res.send({ response: response })
   })
 
-  // Add Employees to Job
+  // Add Employees to Schedule
   router.post("/:id/employee", async (req, res) => {
     try {
       const response = await models.ScheduleEmployee.bulkCreate(
@@ -100,19 +104,20 @@ module.exports = (models, sequelize) => {
         ? res.status(200).send({ message: "Deleted successfully" })
         : res.status(404).send({ message: "Not found" })
     } catch (error) {
-      res.status(400).send({ error: error })
+      return res.status(400).send({ error: error })
     }
   })
 
-  // Get all shifts
+  // Get all shifts from schedule
   router.get("/:id/shift", async (req, res) => {
     const response = await models.ScheduleShift.findAll({
       where: { scheduleId: req.params.id },
     })
-    res.send({ response: response })
+    if (response.length === 0) return res.sendStatus(404)
+    return res.send({ response: response })
   })
 
-  // Add Shifts to Job
+  // Add Shifts to Schedule
   router.post("/:id/shift", async (req, res) => {
     try {
       const response = await models.ScheduleShift.bulkCreate(
@@ -121,13 +126,14 @@ module.exports = (models, sequelize) => {
           shiftId: shiftId,
         }))
       )
-      res.send({ response: response })
+      if (response.length === 0) return res.sendStatus(404)
+      return res.send({ response: response })
     } catch (error) {
-      res.status(400).send({ error: error })
+      return res.status(400).send({ error: error })
     }
   })
 
-  // Delete Shifts from Job
+  // Delete Shifts from Schedule
   router.delete("/:id/shift", async (req, res) => {
     try {
       const shiftIds = req.body.shiftIds.map((val) => {
@@ -143,9 +149,9 @@ module.exports = (models, sequelize) => {
           ],
         },
       })
-      response > 0
-        ? res.status(200).send({ message: "Deleted successfully" })
-        : res.status(404).send({ message: "Not found" })
+      if (response === undefined)
+        return res.status(404).send({ message: "Not found" })
+      return res.status(200).send({ message: "Deleted successfully" })
     } catch (error) {
       res.status(400).send({ error: error })
     }
@@ -153,67 +159,136 @@ module.exports = (models, sequelize) => {
 
   const getSchedule = async (req, res, next) => {
     const schedule = await models.Schedule.findByPk(req.params.id)
-    if (schedule === null) res.status(404).send({ message: "Not found" })
+    if (schedule === null) return res.sendStatus(404)
     req.schedule = schedule
 
     next()
   }
 
   const getEvents = async (req, res, next) => {
-    const [results, metadata] = await sequelize.query(
-      `SELECT shifts.id "shiftId", events.id "eventId", events.title "eventTitle", events.requiredEmployees "eventRequiredEmployees", events.timeStart "eventTimeStart", events.timeEnd "eventTimeEnd", events.repeatWeekday "eventRepeatWeekday", employees.id "employeeId", employees.initials "employeeInitials", employees.name "employeeName", employments.minHours "employeeMinHours", employments.maxHours "employeeMaxHours" FROM schedules, schedules_shifts, shifts, events, jobs_shifts, jobs, jobs_employees, employees, employments WHERE schedules.id = schedules_shifts.scheduleId AND schedules_shifts.shiftId = shifts.id AND shifts.id = events.shiftId AND jobs_shifts.shiftId = shifts.id AND jobs_shifts.jobId = jobs.id AND jobs_employees.jobId = jobs.id AND jobs_employees.employeeId = employees.id AND employees.id NOT IN (SELECT employeeId FROM schedules_employees WHERE scheduleId = schedules.id) AND employees.employmentId = employments.id;`
-    )
-
-    const events = {}
-    results.forEach((result) => {
-      const {
-        shiftId,
-        eventId,
-        employeeId,
-        eventTitle,
-        eventRequiredEmployees,
-        eventTimeStart,
-        eventTimeEnd,
-        eventRepeatWeekday,
-      } = result
-      if (events[eventId] === undefined)
-        events[eventId] = {
-          title: eventTitle,
-          requiredEmployees: eventRequiredEmployees,
-          timeStart: eventTimeStart,
-          timeEnd: eventTimeEnd,
-          repeatWeekday: eventRepeatWeekday,
-          requiredEmployees: eventRequiredEmployees,
-          shiftId: shiftId,
-          employees: {},
-        }
-      events[eventId]["employees"][employeeId] = {
-        name: result.employeeName,
-        initials: result.employeeInitials,
-        minHours: result.employeeMinHours,
-        maxHours: result.employeeMaxHours,
-      }
+    const events = await models.Event.findAll({
+      include: {
+        model: models.Shift,
+        include: [
+          { model: models.Schedule, where: { id: req.params.id } },
+          { model: models.Job, include: models.Employee },
+        ],
+        required: true,
+      },
     })
-    req.events = events
+
+    if (events.length === 0)
+      return res.status(404).send({ error: "No events found" })
+
+    const eventsObj = {}
+    for (let event of events) {
+      event = event.dataValues
+      eventsObj[event.id] = event
+    }
+    req.events = eventsObj
     next()
   }
 
-  // Get employees
-  const getEmployees = async (req, res, next) => {
-    const employees = {}
-    for (const [eventId, event] of Object.entries(req.events)) {
-      for (const [employeeId, employee] of Object.entries(event["employees"])) {
-        employees[employeeId] = {
-          id: employeeId,
-          ...employee,
-          possibleHours: 0,
-          workHours: 0,
-          freetimes: [],
-        }
+  const createWorks = async (req, res, next) => {
+    const { count, rows } = await models.Work.findAndCountAll({
+      where: { scheduleId: req.schedule.id },
+    })
+    try {
+      if (count > 0) throw new Error("Delete works before creating new")
+    } catch (error) {
+      res.send({ error: error.message })
+      return
+    }
+    let works = []
+    const first = new Date(req.schedule.start)
+    const last = new Date(req.schedule.end)
+    for (const eventInd in req.events) {
+      const event = req.events[eventInd]
+      const eventId = req.events[eventInd].id
+      const timeStart = event.timeStart.split(":")
+      const timeEnd = event.timeEnd.split(":")
+      for (let i = new Date(first); i <= last; i.setDate(i.getDate() + 1)) {
+        if (i.getDay() !== event.repeatWeekday) continue
+        const start = new Date(i)
+        start.setHours(timeStart[0], timeStart[1], timeStart[2])
+
+        const end = new Date(i)
+        if (timeStart[0] > timeEnd[0]) end.setDate(end.getDate() + 1)
+        end.setHours(timeEnd[0], timeEnd[1], timeEnd[2])
+
+        const duration = (end.getTime() - start.getTime()) / 3600000
+
+        works.push({
+          start: start,
+          end: end,
+          duration: duration,
+          scheduleId: req.schedule.id,
+          eventId: eventId,
+        })
       }
     }
-    req.employees = employees
+    req.works = await models.Work.bulkCreate(works)
 
+    next()
+  }
+
+  // Create works
+  router.post(
+    "/:id/create",
+    getSchedule,
+    getEvents,
+    createWorks,
+    async (req, res) => {
+      res.send({
+        schedule: req.schedule,
+        works: req.works,
+      })
+    }
+  )
+
+  // Get employees
+  const getEmployees = async (req, res, next) => {
+    const employees = await models.Employee.findAll({
+      include: [
+        { model: models.Schedule, where: { id: req.params.id } },
+        models.Employment,
+      ],
+    })
+
+    const employeesObj = {}
+
+    for (const employeeInd in employees) {
+      const employee = employees[employeeInd].dataValues
+      employee.minHours = employee.employment.minHours
+      employee.maxHours = employee.employment.maxHours
+      delete employee.schedules
+      delete employee.employment
+      employeesObj[employee.id] = {
+        ...employee,
+        possibleHours: 0,
+        workHours: 0,
+        freetimes: [],
+      }
+    }
+
+    req.employees = employeesObj
+
+    if (req.events !== undefined) {
+      for (const eventInd in req.events) {
+        const event = req.events[eventInd]
+        const shift = event.shift.dataValues
+        event.employees = {}
+        for (const jobInd in shift.jobs) {
+          const job = shift.jobs[jobInd].dataValues
+          for (const employeeInd in job.employees) {
+            const employee = job.employees[employeeInd].dataValues
+            if (req.employees[employee.id] !== undefined)
+              event.employees[employee.id] = employee
+          }
+        }
+        req.events[eventInd] = event
+      }
+    }
     next()
   }
 
@@ -232,65 +307,36 @@ module.exports = (models, sequelize) => {
     next()
   }
 
-  // Get works
-  const getWorks = async (req, res, next) => {
-    const { count, rows } = await models.Work.findAndCountAll({
-      where: { scheduleId: req.schedule.id },
+  // Add employee ids to works
+  const checkAvailability = async (req, res, next) => {
+    const works = await models.Work.findAll({
+      where: { scheduleId: req.params.id },
     })
-    try {
-      if (count > 0) throw new Error("Delete works before creating new")
-    } catch (error) {
-      res.send({ error: error.message })
-      return
-    }
-    let works = []
+    if (works === undefined) return res.sendStatus(404)
+
     let workEmployees = []
-    const first = new Date(req.schedule.start)
-    const last = new Date(req.schedule.end)
-    for (const [eventId, event] of Object.entries(req.events)) {
-      const timeStart = event.timeStart.split(":")
-      const timeEnd = event.timeEnd.split(":")
-      for (let i = new Date(first); i <= last; i.setDate(i.getDate() + 1)) {
-        if (i.getDay() !== event.repeatWeekday) continue
-        const start = new Date(i)
-        start.setHours(timeStart[0], timeStart[1], timeStart[2])
-
-        const end = new Date(i)
-        if (timeStart[0] > timeEnd[0]) end.setDate(end.getDate() + 1)
-        end.setHours(timeEnd[0], timeEnd[1], timeEnd[2])
-
-        const duration = (end.getTime() - start.getTime()) / 3600000
-
-        // TODO: move isFree-check in own function
-        let possibleEmployeeIds = []
-        for (const [employeeId, employee] of Object.entries(event.employees)) {
-          const isFree = req.employees[employeeId].freetimes.every(
-            (freetime) =>
-              new Date(freetime.end).getTime() <= start.getTime() ||
-              new Date(freetime.start).getTime() >= end.getTime()
-          )
-          if (isFree) {
-            req.employees[employeeId].possibleHours += duration
-            possibleEmployeeIds.push(employeeId)
-            // console.log(start, employeeId, possibleHours)
-          }
+    for (const workInd in works) {
+      const work = works[workInd].dataValues
+      const event = req.events[work.eventId]
+      const start = new Date(work.start)
+      const end = new Date(work.end)
+      const duration = work.duration
+      work.employeeIds = []
+      for (const [employeeId, employee] of Object.entries(event.employees)) {
+        const isFree = req.employees[employeeId].freetimes.every(
+          (freetime) =>
+            new Date(freetime.end).getTime() <= start.getTime() ||
+            new Date(freetime.start).getTime() >= end.getTime()
+        )
+        if (isFree) {
+          req.employees[employeeId].possibleHours += duration
+          work.employeeIds.push(employeeId)
         }
-
-        workEmployees.push(possibleEmployeeIds)
-
-        works.push({
-          start: start,
-          end: end,
-          duration: duration,
-          scheduleId: req.schedule.id,
-          eventId: eventId,
-        })
       }
+      workEmployees.push(work)
     }
-    req.works = await models.Work.bulkCreate(works)
-    req.works = req.works.map((elem, ind) => {
-      return { ...elem.dataValues, employeeIds: workEmployees[ind] }
-    })
+
+    req.works = workEmployees
     next()
   }
 
@@ -304,64 +350,59 @@ module.exports = (models, sequelize) => {
     next()
   }
 
-  // TODO: check event requiredEmployees
   // Find employees for work
-  const matchWorkEmployees = async (req, res, next) => {
+  // TODO: check event requiredEmployees
+  const allocateWorks = async (req, res, next) => {
     let workEmployees = []
     while (req.works.length > 0) {
-      // for (let i = 0; i < 10; i++) console.log("###")
-      let firstIteration = true
       let bestEmployee
-      let bestEmployeeRatio
+      let bestEmployeeRemainingHours
 
       req.works[0].employeeIds.forEach((employeeId) => {
         const employee = req.employees[employeeId]
         employee.possibleHours -= req.works[0].duration
-        const employeeRatio = employee.minHours - employee.workHours
+        let employeeRemainingHours = employee.maxHours
+        if (employee.minHours !== null)
+          employeeRemainingHours = employee.minHours - employee.workHours
+
         const newWorkHours = employee.workHours + req.works[0].duration
 
-        // TODO: first fill minHours, then fill maxHours
-        if (
-          firstIteration ||
-          (employeeRatio > bestEmployeeRatio &&
-            newWorkHours < employee.maxHours)
-        ) {
+        const maxHoursCorrect =
+          employee.maxHours === null || newWorkHours <= employee.maxHours
+        const isBest =
+          bestEmployee === undefined ||
+          employeeRemainingHours >= bestEmployeeRemainingHours
+
+        if (maxHoursCorrect && isBest) {
           bestEmployee = employee
-          bestEmployeeRatio = employeeRatio
-          firstIteration = false
+          bestEmployeeRemainingHours = employeeRemainingHours
         }
       })
-      try {
-        workEmployees.push({
-          workId: req.works[0].id,
-          employeeId: bestEmployee.id,
-        })
-        bestEmployee.workHours += req.works[0].duration
-        req.works.shift()
-      } catch (error) {
-        res.status(400).send({ error: error.message })
-        return
-      }
+      workEmployees.push({
+        workId: req.works[0].id,
+        employeeId: bestEmployee.id,
+      })
+      bestEmployee.workHours += req.works[0].duration
+      req.works.shift()
     }
     await models.WorkEmployee.bulkCreate(workEmployees)
     next()
   }
 
+  // Allocate works
   router.post(
-    "/:id/plan",
+    "/:id/allocate",
     getSchedule,
     getEvents,
     getEmployees,
     getFreetimes,
-    getWorks,
+    checkAvailability,
     orderWorks,
-    matchWorkEmployees,
+    allocateWorks,
     async (req, res) => {
       res.send({
         schedule: req.schedule,
         employees: req.employees,
-        events: req.events,
-        events: req.events,
         works: req.works,
       })
     }
