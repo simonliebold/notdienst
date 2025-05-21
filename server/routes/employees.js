@@ -69,35 +69,51 @@ module.exports = (models) => {
   })
 
   // Update one
-  router.put("/:initials", roles.requireAdmin, async (req, res) => {
+  router.put("/:id", roles.requireAdmin, async (req, res) => {
     try {
-      const employee = await models.Employee.findOne({
-        where: { initials: req.params.initials },
-      })
+      const employee = await models.Employee.findByPk(req.params.id)
 
       if (!employee)
-        return res
-          .status(400)
-          .send({ error: "Es wurden keine Änderungen vorgenommen" })
+        return res.status(400).send({ error: "Mitarbeiter nicht gefunden" })
 
       await models.Employee.update(
         {
-          initials: req.body.initials.toUpperCase(),
-          name: req.body.name,
+          short: req.body.short,
+          title: req.body.title,
           employmentId: req.body.employmentId,
         },
         {
-          where: { initials: req.params.initials },
+          where: { id: employee.id },
         }
       )
 
-      if (req.body.jobs) {
+      if (req.body.jobIds) {
         await models.JobEmployee.destroy({
           where: { employeeId: employee.id },
         })
         await models.JobEmployee.bulkCreate(
-          req.body.jobs.map((jobId) => {
+          req.body.jobIds.map((jobId) => {
             return { jobId: jobId, employeeId: employee.id }
+          })
+        )
+      }
+      if (req.body.scheduleIds) {
+        await models.ScheduleEmployee.destroy({
+          where: { employeeId: employee.id },
+        })
+        await models.ScheduleEmployee.bulkCreate(
+          req.body.scheduleIds.map((scheduleId) => {
+            return { scheduleId: scheduleId, employeeId: employee.id }
+          })
+        )
+      }
+      if (req.body.workIds) {
+        await models.WorkEmployee.destroy({
+          where: { employeeId: employee.id },
+        })
+        await models.WorkEmployee.bulkCreate(
+          req.body.workIds.map((workId) => {
+            return { workId: workId, employeeId: employee.id }
           })
         )
       }

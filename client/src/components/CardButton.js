@@ -65,7 +65,7 @@ export const CardDeleteButton = ({ resource, resourceName, className }) => {
   )
 }
 
-export const CardSaveButton = ({ resource, resourceName, onClick, className }) => {
+export const CardSaveButton = ({ resource, resourceName, onClick, link,  className }) => {
   return (
     <CardButton
       variant="primary"
@@ -73,6 +73,8 @@ export const CardSaveButton = ({ resource, resourceName, onClick, className }) =
       resource={resource}
       resourceName={resourceName}
       onClick={onClick}
+      link=""
+      as={Link}
     >
       Speichern
     </CardButton>

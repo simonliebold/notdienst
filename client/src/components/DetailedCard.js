@@ -1,6 +1,6 @@
 import React, { useState } from "react"
 
-import { useNavigate, useParams } from "react-router-dom"
+import { Link, useNavigate, useParams } from "react-router-dom"
 
 import Card from "react-bootstrap/Card"
 import Placeholder from "react-bootstrap/Placeholder"
@@ -12,6 +12,7 @@ import MultiBadge from "./MultiBadge"
 import { CardDeleteButton, CardEditButton, CardSaveButton } from "./CardButton"
 import { labels, localeString } from "../variables"
 import EditableText from "./EditableText"
+import { useResourceUpdate } from "../hooks/useResource"
 
 const DetailedCard = ({
   resource,
@@ -23,6 +24,7 @@ const DetailedCard = ({
   const { title } = resource || {}
   const { action } = useParams()
   const navigate = useNavigate()
+  const update = useResourceUpdate(resourceName + "s/" + resource?.id)
 
   if (!resource)
     return (
@@ -76,8 +78,11 @@ const DetailedCard = ({
               resourceName={resourceName}
               className="me-auto"
             />
-            {/* TODO: api call to update resource using data attribute */}
-            <CardSaveButton resource={resource} resourceName={resourceName} onClick={e => alert("here")} />
+            <CardSaveButton
+              resource={resource}
+              resourceName={resourceName}
+              onClick={(e) => update(data)}
+            />
           </>
         )}
         {action !== "edit" && (
