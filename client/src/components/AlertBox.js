@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react"
 import { useAlert } from "../contexts/AlertContext"
 import Alert from "react-bootstrap/Alert"
 import Fade from "react-bootstrap/Fade"
+import Container from "react-bootstrap/Container"
 
 function AlertBox() {
   const alert = useAlert()
@@ -14,23 +15,23 @@ function AlertBox() {
   if (alert === undefined || !show) return
 
   return (
-    <div
+    <Container
       id="alert-wrapper"
-      className="d-flex flex-column position-absolute justify-content-end w-100"
-      style={{ height: "100vh" }}
+      className="w-100 position-fixed bottom-0 end-0 start-0"
+      style={{ zIndex: 5000 }}
     >
       <Fade in={show}>
         <Alert
           dismissible
           variant={alert.variant ? alert.variant : "danger"}
-          className="z-1 mt-3"
+          className="mt-3"
           onClose={() => setShow(false)}
         >
           {alert.message && alert.message}
           {!alert.message && "Es ist ein Fehler aufgetreten"}
         </Alert>
       </Fade>
-    </div>
+    </Container>
   )
 }
 

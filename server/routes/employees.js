@@ -51,16 +51,39 @@ module.exports = (models) => {
   })
 
   // Update one
-  router.put("/:id", roles.requireAdmin, async (req, res) => {
+  router.put("/:initials", roles.requireAdmin, async (req, res) => {
     try {
-      const response = await models.Employee.update(
-        { ...req.body },
+      const employee = await models.Employee.findOne({
+        where: { initials: req.params.initials },
+      })
+
+      if (!employee)
+        return res
+          .status(400)
+          .send({ error: "Es wurden keine Änderungen vorgenommen" })
+
+      await models.Employee.update(
         {
-          where: { id: req.params.id },
+          initials: req.body.initials.toUpperCase(),
+          name: req.body.name,
+          employmentId: req.body.employmentId,
+        },
+        {
+          where: { initials: req.params.initials },
         }
       )
-      if (response[0] === 0) return res.sendStatus(404)
-      return res.status(200).send({ message: "Updated successfully" })
+
+      if (req.body.jobs) {
+        await models.JobEmployee.destroy({
+          where: { employeeId: employee.id },
+        })
+        await models.JobEmployee.bulkCreate(
+          req.body.jobs.map((jobId) => {
+            return { jobId: jobId, employeeId: employee.id }
+          })
+        )
+      }
+      return res.status(200).send({ message: "Änderungen gespeichert" })
     } catch (error) {
       return res.status(400).send({ error: error.message })
     }
