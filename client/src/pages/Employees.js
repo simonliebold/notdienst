@@ -438,7 +438,7 @@ const EmployeeModal = ({ allEmployments, allJobs }) => {
             {isLoading && (
               <Placeholder as="p" animation="glow">
                 <Placeholder.Button className="me-2">
-                  <FontAwesomeIcon className="me-1" icon={faKey} />
+                  <FontAwesomeIcon className="me-2" icon={faKey} />
                   Lädt...
                 </Placeholder.Button>
                 <Placeholder.Button>
@@ -455,7 +455,9 @@ const EmployeeModal = ({ allEmployments, allJobs }) => {
                   disabled={isTokenLoading}
                   className="me-2"
                 >
-                  <FontAwesomeIcon className="me-1" icon={faKey} /> Token
+                  <FontAwesomeIcon className="me-2" icon={faKey} />
+                  {isTokenLoading && "Lädt..."}
+                  {!isTokenLoading && "Token"}
                 </Button>
                 <Button
                   type="submit"
