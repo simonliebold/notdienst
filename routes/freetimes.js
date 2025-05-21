@@ -1,24 +1,25 @@
 module.exports = (models) => {
   const router = require("express").Router()
+  const roles = require("./../roles")
 
   // Get all
-  router.get("/", async (req, res) => {
-    const response = await models.Freetime.findAll()
-    res.send({ response: response })
+  router.get("/", roles.requireAdmin, async (req, res) => {
+    const freetimes = await models.Freetime.findAll()
+    return res.send({ freetimes: freetimes })
   })
 
   // Get one
-  router.get("/:id", async (req, res) => {
-    const response = await models.Freetime.findByPk(req.params.id)
-    if (response === null) res.status(404).send({ message: "Not found" })
-    else console.log(new Date("2023-10-01T08:00:00.00"))
-    res.send({ response: response })
+  router.get("/:id", roles.requireAdmin, async (req, res) => {
+    const freetime = await models.Freetime.findByPk(req.params.id)
+    if (freetime === null) return res.sendStatus(404)
+    return res.send({ freetime: freetime })
   })
 
   // Create one
+  // TODO: add freetime to multiple schedules
   router.post("/", async (req, res) => {
     try {
-      const params = ["start", "end", "scheduleId", "employeeId"]
+      const params = ["start", "end", "scheduleId"]
       const found = params.every((param) => req.body[param] !== undefined)
       if (!found) throw new Error("Params missing")
 
@@ -42,17 +43,17 @@ module.exports = (models) => {
         start: start,
         end: end,
         scheduleId: schedule.id,
-        employeeId: employee.id,
+        employeeId: req.user.id,
       })
-      res.send({ response: response })
+      return res.send({ response: response })
     } catch (error) {
-      res.status(400).send({ error: error.message })
+      return res.status(400).send({ error: error.message })
     }
   })
 
   // Update one
-  // Add error handling
-  router.put("/:id", async (req, res) => {
+  // TODO: Add error handling
+  router.put("/:id", roles.requireAdmin, async (req, res) => {
     try {
       const response = await models.Freetime.update(
         { ...req.body },
@@ -60,27 +61,24 @@ module.exports = (models) => {
           where: { id: req.params.id },
         }
       )
-      response[0] > 0
-        ? res
-            .status(200)
-            .send({ message: "Updated successfully", rows: response[0] })
-        : res.status(404).send({ message: "Not found", rows: response[0] })
+      if (response[0] === 0) return res.sendStatus(404)
+      return res.status(200).send({ message: "Updated successfully" })
     } catch (error) {
-      res.status(400).send({ errors: error })
+      return res.status(400).send({ error: error.message })
     }
   })
 
   // Delete one
+  // TODO: enable deletion by admin
   router.delete("/:id", async (req, res) => {
     try {
       const response = await models.Freetime.destroy({
-        where: { id: req.params.id },
+        where: { id: req.params.id, employeeId: req.user.id },
       })
-      response > 0
-        ? res.status(200).send({ message: "Deleted successfully" })
-        : res.status(404).send({ message: "Not found" })
+      if (response === 0) return res.sendStatus(404)
+      return res.status(200).send({ message: "Deleted successfully" })
     } catch (error) {
-      res.status(400).send({ errors: error })
+      res.status(400).send({ errors: error.message })
     }
   })
 

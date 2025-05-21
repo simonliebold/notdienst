@@ -1,6 +1,8 @@
 module.exports = (models) => {
   const router = require("express").Router()
 
+  // TODO: !! add admin check
+
   // Get all
   router.get("/", async (req, res) => {
     const response = await models.Work.findAll()

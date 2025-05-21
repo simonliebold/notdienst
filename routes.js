@@ -14,16 +14,15 @@ module.exports = (models, sequelize) => {
   const events = require("./routes/events")(models)
   router.use("/events", roles.requireAdmin, events)
   
-  
   const employees = require("./routes/employees")(models)
   router.use("/employees", employees)
-
+  
   const schedules = require("./routes/schedules")(models, sequelize)
   router.use("/schedules", schedules)
-  
+
   const freetimes = require("./routes/freetimes")(models)
   router.use("/freetimes", freetimes)
-
+  
   const works = require("./routes/works")(models)
   router.use("/works", works)
 
