@@ -7,7 +7,7 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import React from "react"
 import Button from "react-bootstrap/esm/Button"
-import { useNavigate } from "react-router-dom"
+import { useNavigate, Link } from "react-router-dom"
 
 function CardButton({
   className,
@@ -27,7 +27,9 @@ function CardButton({
       variant={variant}
       icon={icon}
       className={className}
-      href={path}
+      as={Link}
+      // href={path}
+      to={path}
       onClick={(e) => navigate(path)}
       disabled={!resource || !resourceName}
     >

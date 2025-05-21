@@ -8,7 +8,6 @@ import useResource from "../hooks/useResource"
 
 function MultiBadge({ items, resourceName }) {
   const { action } = useParams()
-  console.log(action)
   const options = useResource(resourceName + "s")
 
   if (action === "edit")
