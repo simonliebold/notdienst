@@ -26,37 +26,41 @@ function Elements() {
   const work = useResource("works/1")
   return (
     <>
-      <h2>Badge</h2>
-      <Badge resource={{ id: 201, short: 201 }} className="" />
-      <hr />
-      <h2>TitleCard</h2>
-      <TitleCard
-        resource={{ id: 256, short: "OKT 23", title: "Oktober 2023" }}
-        resourceName={"schedule"}
-      />
-      <hr />
-      <h2>WorkDetailedCard</h2>
+      <h1 className="mt-3">Elements</h1>
+      <h2>Work</h2>
+      <TitleCard resource={work} resourceName="work" className="mb-3" />
       <WorkDetailedCard work={work} />
       <hr />
-      <h2>ShiftDetailedCard</h2>
+      <h2>Shift</h2>
+      <TitleCard resource={shift} resourceName="shift" className="mb-3" />
       <ShiftDetailedCard shift={shift} />
       <hr />
-      <h2>RruleDetailedCard</h2>
+      <h2>Rrule</h2>
+      <TitleCard resource={rrule} resourceName="rrule" className="mb-3" />
       <RruleDetailedCard rrule={rrule} />
       <hr />
-      <h2>JobDetailedCard</h2>
+      <h2>Job</h2>
+      <TitleCard resource={job} resourceName="job" className="mb-3" />
       <JobDetailedCard job={job} />
       <hr />
-      <h2>FreetimeDetailedCard</h2>
+      <h2>Freetime</h2>
+      <TitleCard resource={freetime} resourceName="freetime" className="mb-3" />
       <FreetimeDetailedCard freetime={freetime} />
       <hr />
-      <h2>EmploymentDetailedCard</h2>
+      <h2>Employment</h2>
+      <TitleCard
+        resource={employment}
+        resourceName="employment"
+        className="mb-3"
+      />
       <EmploymentDetailedCard employment={employment} />
       <hr />
-      <h2>EmployeeDetailedCard</h2>
+      <h2>Employee</h2>
+      <TitleCard resource={employee} resourceName="employee" className="mb-3" />
       <EmployeeDetailedCard employee={employee} />
       <hr />
-      <h2>ScheduleDetailedCard</h2>
+      <h2>Schedule</h2>
+      <TitleCard resource={schedule} resourceName="schedule" className="mb-3" />
       <ScheduleDetailedCard schedule={schedule} />{" "}
     </>
   )

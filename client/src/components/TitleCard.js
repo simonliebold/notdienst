@@ -3,11 +3,11 @@ import Card from "react-bootstrap/Card"
 import { Link } from "react-router-dom"
 import Badge from "./Badge"
 
-function TitleCard({ resource, resourceName }) {
+function TitleCard({ resource, resourceName, className }) {
   const { id, short, title } = resource || {}
 
   return (
-    <Card>
+    <Card className={className}>
       <Card.Body className="text-decoration-none">
         <Badge
           className="me-2"

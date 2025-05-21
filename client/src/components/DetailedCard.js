@@ -50,9 +50,9 @@ export const WorkDetailedCard = ({ work }) => {
       <hr />
       Schicht: <br />
       <Badge resource={rrule?.shift} resourceName="shift" />
-      <hr />
+      {/* <hr />
       Wiederholung: <br />
-      <Badge resource={rrule} resourceName="rrule" />
+      <Badge resource={rrule} resourceName="rrule" /> */}
     </DetailedCard>
   )
 }
