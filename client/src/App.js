@@ -15,7 +15,7 @@ import Logout from "./pages/Logout"
 import Elements from "./pages/admin/Elements"
 import Works from "./pages/admin/Works"
 import Employees from "./pages/admin/Employees"
-import Employment from "./pages/admin/Employment"
+import Employments from "./pages/admin/Employments"
 
 function App() {
   const home = (
@@ -50,7 +50,7 @@ function App() {
 
   const employments = (
     <Prot>
-      <Employment />
+      <Employments />
     </Prot>
   )
 
