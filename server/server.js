@@ -52,8 +52,8 @@ app.listen(port, async () => {
     await mongoose.connect(process.env.MONGO_CONN)
     console.log("Connected to db")
     
-    // await loadTestData()
-    // console.log("Test data loaded")
+    await loadTestData()
+    console.log("Test data loaded")
 
   } catch (error) {
     console.error("Unable to connect to the database:", error)

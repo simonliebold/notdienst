@@ -40,6 +40,7 @@ const loadTestData = async () => {
   new Job({ short: "EZ", title: "Einsatzzentrale Dispo" }).save()
 
   const lbd = new Employee({
+    _id: "65c74826b3bd0e5e4d467b3f",
     short: "lbd",
     title: "Simon Liebold",
     employmentId: minijob._id,
