@@ -1,3 +1,4 @@
+// TODO: fix timestamp timezones
 module.exports = (sequelize) => {
   const Employee = require("./models/Employee")(sequelize)
   const Job = require("./models/Job")(sequelize)

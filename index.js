@@ -14,12 +14,13 @@ app.use("/", routes)
 const port = process.env.PORT || 3000
 
 app.listen(port, async () => {
-  console.log("App listening on port 3000!")
+  console.log("App listening on port " + port)
   try {
     await sequelize.authenticate()
     console.log("Connection has been established successfully.")
   } catch (error) {
     console.error("Unable to connect to the database:", error)
   }
-  await sequelize.sync()
+  await sequelize.sync({ force: true })
+  require("./example")(models)
 })

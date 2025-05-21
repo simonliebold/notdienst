@@ -43,7 +43,7 @@ module.exports = (models) => {
     }
   })
 
-  // TODO: Add Employee to Job 
+  // TODO: Add Employee to Job (insert values into join table)
 
   // Delete one
   router.delete("/:id", async (req, res) => {
