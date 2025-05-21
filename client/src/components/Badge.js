@@ -16,7 +16,7 @@ function Badge({ resource, resourceName, disabled, className, ...props }) {
   return (
     <BootstrapBadge
       as={disabled ? BootstrapBadge : Link}
-      to={"/" + resourceName + "/" + id}
+      to={"/" + resourceName + "s/" + id}
       className={className + " text-decoration-none w-auto"}
       bg={disabled ? "secondary" : "primary"}
       {...props}

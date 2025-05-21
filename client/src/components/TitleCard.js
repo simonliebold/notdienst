@@ -19,8 +19,8 @@ function TitleCard({ resource, resourceName, className }) {
     <Card
       className={"text-decoration-none " + className}
       as={Link}
-      to={"/" + resourceName + "/" + resource?.id}
-      href={"/" + resourceName + "/" + resource?.id}
+      to={"/" + resourceName + "s/" + resource?.id}
+      href={"/" + resourceName + "s/" + resource?.id}
     >
       <Card.Header>
         <Badge

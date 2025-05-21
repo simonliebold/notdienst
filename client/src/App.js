@@ -169,36 +169,28 @@ function App() {
               <Route path="logout" element={logout} />
 
               <Route path="schedules" element={schedules} />
-              <Route path="schedule/:id" element={schedule} />
-              <Route path="schedule/:id/:action" element={schedule} />
+              <Route path="schedules/:id" element={schedule} />
 
               <Route path="freetimes" element={freetimes} />
-              <Route path="freetime/:id" element={freetime} />
-              <Route path="freetime/:id/:action" element={freetime} />
+              <Route path="freetimes/:id" element={freetime} />
 
               <Route path="works" element={works} />
-              <Route path="work/:id" element={work} />
-              <Route path="work/:id/:action" element={work} />
+              <Route path="works/:id" element={work} />
 
               <Route path="shifts" element={shifts} />
-              <Route path="shift/:id" element={shift} />
-              <Route path="shift/:id/:action" element={shift} />
+              <Route path="shifts/:id" element={shift} />
 
               <Route path="rrules" element={rrules} />
-              <Route path="rrule/:id" element={rrule} />
-              <Route path="rrule/:id/:action" element={rrule} />
+              <Route path="rrules/:id" element={rrule} />
 
               <Route path="employees" element={employees} />
-              <Route path="employee/:id" element={employee} />
-              <Route path="employee/:id/:action" element={employee} />
+              <Route path="employees/:id" element={employee} />
 
               <Route path="jobs" element={jobs} />
-              <Route path="job/:id" element={job} />
-              <Route path="job/:id/:action" element={job} />
+              <Route path="jobs/:id" element={job} />
 
               <Route path="employments" element={employments} />
-              <Route path="employment/:id/" element={employment} />
-              <Route path="employment/:id/:action" element={employment} />
+              <Route path="employments/:id/" element={employment} />
 
               <Route path="missions" element={missions} />
               <Route path="mission/:id/" element={mission} />

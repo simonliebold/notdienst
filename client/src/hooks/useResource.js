@@ -62,7 +62,7 @@ export const useResourceDelete = (resourceUrl) => {
       if (process.env.NODE_ENV === "development")
         console.log("DELETE:", resourceUrl, response?.data?.message)
 
-      handleSuccess(response?.data?.message)
+      // handleSuccess(response?.data?.message)
       return response?.data?.message
     },
     [handleError, handleSuccess, resourceUrl]
