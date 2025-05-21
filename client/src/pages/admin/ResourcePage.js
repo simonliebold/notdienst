@@ -96,8 +96,8 @@ export const EmployeePage = () => {
           disabled
         />
         {/* <ContainsItems resources={employee?.freetimes} resourceName="freetime" /> */}
-        <EmployeeCalendar employee={employee} />
       </DetailedCard>
+      <EmployeeCalendar employee={employee} />
     </>
   )
 }
@@ -405,14 +405,14 @@ export const SchedulePage = () => {
           onInput={onInput}
           edit={edit}
         />
-        <AsyncGenerateWorksButton
+        {/* <AsyncGenerateWorksButton
           schedule={schedule}
           updateResource={refreshResource}
           className="me-3"
           variant="warning"
           onInput={onInput}
           edit={edit}
-          />
+          /> */}
         <AsyncAllocateWorksButton
           schedule={schedule}
           updateResource={refreshResource}

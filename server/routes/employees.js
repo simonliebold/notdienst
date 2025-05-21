@@ -44,6 +44,14 @@ router.get("/:id", roles.requireAdmin, async (req, res, next) => {
           as: "freetimes",
         },
       },
+      {
+        $lookup: {
+          from: "works",
+          localField: "_id",
+          foreignField: "employeeIds",
+          as: "works",
+        },
+      },
     ])
     if (!employee) return next(new Error("Nicht gefunden"))
     return res.send(employee[0])
