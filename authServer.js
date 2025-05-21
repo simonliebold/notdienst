@@ -1,39 +1,71 @@
-const express = require('express')
+const express = require("express")
 const app = express()
-const jwt = require('jsonwebtoken')
+const { Sequelize, DataTypes } = require("sequelize")
 
 app.use(express.json())
 
-let refreshTokens = []
+const sequelize = new Sequelize(
+  process.env.AUTH_DB_NAME,
+  process.env.AUTH_DB_USER,
+  process.env.AUTH_DB_PASS,
+  {
+    host: process.env.AUTH_DB_HOST,
+    dialect: "mariadb",
+  }
+)
 
-app.post('/token', (req, res) => {
-  const refreshToken = req.body.token
-  if (refreshToken == null) return res.sendStatus(401)
-  if (!refreshTokens.includes(refreshToken)) return res.sendStatus(403)
-  jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, user) => {
-    if (err) return res.sendStatus(403)
-    const accessToken = generateAccessToken({ name: user.name })
-    res.json({ accessToken: accessToken })
-  })
+sequelize.define(
+  "refreshTokens",
+  {
+    token: {
+      type: DataTypes.STRING,
+      primaryKey: true,
+    },
+  },
+  { timestamps: false }
+)
+
+sequelize.define(
+  "users",
+  {
+    id: {
+      type: DataTypes.INTEGER,
+      primaryKey: true,
+    },
+    email: {
+      type: DataTypes.STRING,
+    },
+    password: {
+      type: DataTypes.STRING,
+    },
+    role: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      defaultValue: 1
+    },
+  },
+  { timestamps: false }
+)
+
+const routes = require("./authRoutes")(sequelize)
+app.use("/", routes)
+
+const PORT = process.env.AUTH_PORT || 4000
+app.listen(PORT, async () => {
+  console.log("Auth server listening on port " + PORT)
+  try {
+    await sequelize.authenticate()
+    console.log(
+      "Connected to database " +
+        process.env.AUTH_DB_NAME +
+        " (" +
+        process.env.AUTH_DB_HOST +
+        ") successfully"
+    )
+  } catch (error) {
+    console.error("Unable to connect to the auth database:", error)
+  }
+  // await db.sequelize.sync()
+  await sequelize.sync({ force: true })
+  await sequelize.models.users.create({id: 1, email: "simon@bitel.net", password: "123"})
 })
-
-app.delete('/logout', (req, res) => {
-  refreshTokens = refreshTokens.filter(token => token !== req.body.token)
-  res.sendStatus(204)
-})
-
-app.post('/login', (req, res) => {
-  const username = req.body.username
-  const user = { name: username }
-
-  const accessToken = generateAccessToken(user)
-  const refreshToken = jwt.sign(user, process.env.REFRESH_TOKEN_SECRET)
-  refreshTokens.push(refreshToken)
-  res.json({ accessToken: accessToken, refreshToken: refreshToken })
-})
-
-function generateAccessToken(user) {
-  return jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '15s' })
-}
-
-app.listen(4000)

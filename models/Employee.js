@@ -24,10 +24,6 @@ module.exports = (sequelize) => {
         type: Sequelize.STRING,
         allowNull: true
       },
-      password: {
-        type: Sequelize.STRING,
-        allowNull: true
-      },
       employmentId: {
         type: Sequelize.INTEGER,
         allowNull: false,
