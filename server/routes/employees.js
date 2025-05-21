@@ -53,11 +53,12 @@ module.exports = (models) => {
   // Create one
   router.post("/", roles.requireAdmin, async (req, res) => {
     try {
-      await models.Employee.create({
-        name: req.body.name,
-        initials: req.body.initials,
+      const employee = await models.Employee.create({
+        short: req.body.short,
+        title: req.body.title,
+        employmentId: req.body.employmentId,
       })
-      return res.send({ message: "Mitarbeiter wurde erfolgreich erstellt." })
+      return res.send(employee)
     } catch (error) {
       if (error.message && error.message === "Validation error")
         return res

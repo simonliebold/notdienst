@@ -4,14 +4,36 @@ import Breadcrumb from "../../components/Breadcrumb"
 import TitleCard from "../../components/TitleCard"
 import { CreateNewPopup } from "../../components/Popup"
 import { CreateNewButton } from "../../components/CardButton"
-import useResource from "../../hooks/useResource"
+import useResource, { useResourceCreate } from "../../hooks/useResource"
+import EditableText from "../../components/EditableText"
+import { EditableBadge } from "../../components/Badge"
+import MultiBadge from "../../components/MultiBadge"
+import { useNavigate } from "react-router-dom"
 
-function ResourcesPage({ resourceName, resources }) {
+function ResourcesPage({ resourceName, resources, children }) {
   const [showCreateNewPopup, setShowCreateNewPopup] = useState(false)
+  const [input, setInput] = useState(null)
+  const navigate = useNavigate()
+  const create = useResourceCreate(resourceName + "s")
 
-  const onRequestClose = useCallback(() => {
+  const onInput = useCallback(
+    async (label, value) => {
+      if (process.env.NODE_ENV === "development")
+        console.log("INPUT", { ...input, [label]: value })
+      setInput({ ...input, [label]: value })
+    },
+    [input]
+  )
+
+  const onCloseRequest = useCallback(() => {
     setShowCreateNewPopup(false)
   }, [setShowCreateNewPopup])
+
+  const onCreateConfirm = useCallback(async () => {
+    const created = await create(input)
+    setShowCreateNewPopup(false)
+    navigate("./" + created?.id)
+  }, [create, setShowCreateNewPopup, input])
 
   return (
     <>
@@ -33,75 +55,95 @@ function ResourcesPage({ resourceName, resources }) {
         className="mt-2"
       />
       <CreateNewPopup
-        onClose={onRequestClose}
+        onClose={onCloseRequest}
+        onConfirm={onCreateConfirm}
         resourceName={resourceName}
         show={showCreateNewPopup}
-      />
+      >
+        {React.Children.map(children, (child) => {
+          if (React.isValidElement(child))
+            return React.cloneElement(child, {
+              onInput,
+              className: "mb-3",
+              edit: true,
+              value: "",
+            })
+        })}
+      </CreateNewPopup>
     </>
   )
 }
 
 export const EmployeesPage = () => {
   const [employees] = useResource("employees")
-
-  return <ResourcesPage resources={employees} resourceName="employee" />
+  return (
+    <ResourcesPage resources={employees} resourceName="employee">
+      <EditableText label="short" />
+      <EditableText label="title" />
+      <hr />
+      <EditableBadge resourceName="employment" />
+      {/* <MultiBadge edit resourceName="work" />
+      <MultiBadge edit resourceName="schedule" />
+      <MultiBadge edit resourceName="job" /> */}
+    </ResourcesPage>
+  )
 }
 
 export function EmploymentsPage() {
   const [employments] = useResource("employments")
-
-  return <ResourcesPage resources={employments} resourceName="employment" />
+  return (
+    <ResourcesPage
+      resources={employments}
+      resourceName="employment"
+    ></ResourcesPage>
+  )
 }
 
 export const FreetimesPage = () => {
   const [freetimes] = useResource("freetimes")
-
-  return <ResourcesPage resources={freetimes} resourceName="freetime" />
+  return (
+    <ResourcesPage
+      resources={freetimes}
+      resourceName="freetime"
+    ></ResourcesPage>
+  )
 }
 
 export function JobsPage() {
   const [jobs] = useResource("jobs")
-
-  return <ResourcesPage resources={jobs} resourceName="job" />
+  return <ResourcesPage resources={jobs} resourceName="job"></ResourcesPage>
 }
 
 export function MissionsPage() {
   const [missions] = useResource("missions")
-
   return (
-    <ResourcesPage resources={missions} resourceName="mission" />
+    <ResourcesPage resources={missions} resourceName="mission"></ResourcesPage>
   )
 }
 
 export function RrulesPage() {
   const [rrules] = useResource("rrules")
-
-  return (
-    <ResourcesPage resources={rrules} resourceName="rrule" />
-  )
+  return <ResourcesPage resources={rrules} resourceName="rrule"></ResourcesPage>
 }
 
 export function SchedulesPage() {
   const [schedules] = useResource("schedules")
-
   return (
-    <ResourcesPage resources={schedules} resourceName="schedule" />
+    <ResourcesPage
+      resources={schedules}
+      resourceName="schedule"
+    ></ResourcesPage>
   )
 }
 
 export function ShiftsPage() {
   const [shifts] = useResource("shifts")
-
-  return (
-    <ResourcesPage resources={shifts} resourceName="shift" />
-  )
+  return <ResourcesPage resources={shifts} resourceName="shift"></ResourcesPage>
 }
 
 export function WorksPage() {
   const [works] = useResource("works")
-  return (
-    <ResourcesPage resources={works} resourceName="work" />
-  )
+  return <ResourcesPage resources={works} resourceName="work"></ResourcesPage>
 }
 
 export default ResourcesPage

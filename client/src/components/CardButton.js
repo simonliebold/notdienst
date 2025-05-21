@@ -81,5 +81,16 @@ export const CreateNewButton = ({ resourceName, ...props }) => {
     </CardButton>
   )
 }
+export const ConfirmCreateNewButton = ({
+  resource,
+  resourceName,
+  ...props
+}) => {
+  return (
+    <CardButton variant="primary" icon={faPlus} {...props}>
+      {title[resourceName] + " erstellen"}
+    </CardButton>
+  )
+}
 
 export default CardButton

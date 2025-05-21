@@ -1,7 +1,7 @@
 import React, { useCallback, useState } from "react"
 import FormControl from "react-bootstrap/FormControl"
 import Modal from "react-bootstrap/Modal"
-import { CancelButton, ConfirmDeleteButton } from "./CardButton"
+import { CancelButton, ConfirmCreateNewButton, ConfirmDeleteButton } from "./CardButton"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faPlus, faTrash, faX } from "@fortawesome/free-solid-svg-icons"
 import { title } from "../variables"
@@ -84,15 +84,33 @@ export const ConfirmDeletePopup = ({
   )
 }
 
-export const CreateNewPopup = ({ resource, resourceName, ...props }) => {
+export const CreateNewPopup = ({
+  resource,
+  resourceName,
+  onClose,
+  onConfirm,
+  children,
+  ...props
+}) => {
   return (
-    <Popup {...props} icon={faPlus} title={title[resourceName] + " erstellen"}>
-      <EditableText edit label="short" />
-      <EditableText edit label="title" />
-      <EditableText edit label="minHours" />
-      <EditableText edit label="maxHours" />
-      <hr />
-      <MultiBadge edit resourceName="employee" />
+    <Popup
+      {...props}
+      icon={faPlus}
+      title={title[resourceName] + " erstellen"}
+      onClose={onClose}
+      buttons={
+        <>
+          <CancelButton onClick={onClose} />
+          <ConfirmCreateNewButton
+            onClick={onConfirm}
+            resource={resource}
+            resourceName={resourceName}
+            // disabled={disabled}
+          />
+        </>
+      }
+    >
+      {children}
     </Popup>
   )
 }

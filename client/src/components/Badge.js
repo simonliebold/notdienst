@@ -33,6 +33,7 @@ export const EditableBadge = ({
   onInput,
   disabled,
   edit,
+  className,
 }) => {
   const [options, updateOptions] = useResource(resourceName + "s")
 
@@ -49,7 +50,7 @@ export const EditableBadge = ({
     )
   if (edit)
     return (
-      <p>
+      <div className={className}>
         <label className="w-100">{title[resourceName]}:</label>
         <Select
           options={options?.map((option) => ({
@@ -73,7 +74,7 @@ export const EditableBadge = ({
           }}
           onChange={(item) => onInput(resourceName + "Id", item.value)}
         />
-      </p>
+      </div>
     )
 
   if (!resource)
