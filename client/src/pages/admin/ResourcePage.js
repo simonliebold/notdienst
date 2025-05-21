@@ -12,6 +12,8 @@ import { ConfirmDeletePopup } from "../../components/Popup"
 import EditableText from "../../components/EditableText"
 import { EditableBadge } from "../../components/Badge"
 import MultiBadge from "../../components/MultiBadge"
+import { titles } from "../../variables"
+import MultiTitleCard from "../../components/MultiTitleCard"
 
 function ResourcePage({ resourceName, setData, children }) {
   const navigate = useNavigate()

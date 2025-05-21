@@ -177,7 +177,14 @@ export function ShiftsPage() {
 
 export function WorksPage() {
   const [works] = useResource("works")
-  return <ResourcesPage resources={works} resourceName="work"></ResourcesPage>
+  return (
+    <ResourcesPage resources={works} resourceName="work">
+      <EditableText label="start" />
+      <EditableText label="end" />
+      <hr />
+      <EditableBadge resourceName="schedule" />
+    </ResourcesPage>
+  )
 }
 
 export default ResourcesPage

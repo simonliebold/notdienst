@@ -45,8 +45,12 @@ module.exports = (models) => {
   // Create one
   router.post("/", roles.requireAdmin, async (req, res) => {
     try {
-      const work = await models.Work.create({ ...req.body })
-      res.send({ work: work })
+      const work = await models.Work.create({
+        start: req.body.start,
+        end: req.body.end,
+        scheduleId: req.body.scheduleId,
+      })
+      res.send(work)
     } catch (error) {
       res.status(400).send({ error: error.message })
     }
