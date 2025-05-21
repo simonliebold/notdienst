@@ -84,6 +84,10 @@ module.exports = async (models) => {
 
   shifts = await models.Shift.bulkCreate(shifts)
 
+  let rrules = [{ title: "A1 früh", content: "rrule a1 früh", shiftId: 1 }]
+
+  rrules = await models.Rrule.bulkCreate(rrules)
+
   await models.Schedule.create({
     title: "November 2023",
     short: "NOV 23",
@@ -91,6 +95,16 @@ module.exports = async (models) => {
     end: "2023-10-31",
     deadline: "2023-10-29",
   })
+
+  let works = [
+    {
+      start: new Date(2023, 12, 1, 10),
+      end: new Date(2023, 12, 1, 15),
+      scheduleId: 1,
+      rruleId: 1
+    },
+  ]
+  works = await models.Work.bulkCreate(works)
 
   // await models.JobEmployee.bulkCreate(
   //   employees.map((employee) => {

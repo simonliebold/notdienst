@@ -18,6 +18,7 @@ module.exports = (db) => {
   Freetime.belongsTo(Employee)
 
   Rrule.belongsTo(Shift)
+  Work.belongsTo(Rrule)
   // Shift.belongsToMany(Rrule, {through: "rrules"})
 
   const JobEmployee = require("./models/JobEmployee")(sequelize)

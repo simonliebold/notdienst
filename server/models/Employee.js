@@ -24,7 +24,7 @@ module.exports = (sequelize) => {
           },
         },
       },
-      name: {
+      title: {
         type: Sequelize.STRING,
         allowNull: false,
         validate: {

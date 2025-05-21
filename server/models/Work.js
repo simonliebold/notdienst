@@ -17,6 +17,12 @@ module.exports = (sequelize) => {
           return this.id
         },
       },
+      title: {
+        type: Sequelize.VIRTUAL,
+        get() {
+          return "RRULE-"+this.rruleId
+        },
+      },
       start: {
         type: Sequelize.DATE,
         allowNull: false,
@@ -25,6 +31,14 @@ module.exports = (sequelize) => {
         type: Sequelize.DATE,
         allowNull: false,
       },
+      rruleId: {
+        type: Sequelize.INTEGER,
+        allowNull: true,
+        references: {
+          model: sequelize.models.Rrule,
+          key: "id",
+        },
+      },
       scheduleId: {
         type: Sequelize.INTEGER,
         allowNull: false,
@@ -32,7 +46,7 @@ module.exports = (sequelize) => {
           model: sequelize.models.Schedule,
           key: "id",
         },
-      }
+      },
     },
     { timestamps: false }
   )

@@ -1,4 +1,5 @@
 import {
+  faBriefcase,
   faCalendar,
   faHashtag,
   faUser,
@@ -7,5 +8,6 @@ import {
 export const icons = {
   employee: faUser,
   schedule: faCalendar,
+  work: faBriefcase,
   default: faHashtag,
 }

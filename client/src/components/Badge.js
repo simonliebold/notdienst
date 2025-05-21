@@ -17,7 +17,7 @@ function Badge(props) {
     <BootstrapBadge
       as={resourceName ? Link : BootstrapBadge}
       to={"/" + resourceName + "/" + id}
-      className={className + " text-decoration-none"}
+      className={className + " text-decoration-none w-auto"}
       bg={resourceName ? "primary" : "secondary"}
     >
       {/* <FontAwesomeIcon icon={faX} className="me-3" /> */}

@@ -15,7 +15,7 @@ module.exports = (sequelize) => {
   })
 
   function generateAccessToken(user) {
-    const expirationDate = Math.floor(Date.now() / 1000) + 180
+    const expirationDate = Math.floor(Date.now() / 1000) + 1800
     return jwt.sign(
       { ...user, exp: expirationDate },
       process.env.ACCESS_TOKEN_SECRET
