@@ -11,7 +11,7 @@ import useResource from "./../../hooks/useResource"
 import useInput from "./../../hooks/useInput"
 import useSave from "./../../hooks/useSave"
 
-const useDetailedCard = (resourceName) => {
+const useResourcePage = (resourceName) => {
   const { id } = useParams()
   const [resource, refreshResource, loading] = useResource(
     resourceName + "s/" + id
@@ -46,7 +46,7 @@ export const EmployeePage = () => {
     edit,
     setEdit,
     onInput,
-  } = useDetailedCard("employee")
+  } = useResourcePage("employee")
 
   return (
     <>
@@ -107,7 +107,7 @@ export const EmploymentPage = () => {
     edit,
     setEdit,
     onInput,
-  } = useDetailedCard("employment")
+  } = useResourcePage("employment")
   return (
     <DetailedCard
       resourceName={"employment"}
@@ -154,7 +154,7 @@ export const FreetimePage = () => {
     edit,
     setEdit,
     onInput,
-  } = useDetailedCard("freetime")
+  } = useResourcePage("freetime")
   return (
     <DetailedCard
       resourceName={"freetime"}
@@ -209,7 +209,7 @@ export const JobPage = () => {
     edit,
     setEdit,
     onInput,
-  } = useDetailedCard("job")
+  } = useResourcePage("job")
   return (
     <DetailedCard
       resourceName={"job"}
@@ -253,7 +253,7 @@ export const MissionPage = () => {
     edit,
     setEdit,
     onInput,
-  } = useDetailedCard("mission")
+  } = useResourcePage("mission")
   return (
     <DetailedCard
       resourceName={"mission"}
@@ -309,7 +309,7 @@ export const RrulePage = () => {
     edit,
     setEdit,
     onInput,
-  } = useDetailedCard("rrule")
+  } = useResourcePage("rrule")
 
   return (
     <DetailedCard
@@ -364,7 +364,7 @@ export const SchedulePage = () => {
     edit,
     setEdit,
     onInput,
-  } = useDetailedCard("schedule")
+  } = useResourcePage("schedule")
   return (
     <>
       <DetailedCard
@@ -409,7 +409,7 @@ export const ShiftPage = () => {
     edit,
     setEdit,
     onInput,
-  } = useDetailedCard("shift")
+  } = useResourcePage("shift")
 
   return (
     <DetailedCard
@@ -460,7 +460,7 @@ export const WorkPage = () => {
     edit,
     setEdit,
     onInput,
-  } = useDetailedCard("work")
+  } = useResourcePage("work")
 
   return (
     <DetailedCard
@@ -534,7 +534,7 @@ export const ExchangePage = () => {
     edit,
     setEdit,
     onInput,
-  } = useDetailedCard("exchange")
+  } = useResourcePage("exchange")
 
   return (
     <DetailedCard

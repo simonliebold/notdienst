@@ -54,6 +54,7 @@ const DetailedCard = ({
   const { title } = resource || {}
 
   const [expanded, setExpanded] = useState(true)
+  
   useEffect(() => {
     if (resource?.works?.length === 0) setExpanded(true)
     if (resource?.works && resource?.works?.length !== 0) setExpanded(false)
