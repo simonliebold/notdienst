@@ -6,8 +6,8 @@ const express = require("express")
 const app = express()
 app.use(express.json())
 
-const employment = require("./routes/employment.js")(models)
-app.use("/employment", employment)
+const employments = require("./routes/employments.js")(models)
+app.use("/employments", employments)
 
 const port = process.env.PORT || 3000
 

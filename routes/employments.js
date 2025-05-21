@@ -44,5 +44,19 @@ module.exports = (models) => {
     }
   })
 
+  // Delete one
+  router.delete("/:id", async (req, res) => {
+    try {
+      const response = await models.Employment.destroy({
+        where: { id: req.params.id },
+      })
+      response > 0
+        ? res.status(200).send({ message: "Deleted successfully" })
+        : res.status(404).send({ message: "Not found" })
+    } catch (error) {
+      res.status(400).send({ errors: error })
+    }
+  })
+
   return router
 }
