@@ -152,5 +152,29 @@ module.exports = (models) => {
     }
   })
 
+  // Get schedule->employees
+  const getEmployees = async (req, res, next) => {
+    const schedule = await models.Schedule.findByPk(req.params.id, {
+      include: {
+        model: models.Employee,
+        through: { attributes: [] },
+        include: models.Employment,
+      },
+    })
+    if (schedule === null)
+      res.status(404).send({ message: "No employees found" })
+    req.employees = schedule.dataValues.employees.map((e) => {
+      return {
+        id: e.id,
+        initials: e.initials,
+        minHours: e.employment.minHours,
+        maxHours: e.employment.maxHours,
+        possibleHours: 0,
+        workHours: 0,
+      }
+    })
+    next()
+  }
+
   return router
 }
