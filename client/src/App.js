@@ -12,15 +12,6 @@ import Credentials from "./pages/Credentials"
 import Container from "react-bootstrap/esm/Container"
 import AlertBox from "./components/AlertBox"
 import Logout from "./pages/Logout"
-import Works from "./pages/admin/Works"
-import Employees from "./pages/admin/Employees"
-import Employments from "./pages/admin/Employments"
-import Freetimes from "./pages/admin/Freetimes"
-import Jobs from "./pages/admin/Jobs"
-import Rrules from "./pages/admin/Rrules"
-import Schedules from "./pages/admin/Schedules"
-import Shifts from "./pages/admin/Shifts"
-import Missions from "./pages/admin/Missions"
 import {
   EmployeePage,
   EmploymentPage,
@@ -32,6 +23,17 @@ import {
   ShiftPage,
   WorkPage,
 } from "./pages/admin/ResourcePage"
+import {
+  EmployeesPage,
+  EmploymentsPage,
+  FreetimesPage,
+  JobsPage,
+  MissionsPage,
+  RrulesPage,
+  SchedulesPage,
+  ShiftsPage,
+  WorksPage,
+} from "./pages/admin/ResourcesPage"
 
 function App() {
   const home = (
@@ -48,55 +50,55 @@ function App() {
 
   const works = (
     <Prot>
-      <Works />
+      <WorksPage />
     </Prot>
   )
 
   const employees = (
     <Prot>
-      <Employees />
+      <EmployeesPage />
     </Prot>
   )
 
   const employments = (
     <Prot>
-      <Employments />
+      <EmploymentsPage />
     </Prot>
   )
 
   const freetimes = (
     <Prot>
-      <Freetimes />
+      <FreetimesPage />
     </Prot>
   )
 
   const jobs = (
     <Prot>
-      <Jobs />
+      <JobsPage />
     </Prot>
   )
 
   const rrules = (
     <Prot>
-      <Rrules />
+      <RrulesPage />
     </Prot>
   )
 
   const schedules = (
     <Prot>
-      <Schedules />
+      <SchedulesPage />
     </Prot>
   )
 
   const shifts = (
     <Prot>
-      <Shifts />
+      <ShiftsPage />
     </Prot>
   )
 
   const missions = (
     <Prot>
-      <Missions />
+      <MissionsPage />
     </Prot>
   )
 
