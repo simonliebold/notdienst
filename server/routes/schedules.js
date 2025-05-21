@@ -1,3 +1,5 @@
+const { Op } = require("sequelize")
+
 module.exports = (models, sequelize) => {
   const router = require("express").Router()
   const roles = require("./../roles")
@@ -154,10 +156,32 @@ module.exports = (models, sequelize) => {
   })
 
   const getSchedule = async (req, res, next) => {
-    const schedule = await models.Schedule.findByPk(req.params.id)
-    if (!schedule) return res.status(404).send({error: "Dienstplan konnte nicht gefunden"})
-    req.schedule = schedule
-    return res.send(schedule)
+    const schedule = await models.Schedule.findByPk(req.params.id, {
+      include: models.Shift,
+    })
+    if (!schedule)
+      return res.status(404).send({ error: "Dienstplan konnte nicht gefunden" })
+
+    req.schedule = {
+      id: schedule?.id,
+      short: schedule?.short,
+      title: schedule?.title,
+      deadline: schedule?.deadline,
+      end: schedule?.end,
+      shifts: schedule?.shifts,
+      shiftIds: schedule?.shifts?.map((shift) => shift.id),
+    }
+    next()
+  }
+
+  const getRrules = async (req, res, next) => {
+    const rrules = await models.Rrule.findAll({
+      include: {
+        model: models.Shift,
+        where: { id: { [Op.in]: req.schedule.shiftIds } },
+      },
+    })
+    req.rrules = rrules
     next()
   }
 
@@ -208,9 +232,10 @@ module.exports = (models, sequelize) => {
     "/:id/create",
     roles.requireAdmin,
     getSchedule,
+    getRrules,
     // createWorks,
     async (req, res) => {
-      return res.send({ message: "Dienste erfolgreich generiert" })
+      return res.send(req.rrules)
     }
   )
 
