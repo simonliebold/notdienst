@@ -14,10 +14,47 @@ import Button from "react-bootstrap/Button"
 import Form from "react-bootstrap/Form"
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { faCalendar, faPlus } from "@fortawesome/free-solid-svg-icons"
+import { faCalendar, faCalendarDays, faPlus } from "@fortawesome/free-solid-svg-icons"
 import MultiSelect from "../components/MultiSelect"
+import ListGroup from "react-bootstrap/ListGroup"
 
 const ScheduleModal = () => {
+  const WorkCard = ({ work }) => {
+    const dateOptions = {
+      weekday: "long",
+      year: "numeric",
+      month: "numeric",
+      day: "numeric",
+      hour: "numeric",
+      minute: "numeric",
+    }
+
+    return (
+      <Col>
+        <Card>
+          <Card.Body>
+            <Card.Title className="fs-6 m-0">
+              <Badge className="me-2">
+                <FontAwesomeIcon icon={faCalendarDays} className="me-1" />
+                {work.id}
+              </Badge>
+              {work.event.title}
+            </Card.Title>
+          </Card.Body>
+          <ListGroup variant="flush">
+            <ListGroup.Item>
+              Beginn:{" "}
+              {new Date(work.start).toLocaleString("de-DE", dateOptions)}
+            </ListGroup.Item>
+            <ListGroup.Item>
+              Ende: {new Date(work.end).toLocaleString("de-DE", dateOptions)}
+            </ListGroup.Item>
+          </ListGroup>
+        </Card>
+      </Col>
+    )
+  }
+
   const { scheduleId } = useParams()
 
   const handleError = useErrorMessage()
@@ -25,33 +62,29 @@ const ScheduleModal = () => {
   const navigate = useNavigate()
 
   const [schedule, setSchedule] = useState(null)
-  const [allEmployees, setAllEmployees] = useState(null)
+  const [works, setWorks] = useState(null)
 
   const title = useRef(null)
   const start = useRef(null)
   const end = useRef(null)
   const deadline = useRef(null)
-  const employees = useRef(null)
 
   const fetchEmployees = useCallback(async () => {
     const res = await axios
       .get(process.env.REACT_APP_URL + "employees")
       .catch(handleError)
-    setAllEmployees(
-      res?.data?.employees?.map((employee) => {
-        return { value: employee.id, label: employee.initials }
-      })
-    )
   }, [])
 
   const fetchSchedule = useCallback(async () => {
     setSchedule(null)
+    setWorks(null)
     const res = await axios
       .get(process.env.REACT_APP_URL + "schedules/" + scheduleId)
       .catch(handleError)
 
     if (!res?.data?.schedule) return navigate("/schedules")
     setSchedule(res.data.schedule)
+    setWorks(res.data.works)
     title.current.value = res.data.schedule.title
     start.current.value = res.data.schedule.start
     end.current.value = res.data.schedule.end
@@ -63,7 +96,6 @@ const ScheduleModal = () => {
   }, [scheduleId, handleError])
 
   const handleFormSubmit = useCallback(async () => {
-    // e.preventDefault()
     const res = await axios
       .put(process.env.REACT_APP_URL + "schedules/" + scheduleId, {
         title: title.current.value,
@@ -77,6 +109,16 @@ const ScheduleModal = () => {
       navigate("/schedules")
     }
   }, [title, start, end, deadline, handleError, scheduleId])
+
+  const generateWorks = useCallback(async () => {
+    const res = await axios
+      .post(process.env.REACT_APP_URL + "schedules/" + scheduleId + "/create")
+      .catch(handleError)
+
+    if (res?.data?.message) handleSuccess(res.data.message)
+
+    console.log(res)
+  }, [handleError, handleSuccess, scheduleId])
 
   useEffect(() => {
     if (scheduleId) {
@@ -104,7 +146,7 @@ const ScheduleModal = () => {
         </Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        <Row xs={1} className="g-4 mt-0  align-items-stretch">
+        <Row xs={1} className="g-4 mt-0 align-items-stretch">
           <Col className="mt-0">
             <h2 className="fs-6">Titel</h2>
             <Form.Control required ref={title} />
@@ -121,8 +163,6 @@ const ScheduleModal = () => {
             <h2 className="fs-6">Abgabefrist</h2>
             <Form.Control required type="datetime-local" ref={deadline} />
           </Col>
-        </Row>
-        <Row xs={1} className="g-4 mt-0  align-items-stretch">
           <Col>
             <h2 className="fs-6">Schichten</h2>
             <MultiSelect
@@ -140,6 +180,23 @@ const ScheduleModal = () => {
               objectId={schedule?.id}
               defaultValues={schedule?.employees}
             />
+          </Col>
+          <Col>
+            <h2 className="fs-6">Dienste</h2>
+            {works === null && (
+              <Button
+                onClick={generateWorks}
+                className="w-100"
+                variant="outline-secondary"
+              >
+                <FontAwesomeIcon icon={faPlus} className="me-2" />
+                Dienste generieren
+              </Button>
+            )}
+            {works !== null &&
+              works.map((work) => {
+                return <WorkCard key={"schedule-"+schedule.id+"+work-"+work.id} work={work} />
+              })}
           </Col>
         </Row>
       </Modal.Body>

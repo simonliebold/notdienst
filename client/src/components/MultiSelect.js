@@ -5,7 +5,6 @@ import { useErrorMessage, useSuccessMessage } from "../contexts/AlertContext"
 import Button from "react-bootstrap/esm/Button"
 
 // TODO: stop input from reloading after every submit (move getting default values into component)
-// TODO: add loading state
 function MultiSelect({ valueType, objectType, objectId, defaultValues }) {
   const [options, setOptions] = useState([])
   const [defaults, setDefaults] = useState([])

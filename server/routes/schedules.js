@@ -27,12 +27,14 @@ module.exports = (models, sequelize) => {
       include: [models.Employee, models.Shift],
     })
     if (schedule === null) return res.sendStatus(404)
-    return res.send({ schedule: schedule })
+    const works = await models.Work.findAll({
+      where: { scheduleId: req.params.id },
+      include: models.Event
+    })
+    return res.send({ schedule: schedule, works: works })
   })
 
   // Create one
-  // TODO: add employees
-  // TODO: add shifts
   router.post("/", roles.requireAdmin, async (req, res) => {
     try {
       const schedule = await models.Schedule.create({
@@ -87,7 +89,6 @@ module.exports = (models, sequelize) => {
     }
   })
 
-
   // update schedule employees
   router.put("/:id/employees", roles.requireAdmin, async (req, res) => {
     try {
@@ -104,12 +105,10 @@ module.exports = (models, sequelize) => {
       await models.ScheduleEmployee.bulkCreate(newEmployees)
 
       return res.send({ message: "Erfolgreich aktualisiert" })
-
     } catch (error) {
       return res.status(400).send({ error: error.message })
     }
   })
-
 
   // update schedule shifts
   router.put("/:id/shifts", roles.requireAdmin, async (req, res) => {
@@ -127,7 +126,6 @@ module.exports = (models, sequelize) => {
       await models.ScheduleShift.bulkCreate(newShifts)
 
       return res.send({ message: "Erfolgreich aktualisiert" })
-
     } catch (error) {
       return res.status(400).send({ error: error.message })
     }
@@ -169,12 +167,13 @@ module.exports = (models, sequelize) => {
     const { count, rows } = await models.Work.findAndCountAll({
       where: { scheduleId: req.schedule.id },
     })
-    try {
-      if (count > 0) throw new Error("Delete works before creating new")
-    } catch (error) {
-      res.send({ error: error.message })
-      return
-    }
+    if (count > 0)
+      return res
+        .status(400)
+        .send({
+          error: "Es existieren bereits Dienste für diesen Schichtplan",
+        })
+
     let works = []
     const first = new Date(req.schedule.start)
     const last = new Date(req.schedule.end)
@@ -216,10 +215,7 @@ module.exports = (models, sequelize) => {
     getEvents,
     createWorks,
     async (req, res) => {
-      res.send({
-        schedule: req.schedule,
-        works: req.works,
-      })
+      res.send({ message: "Dienste erfolgreich generiert" })
     }
   )
 
