@@ -13,12 +13,13 @@ function MultiBadge({ items, resourceName, onInput }) {
   const options = useResource(resourceName + "s")
 
   const onChange = (items) => {
-    onInput(
-      resourceName + "Ids",
-      items.map((item) => {
-        return item.value
-      })
-    )
+    if (onInput)
+      onInput(
+        resourceName + "Ids",
+        items.map((item) => {
+          return item.value
+        })
+      )
   }
 
   if (action === "edit") {

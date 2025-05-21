@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useState } from "react"
 
 import { useNavigate, useParams } from "react-router-dom"
 
@@ -13,7 +13,13 @@ import { CardDeleteButton, CardEditButton, CardSaveButton } from "./CardButton"
 import { labels, localeString } from "../variables"
 import EditableText from "./EditableText"
 
-const DetailedCard = ({ resource, resourceName, children, className }) => {
+const DetailedCard = ({
+  resource,
+  resourceName,
+  data,
+  children,
+  className,
+}) => {
   const { title } = resource || {}
   const { action } = useParams()
   const navigate = useNavigate()
@@ -70,7 +76,8 @@ const DetailedCard = ({ resource, resourceName, children, className }) => {
               resourceName={resourceName}
               className="me-auto"
             />
-            <CardSaveButton />
+            {/* TODO: api call to update resource using data attribute */}
+            <CardSaveButton resource={resource} resourceName={resourceName} onClick={e => alert("here")} />
           </>
         )}
         {action !== "edit" && (
@@ -192,26 +199,31 @@ export const EmploymentDetailedCard = ({ employment }) => {
 }
 export const EmployeeDetailedCard = ({ employee }) => {
   const { short, title, employment, works, schedules, jobs } = employee || {}
+  const [data, setData] = useState({})
 
   const onInput = (label, value) => {
-    console.log("INPUT: ",label, value);
-  };
+    setData({ ...data, [label]: value })
+  }
 
   return (
-    <DetailedCard resourceName="employee" resource={employee}>
+    <DetailedCard resourceName="employee" resource={employee} data={data}>
       <EditableText value={short} label="short" onInput={onInput} />
-      <hr />
+      <br />
       <EditableText value={title} label="title" onInput={onInput} />
       <hr />
       Anstellungsverhältnis: <br />
-      <EditableBadge resource={employment} resourceName="employment" onInput={onInput} />
-      <hr />
+      <EditableBadge
+        resource={employment}
+        resourceName="employment"
+        onInput={onInput}
+      />
+      <br />
       Dienste:
       <MultiBadge items={works} resourceName="work" onInput={onInput} />
-      <hr />
+      <br />
       Schichtpläne:
       <MultiBadge items={schedules} resourceName="schedule" onInput={onInput} />
-      <hr />
+      <br />
       Jobs:
       <MultiBadge items={jobs} resourceName="job" onInput={onInput} />
     </DetailedCard>

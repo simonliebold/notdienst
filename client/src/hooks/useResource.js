@@ -10,7 +10,7 @@ const useResource = (resourceUrl) => {
       .get(process.env.REACT_APP_URL + resourceUrl)
       .catch(handleError)
     if (process.env.NODE_ENV === "development")
-      console.log(resourceUrl + ":", response?.data)
+      console.log("API",resourceUrl + ":", response?.data)
     setResource(response?.data)
   }
 
@@ -20,5 +20,7 @@ const useResource = (resourceUrl) => {
 
   return resource
 }
+// TODO: create update resource api call
+
 
 export default useResource

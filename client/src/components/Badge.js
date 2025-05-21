@@ -7,6 +7,7 @@ import BootstrapBadge from "react-bootstrap/Badge"
 
 import useResource from "../hooks/useResource"
 import { icons, selectStyles } from "./../variables"
+import FloatingLabel from "react-bootstrap/esm/FloatingLabel"
 
 function Badge({ resource, resourceName, disabled, className }) {
   const { id, short } = resource || {}
@@ -53,7 +54,7 @@ export const EditableBadge = ({ resource, resourceName, onInput }) => {
           value: resource.id,
           icon: icons[resourceName],
         }}
-        onChange={item => onInput(resourceName + "Id", item.value)}
+        onChange={(item) => onInput(resourceName + "Id", item.value)}
       />
     )
 

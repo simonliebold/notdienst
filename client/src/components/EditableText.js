@@ -20,7 +20,7 @@ const EditableText = ({ value, label, onInput }) => {
   else
     return (
       <>
-        <FloatingLabel controlId={label} label={labels[label]}>
+        <FloatingLabel label={labels[label]}>
           <Form.Control
             placeholder=""
             value={input}

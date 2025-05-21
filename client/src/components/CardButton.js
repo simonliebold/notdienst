@@ -8,12 +8,13 @@ function CardButton({
   className,
   variant,
   icon,
+  as,
   link,
+  onClick,
   resourceName,
   resource,
   children,
 }) {
-  const navigate = useNavigate()
 
   const path = "/" + resourceName + "/" + resource?.id + "/" + link
 
@@ -22,9 +23,9 @@ function CardButton({
       variant={variant}
       icon={icon}
       className={className}
-      as={Link}
+      as={as}
       to={path}
-      onClick={(e) => navigate(path)}
+      onClick={onClick}
       disabled={!resource || !resourceName}
     >
       <FontAwesomeIcon icon={icon} className="me-2" />
@@ -41,6 +42,7 @@ export const CardEditButton = ({ resource, resourceName, className }) => {
       resource={resource}
       resourceName={resourceName}
       link="edit"
+      as={Link}
     >
       Bearbeiten
     </CardButton>
@@ -56,20 +58,21 @@ export const CardDeleteButton = ({ resource, resourceName, className }) => {
       resource={resource}
       resourceName={resourceName}
       link="delete"
+      as={Link}
     >
       Löschen
     </CardButton>
   )
 }
 
-export const CardSaveButton = ({ resource, resourceName, className }) => {
+export const CardSaveButton = ({ resource, resourceName, onClick, className }) => {
   return (
     <CardButton
       variant="primary"
       icon={faSave}
       resource={resource}
       resourceName={resourceName}
-      link=""
+      onClick={onClick}
     >
       Speichern
     </CardButton>
