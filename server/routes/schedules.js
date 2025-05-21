@@ -23,14 +23,15 @@ module.exports = (models, sequelize) => {
   // Get one
   // TODO: also return employees and works
   router.get("/:id", roles.requireAdmin, async (req, res) => {
-    const schedule = await models.Schedule.findByPk(req.params.id)
+    const schedule = await models.Schedule.findOne({
+      where: { id: req.params.id },
+      include: [models.Employee, models.Shift],
+    })
     if (schedule === null) return res.sendStatus(404)
     return res.send({ schedule: schedule })
   })
 
   // Create one
-  // TODO: add employees
-  // TODO: add shifts
   router.post("/", roles.requireAdmin, async (req, res) => {
     try {
       const schedule = await models.Schedule.create({
