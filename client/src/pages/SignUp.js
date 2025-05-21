@@ -82,7 +82,7 @@ function EditCredentials({
 
   return (
     <>
-      <h1 className="mb-2">Account-Daten ändern</h1>
+      <h1 className="mb-2 fw-bold">Account-Daten ändern</h1>
       <p className="text-muted mb-4">
         Gib bitte die Daten ein, die geändert werden sollen.
       </p>
@@ -90,7 +90,7 @@ function EditCredentials({
         <Form.Group className="mb-3" controlId="email">
           <FloatingLabel
             controlId="email"
-            label="E-Mail-Adresse"
+            label="E-Mail-Adresse (Pflichtfeld)"
             className="mb-3"
           >
             <Form.Control
