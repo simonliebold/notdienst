@@ -14,9 +14,18 @@ module.exports = (sequelize) => {
         type: Sequelize.STRING,
         allowNull: false,
       },
+      requiredEmployees: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        defaultValue: 1
+      },
       dateStart: {
         type: Sequelize.DATEONLY,
-        allowNull: false,
+        allowNull: true,
+      },
+      dateEnd: {
+        type: Sequelize.DATEONLY,
+        allowNull: true,
       },
       timeStart: {
         type: Sequelize.TIME,
