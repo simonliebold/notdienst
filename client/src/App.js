@@ -41,7 +41,7 @@ function App() {
                   }
                 />
                 <Route
-                  path=":employeeId"
+                  path=":employeeInitials"
                   element={
                     <ProtectedRoute>
                       <Employees />

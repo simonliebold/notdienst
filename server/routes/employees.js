@@ -17,8 +17,9 @@ module.exports = (models) => {
   })
 
   // Get one
-  router.get("/:id", roles.requireAdmin, async (req, res) => {
-    const employee = await models.Employee.findByPk(req.params.id, {
+  router.get("/:initials", roles.requireAdmin, async (req, res) => {
+    const employee = await models.Employee.findOne({
+      where: { initials: req.params.initials },
       include: [
         models.Employment,
         models.Job,
@@ -32,7 +33,10 @@ module.exports = (models) => {
       ],
     })
 
-    if (employee === null) return res.sendStatus(404)
+    if (employee === null)
+      return res
+        .status(404)
+        .send({ error: "Mitarbeiter konnte nicht gefunden werden." })
     return res.send({ employee: employee })
   })
 

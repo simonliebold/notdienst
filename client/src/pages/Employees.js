@@ -15,6 +15,18 @@ import Form from "react-bootstrap/Form"
 import ListGroup from "react-bootstrap/ListGroup"
 import Alert from "react-bootstrap/Alert"
 
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import { faCalendarDays, faUser } from "@fortawesome/free-solid-svg-icons"
+
+const dateOptions = {
+  weekday: "long",
+  year: "numeric",
+  month: "numeric",
+  day: "numeric",
+  hour: "numeric",
+  minute: "numeric",
+}
+
 const WorkCard = ({ work }) => {
   console.log(work)
   return (
@@ -22,19 +34,19 @@ const WorkCard = ({ work }) => {
       <Card>
         <Card.Body>
           <Card.Title className="fs-6 m-0">
-            <Badge className="me-2">#{work.id}</Badge>
+            <Badge className="me-2">
+              <FontAwesomeIcon icon={faCalendarDays} className="me-1" />
+              {work.id}
+            </Badge>
             {work.event.title}
           </Card.Title>
         </Card.Body>
         <ListGroup variant="flush">
           <ListGroup.Item>
-            Beginn:{" "}
-            {new Date(work.start).toLocaleDateString("de-DE", {
-              weekday: "long",
-              year: "numeric",
-              month: "long",
-              day: "numeric",
-            })}
+            Beginn: {new Date(work.start).toLocaleString("de-DE", dateOptions)}
+          </ListGroup.Item>
+          <ListGroup.Item>
+            Ende: {new Date(work.end).toLocaleString("de-DE", dateOptions)}
           </ListGroup.Item>
         </ListGroup>
       </Card>
@@ -42,7 +54,9 @@ const WorkCard = ({ work }) => {
   )
 }
 
-const EmployeeModal = ({ employeeId }) => {
+const EmployeeModal = () => {
+  const { employeeInitials } = useParams()
+
   const addAlert = useAlertUpdate()
   const navigate = useNavigate()
 
@@ -63,11 +77,11 @@ const EmployeeModal = ({ employeeId }) => {
   const fetchEmployee = async () => {
     try {
       const response = await axios.get(
-        "http://192.168.178.44:3000/employees/" + employeeId
+        "http://192.168.178.44:3000/employees/" + employeeInitials
       )
       console.log(response)
-      if (!response.data.employee) return
-      if (!response.data.employee.employment) return
+      if (!response.data.employee) return addAlert("drfghj")
+      if (!response.data.employee.employment) return addAlert("ferr")
       setEmployee(response.data.employee)
       setDefaultEmployment({
         value: response.data.employee.employment.id,
@@ -80,7 +94,10 @@ const EmployeeModal = ({ employeeId }) => {
       )
       setWorks(response.data.employee.works)
     } catch (error) {
-      if (error.response.data.error) addAlert(error.response.data.error)
+      if (error.response.data.error) {
+        addAlert(error.response.data.error)
+        navigate("/employees")
+      }
     }
   }
 
@@ -115,12 +132,14 @@ const EmployeeModal = ({ employeeId }) => {
   }
 
   useEffect(() => {
-    setEmployee()
-    setDefaultEmployment()
-    setDefaultJobs()
-    fetchEmployee()
-    if (employeeId) setShowModal(true)
-  }, [employeeId])
+    if (employeeInitials) {
+      setEmployee()
+      setDefaultEmployment()
+      setDefaultJobs()
+      fetchEmployee()
+      setShowModal(true)
+    }
+  }, [employeeInitials])
 
   useEffect(() => {
     fetchEmployments()
@@ -137,7 +156,11 @@ const EmployeeModal = ({ employeeId }) => {
     >
       <Modal.Header closeButton>
         <Modal.Title>
-          <Badge className="me-2">{employee.initials}</Badge> {employee.name}
+          <Badge className="me-2">
+            <FontAwesomeIcon icon={faUser} className="me-2" />
+            {employee.initials}
+          </Badge>{" "}
+          {employee.name}
         </Modal.Title>
       </Modal.Header>
       <Modal.Body>
@@ -163,7 +186,9 @@ const EmployeeModal = ({ employeeId }) => {
           />
         </Form.Group>
         <h2 className="fs-6 mt-3">Arbeitsplanung</h2>
-        {works.length === 0 && <Alert variant="secondary">Keine aktuellen Schichten gefunden</Alert>}
+        {works.length === 0 && (
+          <Alert variant="secondary">Keine aktuellen Schichten gefunden</Alert>
+        )}
         <Row className="g-3" xs={1} lg={2}>
           {works.map((work) => {
             return <WorkCard work={work} />
@@ -179,11 +204,14 @@ const EmployeeCard = ({ employee }) => {
     <Col>
       <Card>
         <Card.Body>
-          <Badge className="me-2">{employee.initials}</Badge>
+          <Badge className="me-2">
+            <FontAwesomeIcon icon={faUser} className="me-1" />
+            {employee.initials}
+          </Badge>
           {employee.name}
         </Card.Body>
         <Card.Body className="border-top">
-          <Card.Link as={Link} to={"/employees/" + employee.id}>
+          <Card.Link as={Link} to={"/employees/" + employee.initials.toLowerCase()}>
             Bearbeiten
           </Card.Link>
         </Card.Body>
@@ -194,8 +222,6 @@ const EmployeeCard = ({ employee }) => {
 
 function Employees() {
   const addAlert = useAlertUpdate()
-
-  const { employeeId } = useParams()
 
   const [employees, setEmployees] = useState([])
 
@@ -218,7 +244,7 @@ function Employees() {
       {employees.map((employee, i) => {
         return <EmployeeCard key={"employee-" + i} employee={employee} />
       })}
-      <EmployeeModal employeeId={employeeId} />
+      <EmployeeModal />
     </Row>
   )
 }
