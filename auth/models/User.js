@@ -25,6 +25,22 @@ userSchema.pre("save", async function (next) {
   }
 })
 
+userSchema.pre("updateOne", async function (next) {
+  try {
+    const update = this.getUpdate()
+
+    if (!update?.password) return next()
+
+    const hash = await bcrypt.hash(update.password, 10)
+    update.password = hash
+
+    // Die Middleware fortsetzen
+  } catch (error) {
+    // Fehler behandeln
+    return next(error)
+  }
+})
+
 userSchema.methods.comparePassword = async function (candidatePassword) {
   // try {
   return await bcrypt.compare(candidatePassword, this.password)

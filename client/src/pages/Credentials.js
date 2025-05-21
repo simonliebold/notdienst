@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react"
+import React, { useState, useRef, useEffect, useCallback } from "react"
 import axios from "axios"
 import { useNavigate, useParams } from "react-router-dom"
 
@@ -164,18 +164,18 @@ function InputCode({ result, setResult, setLoggedIn, setOldEmail }) {
     checkCode()
   }
 
-  const checkCode = async () => {
+  const checkCode = useCallback(async () => {
+    console.log("erdtfzguh")
     setLoading(true)
     const code = await axios
       .get(process.env.REACT_APP_AUTH_URL + "credentials/check/" + result)
       .catch(handleError)
     if (code?.data?.email) {
       setOldEmail(code.data.email)
-      setLoggedIn(true)
     }
-
+    setLoggedIn(true)
     setLoading(false)
-  }
+  })
 
   return (
     <>

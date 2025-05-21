@@ -82,33 +82,52 @@ router.post(
 
 // Check if token is expired
 router.get("/credentials/check/:code", async (req, res) => {
-  let credentialsCode = await sequelize.models.credentialsCodes.findOne({
-    where: { code: req.params.code },
-    include: sequelize.models.users,
-  })
-  if (credentialsCode === null || credentialsCode.expiresAt < Date.now())
+  // let credentialsCode = await sequelize.models.credentialsCodes.findOne({
+  //   where: { code: req.params.code },
+  //   include: sequelize.models.users,
+  // })
+
+  const token = await CredentialsToken.aggregate([
+    {
+      $match: { code: req.params.code },
+    },
+    {
+      $lookup: {
+        from: "users",
+        localField: "userId",
+        foreignField: "_id",
+        as: "user",
+      },
+    },
+    { $unwind: "$user" },
+    { $project: { code: 1, email: "$user.email" } },
+  ])
+
+  if (token === null || token.expiresAt < Date.now())
     return res
       .status(404)
       .send({ error: "Der eingegebene Code konnte nicht gefunden werden." })
-  credentialsCode = credentialsCode.dataValues
-  return res.send({
-    code: credentialsCode.code,
-    email: credentialsCode.user.email,
-  })
+
+  return res.send(token[0])
 })
 
 // Change email / password
-router.post("/credentials/change/:code", async (req, res) => {
+router.post("/credentials/change/:code", async (req, res, next) => {
   const credentialsCode = await CredentialsToken.findOne({
-    code: req.body.code,
+    code: req.params.code,
   })
-  // const credentialsCode = await sequelize.models.credentialsCodes.findByPk(
-  //   req.params.code
-  // )
-  if (credentialsCode === null || credentialsCode.expiresAt < Date.now())
+  if (credentialsCode === null || credentialsCode.expiresAt < Date.now()) {
+    console.log(credentialsCode)
+    console.log(credentialsCode === null)
+    console.log(
+      credentialsCode.expiresAt,
+      Date.now(),
+      credentialsCode.expiresAt < Date.now()
+    )
     return res
       .status(404)
       .send({ error: "Der eingegebene Code konnte nicht gefunden werden." })
+  }
 
   if (req.body.password === null || req.body.password === null)
     return res.status(400).send({
@@ -120,22 +139,8 @@ router.post("/credentials/change/:code", async (req, res) => {
       { _id: credentialsCode.userId },
       { email: req.body.email, password: req.body.password }
     )
-    // const [count, users] = await sequelize.models.users.update(
-    //   {
-    //     email: req.body.email,
-    //     password: req.body.password,
-    //   },
-    //   { where: { id: credentialsCode.userId }, individualHooks: true }
-    // )
-    // if (count < 1)
-    //   return res.status(400).send({
-    //     error: "Es wurden keine Änderungen vorgenommen.",
-    //   })
 
     await CredentialsToken.deleteOne({ code: req.params.code })
-    // await sequelize.models.credentialsCodes.destroy({
-    //   where: { code: req.params.code },
-    // })
 
     return res
       .status(200)
