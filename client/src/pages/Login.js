@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react"
 import axios from "axios"
-import { useNavigate } from "react-router-dom"
+import { useNavigate, Navigate } from "react-router-dom"
 
 import { useAuth, useAuthUpdate } from "../contexts/AuthContext"
 import { useAlertUpdate } from "../contexts/AlertContext"
@@ -54,6 +54,8 @@ function Login() {
       else addAlert(error.message)
     }
   }
+
+  if(token) return <Navigate to="/" />
 
   return (
     <div
