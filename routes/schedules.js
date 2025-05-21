@@ -1,6 +1,4 @@
-// TODO: add return to res.status
 module.exports = (models, sequelize) => {
-  const { Op } = require("sequelize")
   const router = require("express").Router()
 
   // Get all
@@ -22,9 +20,9 @@ module.exports = (models, sequelize) => {
   router.post("/", async (req, res) => {
     try {
       const response = await models.Schedule.create({ ...req.body })
-      res.send({ response: response })
+      return res.send({ response: response })
     } catch (error) {
-      res.status(400).send({ error: error })
+      return res.status(400).send({ error: error })
     }
   })
 
@@ -37,13 +35,12 @@ module.exports = (models, sequelize) => {
           where: { id: req.params.id },
         }
       )
-      response[0] > 0
-        ? res
-            .status(200)
-            .send({ message: "Updated successfully", rows: response[0] })
-        : res.status(404).send({ message: "Not found", rows: response[0] })
+      if (response[0] > 0)
+        return res.status(200).send({ message: "Updated successfully" })
+
+      return res.status(404).send({ message: "Not found", rows: response[0] })
     } catch (error) {
-      res.status(400).send({ error: error })
+      return res.status(400).send({ error: error })
     }
   })
 
@@ -53,11 +50,12 @@ module.exports = (models, sequelize) => {
       const response = await models.Schedule.destroy({
         where: { id: req.params.id },
       })
-      response > 0
-        ? res.status(200).send({ message: "Deleted successfully" })
-        : res.status(404).send({ message: "Not found" })
+      if (response > 0)
+        return res.status(200).send({ message: "Deleted successfully" })
+
+      return res.status(404).send({ message: "Not found" })
     } catch (error) {
-      res.status(400).send({ error: error })
+      return res.status(400).send({ error: error })
     }
   })
 
@@ -66,7 +64,7 @@ module.exports = (models, sequelize) => {
     const response = await models.ScheduleEmployee.findAll({
       where: { scheduleId: req.params.id },
     })
-    res.send({ response: response })
+    return res.send({ response: response })
   })
 
   // Add Employees to Schedule
@@ -78,9 +76,9 @@ module.exports = (models, sequelize) => {
           employeeId: employeeId,
         }))
       )
-      res.send({ response: response })
+      return res.send({ response: response })
     } catch (error) {
-      res.status(400).send({ error: error })
+      return res.status(400).send({ error: error })
     }
   })
 
