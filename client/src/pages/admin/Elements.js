@@ -14,6 +14,7 @@ function Elements() {
       <TitleCard
         icon={faUser}
         resource={{ id: 256, short: "OKT 2023", title: "Oktober 2023" }}
+        resourceName={"schedule"}
       />
     </>
   )

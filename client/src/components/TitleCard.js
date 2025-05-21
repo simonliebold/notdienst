@@ -10,7 +10,7 @@ function TitleCard({ resource, resourceName, icon }) {
     <Card>
       <Card.Body
         as={Link}
-        to={resourceName + id}
+        to={"/" + resourceName + "/" + id}
         className="text-decoration-none"
       >
         <Badge className="me-2" icon={icon}>
