@@ -29,7 +29,7 @@ export const useResourceUpdate = (resourceUrl) => {
     if (process.env.NODE_ENV === "development")
       console.log("PUT", resourceUrl + ":", updatedData)
 
-    handleSuccess(response?.data?.message)
+    // handleSuccess(response?.data?.message)
     return response?.data?.message
   }
 

@@ -17,7 +17,7 @@ import { useResourceUpdate } from "../hooks/useResource"
 const DetailedCard = ({
   resource,
   resourceName,
-  data,
+  input,
   refresh,
   children,
   className,
@@ -90,7 +90,7 @@ const DetailedCard = ({
               resourceName={resourceName}
               onClick={async (e) => {
                 setLoading(true)
-                await update(data)
+                await update(input)
                 refresh()
                 setLoading(false)
               }}
@@ -193,41 +193,70 @@ export const FreetimeDetailedCard = ({ freetime }) => {
   )
 }
 
-export const EmploymentDetailedCard = ({ employment }) => {
-  const { employees, minHours, maxHours } = employment || {}
-  const hourString = (hours) => {
-    if (hours) {
-      if (hours === 1) return "1 Stunde"
-      return hours + " Stunden"
-    }
-    return "Kein Wert gesetzt"
-  }
+export const EmploymentDetailedCard = ({ employment, refresh }) => {
+  const { title, short, employees, minHours, maxHours } = employment || {}
 
+  const [input, setInput] = useState({})
+
+  const onInput = (label, value) => {
+    setInput({ ...input, [label]: value })
+  }
   return (
-    <DetailedCard resourceName="employment" resource={employment}>
-      Minimum: {hourString(minHours)}
-      <br />
-      Maximum: {hourString(maxHours)}
-      <hr />
-      Mitarbeiter:
-      <MultiBadge items={employees} resourceName="employee" />
+    <DetailedCard
+      resourceName="employment"
+      resource={employment}
+      refresh={refresh}
+      input={input}
+    >
+      <EditableText
+        className="flex-fill"
+        value={short}
+        label="short"
+        onInput={onInput}
+      />
+      <EditableText
+        className="flex-fill"
+        value={title}
+        label="title"
+        onInput={onInput}
+      />
+      <div className="">
+        <EditableText
+          className="flex-fill"
+          value={minHours}
+          label="minHours"
+          onInput={onInput}
+        />
+        <EditableText
+          className="flex-fill"
+          value={maxHours}
+          label="maxHours"
+          onInput={onInput}
+        />
+        Mitarbeiter:
+        <MultiBadge
+          items={employees}
+          resourceName="employee"
+          onInput={onInput}
+        />
+      </div>
     </DetailedCard>
   )
 }
 export const EmployeeDetailedCard = ({ employee, refresh }) => {
   const { short, title, employment, works, schedules, jobs } = employee || {}
-  const [data, setData] = useState({})
+  const [input, setInput] = useState({})
 
   const onInput = (label, value) => {
-    setData({ ...data, [label]: value })
+    setInput({ ...input, [label]: value })
   }
 
   return (
     <DetailedCard
       resourceName="employee"
       resource={employee}
-      data={data}
       refresh={refresh}
+      input={input}
     >
       <div className="">
         <EditableText

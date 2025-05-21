@@ -1,3 +1,5 @@
+const { Op } = require("sequelize")
+
 module.exports = (models) => {
   const router = require("express").Router()
 
@@ -34,19 +36,49 @@ module.exports = (models) => {
   // Update one
   router.put("/:id", async (req, res) => {
     try {
-      const employment = await models.Employment.update(
-        { ...req.body },
+      const employment = await models.Employment.findByPk(req.params.id)
+
+      if (!employment)
+        return res
+          .status(400)
+          .send({ error: "Anstellungsverhältnis nicht gefunden" })
+
+      await models.Employment.update(
+        {
+          short: req.body.short,
+          title: req.body.title,
+          minHours: req.body.minHours || null,
+          maxHours: req.body.maxHours || null,
+        },
         {
           where: { id: req.params.id },
         }
       )
-      employment[0] > 0
-        ? res
-            .status(200)
-            .send({ message: "Updated successfully", rows: employment[0] })
-        : res.status(404).send({ message: "Not found", rows: employment[0] })
+
+      if (req.body?.employeeIds) {
+        await models.Employee.update(
+          { employmentId: null },
+          {
+            where: {
+              employmentId: employment.id,
+            },
+          }
+        )
+        await models.Employee.update(
+          { employmentId: employment.id },
+          {
+            where: {
+              [Op.or]: req.body.employeeIds.map((id) => {
+                return { id: id }
+              }),
+            },
+          }
+        )
+      }
+
+      return res.status(200).send({ message: "Änderungen gespeichert" })
     } catch (error) {
-      res.status(400).send({ error: error })
+      res.status(400).send({ error: error.message })
     }
   })
 

@@ -49,7 +49,9 @@ export const title = {
 
 export const labels = {
   short: "Kürzel",
-  title: "Name"
+  title: "Name",
+  minHours: "Minimum",
+  maxHours: "Maximum"
 }
 
 export const localeString = {
