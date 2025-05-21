@@ -9,10 +9,14 @@ import Breadcrumb from "../../components/Breadcrumb"
 function Employee() {
   const { employeeId } = useParams()
   const employee = useResource("employees/" + employeeId)
+
   return (
     <>
       <Breadcrumb resourceName="employee" resource={employee} />
-      <EmployeeDetailedCard employee={employee} className="mt-3" />
+      <EmployeeDetailedCard
+        employee={employee}
+        className="mt-3"
+      />
     </>
   )
 }

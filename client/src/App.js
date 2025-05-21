@@ -164,27 +164,41 @@ function App() {
 
               <Route path="schedules" element={schedules} />
               <Route path="schedule/:scheduleId" element={schedule} />
+              <Route path="schedule/:scheduleId/:action" element={schedule} />
 
               <Route path="freetimes" element={freetimes} />
               <Route path="freetime/:freetimeId" element={freetime} />
-              
+              <Route path="freetime/:freetimeId/:action" element={freetime} />
+
               <Route path="works" element={works} />
               <Route path="work/:workId" element={work} />
-              
+              <Route path="work/:workId/:action" element={work} />
+
               <Route path="shifts" element={shifts} />
               <Route path="shift/:shiftId" element={shift} />
-              
+              <Route path="shift/:shiftId/:action" element={shift} />
+
               <Route path="rrules" element={rrules} />
               <Route path="rrule/:rruleId" element={rrule} />
-              
+              <Route path="rrule/:rruleId/:action" element={rrule} />
+
               <Route path="employees" element={employees} />
               <Route path="employee/:employeeId" element={employee} />
-              
+              <Route path="employee/:employeeId/:action" element={employee} />
+
               <Route path="jobs" element={jobs} />
               <Route path="job/:jobId" element={job} />
-              
+              <Route path="job/:jobId/:action" element={job} />
+
               <Route path="employments" element={employments} />
-              <Route path="employment/:employmentId" element={employment} />
+              <Route
+                path="employment/:employmentId/:action"
+                element={employment}
+              />
+              <Route
+                path="employment/:employmentId/:action"
+                element={employment}
+              />
             </Routes>
           </div>
         </Container>

@@ -51,7 +51,7 @@ app.listen(port, async () => {
   } catch (error) {
     console.error("Unable to connect to the database:", error)
   }
-  // await db.sequelize.sync()
-  await db.sequelize.sync({ force: true })
-  require("./example.js")(models)
+  await db.sequelize.sync() 
+  // await db.sequelize.sync({ force: true })
+  // require("./example.js")(models)
 })

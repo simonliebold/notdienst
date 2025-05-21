@@ -162,7 +162,7 @@ export const EmploymentDetailedCard = ({ employment }) => {
   )
 }
 export const EmployeeDetailedCard = ({ employee }) => {
-  const { employment, works, schedules, jobs, fgvhbj } = employee || {}
+  const { employment, works, schedules, jobs } = employee || {}
 
   return (
     <DetailedCard resourceName="employee" resource={employee}>

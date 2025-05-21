@@ -1,4 +1,9 @@
-import { faPen, faPencil, faTrash } from "@fortawesome/free-solid-svg-icons"
+import {
+  faPen,
+  faPencil,
+  faSave,
+  faTrash,
+} from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import React from "react"
 import Button from "react-bootstrap/esm/Button"
@@ -57,6 +62,20 @@ export const CardDeleteButton = ({ resource, resourceName, className }) => {
       link="delete"
     >
       Löschen
+    </CardButton>
+  )
+}
+
+export const CardSaveButton = ({ resource, resourceName, className }) => {
+  return (
+    <CardButton
+      variant="primary"
+      icon={faSave}
+      resource={resource}
+      resourceName={resourceName}
+      link=""
+    >
+      Speichern
     </CardButton>
   )
 }

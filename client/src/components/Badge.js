@@ -1,15 +1,19 @@
 import React from "react"
 import BootstrapBadge from "react-bootstrap/Badge"
 import Placeholder from "react-bootstrap/Placeholder"
-import { icons } from "./../variables"
+import { icons, titles } from "./../variables"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { Link } from "react-router-dom"
 import { faSpinner, faX } from "@fortawesome/free-solid-svg-icons"
+import FloatingLabel from "react-bootstrap/FloatingLabel"
+import Form from "react-bootstrap/Form"
 
-function Badge({ resource, resourceName, disabled, className }) {
+function Badge({ resource, resourceName, disabled, edit, className }) {
   const { id, short } = resource || {}
 
   const icon = icons[resourceName] || icons.default
+
+  // if (edit) return <Form.Control />
 
   return (
     <BootstrapBadge

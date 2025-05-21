@@ -3,98 +3,29 @@ import React, { useCallback, useEffect, useState } from "react"
 import Select from "react-select"
 import { useErrorMessage, useSuccessMessage } from "../contexts/AlertContext"
 import Button from "react-bootstrap/esm/Button"
+import useResource from "../hooks/useResource"
 
 // TODO: stop input from reloading after every submit (move getting default values into component)
-function MultiSelect({ valueType, objectType, objectId, defaultValues }) {
-  const [options, setOptions] = useState([])
-  const [defaults, setDefaults] = useState([])
-  const [values, setValues] = useState([])
-
-  const [saving, setSaving] = useState(false)
-
-  const handleError = useErrorMessage()
-  const handleSuccess = useSuccessMessage()
-
-  const fetchOptions = useCallback(async () => {
-    const res = await axios
-      .get(process.env.REACT_APP_URL + valueType)
-      .catch(handleError)
-
-    setOptions(
-      res?.data?.values.map((value) => {
-        const data = Object.values(value)
-        return { value: data[0], label: data[1] }
-      })
-    )
-  }, [handleError, valueType])
-
-  const updateValues = useCallback(async () => {
-    setSaving(true)
-    const res = await axios
-      .put(
-        process.env.REACT_APP_URL +
-          objectType +
-          "/" +
-          objectId +
-          "/" +
-          valueType,
-        { values: values.map((val) => val.value) }
-      )
-      .catch(handleError)
-
-    if (res?.data?.message) handleSuccess(res.data.message)
-    setSaving(false)
-  }, [handleError, handleSuccess, objectId, objectType, valueType, values])
-
-  useEffect(() => {
-    const newDefaults = defaultValues?.map((value) => {
-      const data = Object.values(value)
-      return { value: data[0], label: data[1] }
-    })
-    setDefaults(newDefaults)
-    setValues(newDefaults)
-    fetchOptions()
-  }, [defaultValues, fetchOptions])
-
-  let disabled = useCallback(() => {
-    const sortedValues = values
-      ?.map((data) => data.value)
-      .sort()
-      .toString()
-
-    const sortedDefault = defaults
-      ?.map((data) => data.value)
-      .sort()
-      .toString()
-
-    return sortedValues === sortedDefault
-  }, [values, defaults])
+function MultiSelect({ items, resourceName }) {
+  const defaults = useResource(resourceName + "s/")
 
   if (!defaults || !values || !options)
     return <Select isDisabled isLoading placeholder="Aktualisiert..." />
 
   return (
-    <div className="d-flex align-items-end">
-      <Select
-        defaultValue={defaults}
-        options={options}
-        values={values}
-        onChange={setValues}
-        name={valueType}
-        isLoading={saving}
-        isDisabled={saving}
-        placeholder="Auswählen..."
-        isMulti
-        className="basic-multi-select flex-fill"
-        classNamePrefix="select"
-      />
-      {!disabled() && (
-        <Button className="ms-3" onClick={updateValues} disabled={saving}>
-          {!saving && "Speichern"}
-          {saving && "Speichert..."}
-        </Button>
-      )}
-    </div>
+    <Select
+      defaultValue={defaults}
+      options={options}
+      values={items.map((item) => ({ value: item.id, label: item.short }))}
+      // onChange={setValues}
+      name={valueType}
+      isLoading={saving}
+      isDisabled={saving}
+      placeholder="Auswählen..."
+      isMulti
+      className="basic-multi-select flex-fill"
+      classNamePrefix="select"
+    />
   )
 }
 
