@@ -19,6 +19,7 @@ import Employments from "./pages/admin/Employments"
 import Freetimes from "./pages/admin/Freetimes"
 import Jobs from "./pages/admin/Jobs"
 import Rrules from "./pages/admin/Rrules"
+import Schedules from "./pages/admin/Schedules"
 
 function App() {
   const home = (
@@ -75,6 +76,12 @@ function App() {
     </Prot>
   )
 
+  const schedules = (
+    <Prot>
+      <Schedules />
+    </Prot>
+  )
+
   return (
     <AuthProvider>
       <AlertProvider>
@@ -96,6 +103,7 @@ function App() {
               <Route path="freetimes" element={freetimes} />
               <Route path="jobs" element={jobs} />
               <Route path="rrules" element={rrules} />
+              <Route path="schedules" element={schedules} />
             </Routes>
           </div>
         </Container>

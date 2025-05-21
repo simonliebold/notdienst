@@ -88,6 +88,11 @@ function Navigation() {
       path: "/rrules",
     },
     {
+      name: "Dienstpläne",
+      icon: icons.schedule,
+      path: "/schedules",
+    },
+    {
       name: "Elemente",
       icon: faCube,
       path: "/elements",

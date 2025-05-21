@@ -4,8 +4,10 @@ module.exports = (models, sequelize) => {
 
   // Get all
   router.get("/", roles.requireAdmin, async (req, res) => {
-    const schedules = await models.Schedule.findAll()
-    return res.send({ schedules: schedules })
+    const schedules = await models.Schedule.findAll({
+      include: [models.Employee, models.Shift],
+    })
+    return res.send(schedules)
   })
 
   // Get all self

@@ -1,13 +1,6 @@
 import React from "react"
 import useResource from "../../hooks/useResource"
-import {
-  EmployeeDetailedCard,
-  EmploymentDetailedCard,
-  FreetimeDetailedCard,
-  JobDetailedCard,
-  RruleDetailedCard,
-  WorkDetailedCard,
-} from "../../components/DetailedCard"
+import { RruleDetailedCard } from "../../components/DetailedCard"
 import TitleCard from "../../components/TitleCard"
 import CardList from "../../components/CardList"
 
