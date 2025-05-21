@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react"
 import axios from "axios"
-import { useNavigate, Navigate } from "react-router-dom"
+import { useNavigate, Navigate, Link } from "react-router-dom"
 
 import { useAuth, useAuthUpdate } from "../contexts/AuthContext"
 import { useAlertUpdate } from "../contexts/AlertContext"
@@ -26,20 +26,18 @@ function Login() {
 
   const [loading, setLoading] = useState(false)
 
-  useEffect(() => {
+  const checkEmail = () => {
     if (email.length === 0) setIsEmailInvalid(true)
     else setIsEmailInvalid(false)
+  }
 
+  const checkPass = () => {
     if (password.length === 0) setIsPassInvalid(true)
     else setIsPassInvalid(false)
-  }, [email, password])
-
-  useEffect(() => {
-    setIsEmailInvalid(false)
-    setIsPassInvalid(false)
-  }, [])
+  }
 
   const handleLogin = async (e) => {
+    setLoading(true)
     e.preventDefault()
     try {
       const response = await axios.post("http://localhost:4000/login", {
@@ -53,9 +51,10 @@ function Login() {
       if (error.response.data.error) addAlert(error.response.data.error)
       else addAlert(error.message)
     }
+    setLoading(false)
   }
 
-  if(token) return <Navigate to="/" />
+  if (token) return <Navigate to="/" />
 
   return (
     <div
@@ -77,7 +76,11 @@ function Login() {
               type="email"
               placeholder="E-Mail-Adresse"
               value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              onChange={(e) => {
+                setEmail(e.target.value)
+                checkEmail()
+              }}
+              onBlur={checkEmail}
               isInvalid={isEmailInvalid}
               required
             />
@@ -91,7 +94,11 @@ function Login() {
             <Form.Control
               type="password"
               placeholder="Passwort"
-              onChange={(e) => setPassword(e.target.value)}
+              onChange={(e) => {
+                setPassword(e.target.value)
+                checkPass()
+              }}
+              onBlur={checkPass}
               isInvalid={isPassInvalid}
               required
             />
@@ -100,14 +107,21 @@ function Login() {
             </Form.Control.Feedback>
           </FloatingLabel>
         </Form.Group>
-        <Button
-          size="lg"
-          type="submit"
-          disabled={loading || isEmailInvalid || isPassInvalid}
-        >
-          {loading && <>Lädt...</>}
-          {!loading && <>Daten ändern</>}
-        </Button>
+        <div className="d-flex align-items-center">
+          <Button
+            size="lg"
+            type="submit"
+            disabled={loading || isEmailInvalid || isPassInvalid}
+          >
+            {loading && <>Lädt...</>}
+            {!loading && <>Einloggen</>}
+          </Button>
+          <p className="mb-0 ms-3 text-small">
+            <Link to="/credentials" className="text-muted text-decoration-none">
+              Passwort vergessen?
+            </Link>
+          </p>
+        </div>
       </Form>
     </div>
   )
