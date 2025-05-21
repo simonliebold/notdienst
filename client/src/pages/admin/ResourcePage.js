@@ -281,10 +281,10 @@ export const ExchangePage = () => {
     <ResourcePage resourceName="exchange" setData={setExchange}>
       <EditableText value={exchange?.short} label="short" />
       <EditableText value={exchange?.title} label="title" />
-      <MultiBadge items={exchange?.sender} resourceName="employee" />
-      <EditableBadge resource={exchange?.outgoing} resourceName="work" />
-      <MultiBadge items={exchange?.receiver} resourceName="employee" />
-      <EditableBadge resource={exchange?.incoming} resourceName="work" />
+      <MultiBadge items={exchange?.sender} resourceName="employee" customName="sender" />
+      <EditableBadge resource={exchange?.outgoing} resourceName="work" customName="outgoing" />
+      <MultiBadge items={exchange?.receiver} resourceName="employee" customName="receiver" />
+      <EditableBadge resource={exchange?.incoming} resourceName="work" customName="incoming" />
     </ResourcePage>
   )
 }

@@ -1,4 +1,4 @@
-import React, { useEffect } from "react"
+import React, { useEffect, useState } from "react"
 import { Link } from "react-router-dom"
 
 import Select from "react-select"
@@ -30,12 +30,18 @@ function Badge({ resource, resourceName, disabled, className, ...props }) {
 export const EditableBadge = ({
   resource,
   resourceName,
+  customName,
   onInput,
   disabled,
   edit,
   className,
 }) => {
   const [options, updateOptions] = useResource(resourceName + "s")
+  const [name, setName] = useState(customName)
+  useEffect(() => {
+    if (customName) setName(customName)
+    else setName(resourceName)
+  }, [customName, resourceName])
 
   useEffect(() => {
     updateOptions()
@@ -44,14 +50,14 @@ export const EditableBadge = ({
   if (edit && disabled)
     return (
       <p>
-        <label className="w-100">{title[resourceName]}:</label>
+        <label className="w-100">{title[name]}:</label>
         <Badge resource={resource} resourceName={resourceName} disabled />
       </p>
     )
   if (edit)
     return (
       <div className={className}>
-        <label className="w-100">{title[resourceName]}:</label>
+        <label className="w-100">{title[name]}:</label>
         <Select
           options={options?.map((option) => ({
             icon: icons[resourceName],
@@ -64,14 +70,14 @@ export const EditableBadge = ({
           getOptionLabel={(option) => (
             <>
               <FontAwesomeIcon
-                icon={icons[option.resourceName] || icons.default}
+                icon={icons[resourceName] || icons.default}
                 className="me-2"
               />
               {option.label}
             </>
           )}
           defaultValue={{
-            resourceName: resourceName,
+            // resourceName: resourceName,
             label: resource?.short,
             value: resource?._id,
           }}
@@ -83,14 +89,14 @@ export const EditableBadge = ({
   if (!resource)
     return (
       <p>
-        <label className="w-100">{title[resourceName]}:</label>
+        <label className="w-100">{title[name]}:</label>
         <Badge resource={{ short: "Keine Daten" }} disabled />
       </p>
     )
 
   return (
     <p>
-      <label className="w-100">{title[resourceName]}:</label>
+      <label className="w-100">{title[name]}:</label>
       <Badge resource={resource} resourceName={resourceName} />
     </p>
   )

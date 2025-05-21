@@ -42,6 +42,8 @@ export const titles = {
   rrule: "Wiederholungen",
   mission: "Einsatzprotokolle",
   exchange: "Tausche",
+  sender: "Sender",
+  receiver: "Empfänger",
   default: "Objekte",
 }
 
@@ -56,6 +58,8 @@ export const title = {
   rrule: "Wiederholung",
   mission: "Einsatzprotokoll",
   exchange: "Tausch",
+  outgoing: "Abgehender Dienst",
+  incoming: "Eingehender Dienst",
   default: "Objekt",
 }
 
