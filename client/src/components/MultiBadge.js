@@ -5,8 +5,14 @@ import useResource from "../hooks/useResource"
 import { icons, selectStyles, titles } from "../variables"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 
-function MultiBadge({ items, resourceName, onInput, disabled, className, edit }) {
-
+function MultiBadge({
+  items,
+  resourceName,
+  onInput,
+  disabled,
+  className,
+  edit,
+}) {
   const [options, updateOptions] = useResource(resourceName + "s")
 
   useEffect(() => {
@@ -28,10 +34,10 @@ function MultiBadge({ items, resourceName, onInput, disabled, className, edit })
       <div className={className}>
         <label className="w-100">{titles[resourceName]}:</label>
         {items?.map((item) => {
-          const { short } = item || {}
+          const { short, id } = item || {}
           return (
             <Badge
-              key={short + "-badge"}
+              key={short + "-" + id + "-badge"}
               resource={item}
               resourceName={resourceName}
               className="me-1 mb-1"
@@ -83,10 +89,10 @@ function MultiBadge({ items, resourceName, onInput, disabled, className, edit })
     <div className={className}>
       <label className="w-100">{titles[resourceName]}:</label>
       {items?.map((item) => {
-        const { short } = item || {}
+        const { short, id } = item || {}
         return (
           <Badge
-            key={short + "-badge"}
+            key={short + "-" + id + "-badge"}
             resource={item}
             resourceName={resourceName}
             className="me-1 mb-1"

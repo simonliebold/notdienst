@@ -34,7 +34,7 @@ const DetailedCard = ({
 
   useEffect(() => {
     if (resource?.works?.length === 0) setExpanded(true)
-    if (resource?.works?.length !== 0) setExpanded(false)
+    if (resource?.works && resource?.works?.length !== 0) setExpanded(false)
   }, [resource, resourceName])
 
   if (loading || saving)

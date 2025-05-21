@@ -12,7 +12,7 @@ module.exports = (models) => {
   // Get one
   router.get("/:id", roles.requireAdmin, async (req, res) => {
     const rrule = await models.Rrule.findByPk(req.params.id, {
-      include: models.Shift,
+      include: [models.Shift],
     })
     if (!rrule)
       return res.status(404).send({ message: "Rrule nicht gefunden." })
