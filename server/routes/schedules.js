@@ -289,6 +289,7 @@ module.exports = (models, sequelize) => {
       include: [
         { model: models.Schedule, where: { id: req.params.id } },
         models.Employment,
+        models.Job,
       ],
     })
 
@@ -300,6 +301,7 @@ module.exports = (models, sequelize) => {
         // ...employee.dataValues,
         id: employee.id,
         freetimes: [],
+        jobIds: employee.jobs.map((job) => job.id),
         minHours: employee.employment.minHours,
         maxHours: employee.employment.maxHours,
         availableTime: 0,
@@ -332,6 +334,18 @@ module.exports = (models, sequelize) => {
     Object.values(req.works).forEach((work) => {
       work.employeeIds = []
       Object.values(req.employees).forEach((employee) => {
+
+        let hasJob = false
+        for (let i = 0; i < work.jobIds.length; i++) {
+          for (let j = 0; j < employee.jobIds.length; j++) {
+            if (work.jobIds[i] !== employee.jobIds[j]) continue
+            hasJob = true
+            break
+          }
+          if (hasJob) break
+        }
+        if (!hasJob) return
+
         const isFree = req.employees[employee.id].freetimes.every(
           (freetime) =>
             new Date(freetime.end).getTime() <= work.start.getTime() ||
@@ -349,9 +363,9 @@ module.exports = (models, sequelize) => {
 
     req.works = newWorks
 
-    req.works.sort((a, b) => {
+    await req.works.sort((a, b) => {
       if (a.employeeIds.length < b.employeeIds.length) return -1
-      else if (a.employeeIds.length < b.employeeIds.length) return 1
+      else if (a.employeeIds.length > b.employeeIds.length) return 1
       else return Math.random() < 0.5 ? 1 : -1
     })
 
@@ -393,7 +407,11 @@ module.exports = (models, sequelize) => {
           bestEmployeeRemainingHours = employeeRemainingHours
         }
       })
-      if(!bestEmployee)return res.status(400).send({error: "Es stehen zu wenig Mitarbeiter zur Verfügung"})
+      if (!bestEmployee)
+        return res.status(400).send({
+          error:
+            "Es stehen zu wenig Mitarbeiter für die Anzahl an Diensten zur Verfügung.",
+        })
       workEmployees.push({
         workId: work.id,
         employeeId: bestEmployee.id,
@@ -419,7 +437,7 @@ module.exports = (models, sequelize) => {
     checkAvailability,
     allocateWorks,
     async (req, res) => {
-      return res.send({ works: req.works, employees: req.employees })
+      return res.send(req.employees)
     }
   )
 

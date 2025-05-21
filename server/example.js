@@ -21,6 +21,7 @@ module.exports = async (models) => {
       title: "Teilzeit",
       short: "TEILZEIT",
       minHours: 80,
+      maxHours: 100,
     },
     {
       title: "Vollzeit",
@@ -34,8 +35,11 @@ module.exports = async (models) => {
 
   let employees = [
     { short: "BEC", title: "Markus Becker", employmentId: 1 },
-    { short: "HZF", title: "Jörn Hezfig", employmentId: 2 },
-    { short: "WEW", title: "Max Wewel", employmentId: 3 },
+    { short: "KRÄ", title: "Emilia Krämer", employmentId: 1 },
+    { short: "KLU", title: "Antje Kluge", employmentId: 2 },
+    { short: "SCH", title: "Noah Schuster", employmentId: 2 },
+    { short: "KAI", title: "Lina Kaiser", employmentId: 3 },
+    { short: "ZIM", title: "Adam Zimmermann", employmentId: 3 },
   ]
 
   employees = await models.Employee.bulkCreate(employees)
