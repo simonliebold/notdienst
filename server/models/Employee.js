@@ -1,6 +1,5 @@
 const { Sequelize } = require("sequelize")
 
-// TODO: turn initials into primary key
 module.exports = (sequelize) => {
   return sequelize.define(
     "employee",
@@ -22,7 +21,7 @@ module.exports = (sequelize) => {
       },
       employmentId: {
         type: Sequelize.INTEGER,
-        allowNull: false,
+        allowNull: true,
       },
     },
     { timestamps: false }

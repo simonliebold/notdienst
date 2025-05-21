@@ -286,7 +286,7 @@ const EmployeeModal = () => {
         )}
         {isLoading && (
           <Placeholder as="p" animation="glow">
-            <Placeholder.Button className="mt-3">Speichern</Placeholder.Button>
+            <Placeholder.Button className="mt-3">Lädt...</Placeholder.Button>
           </Placeholder>
         )}
         {!isLoading && (

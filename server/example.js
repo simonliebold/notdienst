@@ -1,5 +1,90 @@
 module.exports = async (models) => {
-  const events = [
+  const names = [
+    ["Simon Liebold", 1],
+    ["Tom Rerucha", 1],
+    ["Michael Wagner", 3],
+    ["Laura Fischer", 3],
+    ["Markus Becker", 2],
+    ["Sarah Hoffmann", 3],
+    ["Julia Weber", 2],
+    ["Thomas Richter", 2],
+    ["Christine Lehmann", 1],
+    ["Sabine Keller", 1],
+    ["David Braun", 1],
+    ["Nicole Huber", 2],
+    ["Martin Wolf", 2],
+    ["Monika Herrmann", 2],
+    ["Richard Krüger", 1],
+    ["Doris Landwehr", 1],
+    ["Peter Kurz", 1],
+  ]
+  const generateEmployees = () => {
+    let employees = []
+    for (let i = 0; i < names.length; i++) {
+      const name = names[i][0].split(" ")
+      const kuerzel = name[1].slice(0, 3).toUpperCase()
+      const employmentId = names[i][1]
+
+      const employeeData = {
+        initials: kuerzel,
+        name: `${name[0]} ${name[1]}`,
+        employmentId: employmentId,
+      }
+      employees.push(employeeData)
+    }
+
+    return employees
+  }
+
+  const jobs = [
+    { title: "ÄNoD Fahrer/-in" },
+    { title: "EZ Dispo" },
+    { title: "MTD / HNR Fahrer/-in" },
+    { title: "RH" },
+    { title: "RS" },
+    { title: "SH" },
+    { title: "NFS" },
+  ]
+
+  await models.Job.bulkCreate(jobs)
+
+  const employments = [
+    {
+      title: "Minijob",
+      maxHours: 40,
+    },
+    {
+      title: "Teilzeit",
+      minHours: 80,
+    },
+    {
+      title: "Vollzeit",
+      minHours: 160,
+      maxHours: 180,
+    },
+  ]
+
+  await models.Employment.bulkCreate(employments)
+
+  let employees = await generateEmployees()
+  employees = await models.Employee.bulkCreate(employees)
+
+  let shifts = [
+    { title: "A1 früh" },
+    { title: "A2 früh" },
+    { title: "A1 spät" },
+    { title: "A2 spät" },
+    { title: "A1 Nacht" },
+    { title: "A2 Nacht" },
+    { title: "C1 früh" },
+    { title: "C2 früh" },
+    { title: "C1 spät" },
+    { title: "C2 spät" },
+  ]
+
+  shifts = await models.Shift.bulkCreate(shifts)
+
+  let events = [
     {
       title: "A1 früh Samstag",
       timeStart: "08:00",
@@ -211,85 +296,8 @@ module.exports = async (models) => {
       shiftId: 10,
     },
   ]
-  const names = [
-    ["Max Müller", 1],
-    ["Anna Schmidt", 1],
-    ["Michael Wagner", 3],
-    ["Laura Fischer", 3],
-    ["Markus Becker", 2],
-    ["Sarah Hoffmann", 3],
-    ["Julia Weber", 2],
-    ["Thomas Richter", 2],
-    ["Christine Lehmann", 1],
-    ["Sabine Keller", 1],
-    ["David Braun", 1],
-    ["Nicole Huber", 2],
-    ["Martin Wolf", 2],
-    ["Monika Herrmann", 2],
-    ["Richard Krüger", 1],
-    ["Doris Landwehr", 1],
-    ["Peter Kurz", 1],
-  ]
-  const generateEmployees = () => {
-    let employees = []
-    for (let i = 0; i < names.length; i++) {
-      const name = names[i][0].split(" ")
-      const kuerzel = name[1].slice(0, 3).toUpperCase()
-      const employmentId = names[i][1]
 
-      const employeeData = {
-        initials: kuerzel,
-        name: `${name[0]} ${name[1]}`,
-        employmentId: employmentId,
-      }
-      employees.push(employeeData)
-    }
-
-    return employees
-  }
-
-  await models.Job.create({ title: "ÄNoD Fahrer/-in" })
-  await models.Job.create({ title: "EZ Dispo" })
-  await models.Job.create({ title: "MTD / HNR Fahrer/-in" })
-  // await models.Job.create({ title: "RH" })
-  // await models.Job.create({ title: "RS" })
-  // await models.Job.create({ title: "SH" })
-  // await models.Job.create({ title: "NFS" })
-
-  await models.Employment.create({
-    title: "Minijob",
-    maxHours: 40,
-  })
-  await models.Employment.create({
-    title: "Teilzeit",
-    minHours: 80,
-  })
-  await models.Employment.create({
-    title: "Vollzeit",
-    minHours: 160,
-    maxHours: 180
-  })
-  const employees = await generateEmployees()
-  for (const employee in employees) {
-    await models.Employee.create(employees[employee])
-  }
-
-  // Math.floor(Math.random() * 3) + 1
-
-  await models.Shift.create({ title: "A1 früh" })
-  await models.Shift.create({ title: "A2 früh" })
-  await models.Shift.create({ title: "A1 spät" })
-  await models.Shift.create({ title: "A2 spät" })
-  await models.Shift.create({ title: "A1 Nacht" })
-  await models.Shift.create({ title: "A2 Nacht" })
-  await models.Shift.create({ title: "C1 früh" })
-  await models.Shift.create({ title: "C2 früh" })
-  await models.Shift.create({ title: "C1 spät" })
-  await models.Shift.create({ title: "C2 spät" })
-
-  for (let i = 0; i < events.length; i++) {
-    await models.Event.create(events[i])
-  }
+  await models.Event.bulkCreate(events)
 
   await models.Schedule.create({
     title: "November ÄNoD",
@@ -298,41 +306,45 @@ module.exports = async (models) => {
     deadline: "2023-10-29",
   })
 
-  for (let i = 1; i <= names.length; i++) {
-    await models.JobEmployee.create({
-      jobId: 1,
-      employeeId: i,
+  await models.JobEmployee.bulkCreate(
+    employees.map((employee) => {
+      return {
+        jobId: 1,
+        employeeId: employee.id,
+      }
     })
-  }
+  )
 
-  for (let i = 1; i <= 10; i++) {
-    await models.ScheduleShift.create({ scheduleId: 1, shiftId: i })
-    await models.JobShift.create({
-      jobId: 1,
-      shiftId: i,
+  await models.ScheduleShift.bulkCreate(
+    shifts.map((shift) => {
+      return { scheduleId: 1, shiftId: shift.id }
     })
-  }
+  )
+  await models.JobShift.bulkCreate(
+    shifts.map((shift) => {
+      return { jobId: 1, shiftId: shift.id }
+    })
+  )
 
-  for (let i = 3; i <= 5; i++) {
-    await models.Freetime.create({
-      start: "2023-10-01T06:00:00.000Z",
-      end: "2023-10-05T17:00:00.000Z",
-      scheduleId: 1,
-      employeeId: i,
+  // for (let i = 3; i <= 5; i++) {
+  //   await models.Freetime.create({
+  //     start: "2023-10-01T06:00:00.000Z",
+  //     end: "2023-10-05T17:00:00.000Z",
+  //     scheduleId: 1,
+  //     employeeId: i,
+  //   })
+  // }
+  // for (let i = 1; i <= 2; i++) {
+  //   await models.Freetime.create({
+  //     start: "2023-10-01T06:00:00.000Z",
+  //     end: "2023-10-01T17:00:00.000Z",
+  //     scheduleId: 1,
+  //     employeeId: i,
+  //   })
+  // }
+  await models.ScheduleEmployee.bulkCreate(
+    employees.map((employee) => {
+      return { scheduleId: 1, employeeId: employee.id }
     })
-  }
-  for (let i = 1; i <= 2; i++) {
-    await models.Freetime.create({
-      start: "2023-10-01T06:00:00.000Z",
-      end: "2023-10-01T17:00:00.000Z",
-      scheduleId: 1,
-      employeeId: i,
-    })
-  }
-  for (let i = 1; i <= names.length; i++) {
-    await models.ScheduleEmployee.create({
-      scheduleId: 1,
-      employeeId: i,
-    })
-  }
+  )
 }
