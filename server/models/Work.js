@@ -1,6 +1,5 @@
 const { Sequelize } = require("sequelize")
 
-// TODO: primary key on start, eventId, scheduleId
 // TODO: turn duration into function
 module.exports = (sequelize) => {
   return sequelize.define(

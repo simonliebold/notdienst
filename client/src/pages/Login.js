@@ -2,12 +2,13 @@ import React, { useState } from "react"
 import axios from "axios"
 import { useNavigate, Navigate, Link } from "react-router-dom"
 
-import { useAuth, useAuthUpdate } from "../contexts/AuthContext"
 import {
-  useAlertUpdate,
-  useErrorMessage,
-  useSuccessMessage,
-} from "../contexts/AlertContext"
+  useAuth,
+  useAuthUpdate,
+  useRefreshToken,
+  useRefreshTokenUpdate,
+} from "../contexts/AuthContext"
+import { useErrorMessage, useSuccessMessage } from "../contexts/AlertContext"
 
 import Form from "react-bootstrap/Form"
 import Button from "react-bootstrap/Button"
@@ -19,6 +20,8 @@ function Login() {
 
   const token = useAuth()
   const setToken = useAuthUpdate()
+  const refreshToken = useRefreshToken()
+  const setRefreshToken = useRefreshTokenUpdate()
 
   const navigate = useNavigate()
 
@@ -46,14 +49,15 @@ function Login() {
     setLoading(true)
     e.preventDefault()
     const response = await axios
-      .post(process.env.REACT_APP_AUTH_URL+"login", {
+      .post(process.env.REACT_APP_AUTH_URL + "login", {
         email: email,
         password: password,
       })
       .catch(handleError)
     setLoading(false)
-    if (!response?.data?.accessToken) return
+    if (!response?.data?.accessToken || !response?.data?.refreshToken) return
     setToken(response.data.accessToken)
+    setRefreshToken(response.data.refreshToken)
     navigate("/")
   }
 

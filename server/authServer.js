@@ -3,9 +3,11 @@ const app = express()
 const { Sequelize, DataTypes } = require("sequelize")
 const bcrypt = require("bcrypt")
 const helmet = require("helmet")
+const cors = require("cors")
 
 app.use(express.json())
 app.use(helmet())
+app.use(cors())
 
 const sequelize = new Sequelize(
   process.env.AUTH_DB_NAME,
@@ -64,7 +66,9 @@ const User = sequelize.define(
       type: DataTypes.STRING,
       set(value) {
         if (!value.match(/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/))
-          throw new Error("Das Passwort muss mindestens 8 Zeichen lang sein und einen Buchstaben und eine Nummer enthalten")
+          throw new Error(
+            "Das Passwort muss mindestens 8 Zeichen lang sein und einen Buchstaben und eine Nummer enthalten"
+          )
         const salt = bcrypt.genSaltSync()
         this.setDataValue("password", bcrypt.hashSync(value, salt))
       },
@@ -82,14 +86,8 @@ const User = sequelize.define(
 
 CredentialsCode.belongsTo(User)
 
-const accessControl = (req, res, next) => {
-  res.header("Access-Control-Allow-Origin", "*")
-  res.header("Access-Control-Allow-Headers", "*")
-  next()
-}
-
 const routes = require("./authRoutes")(sequelize)
-app.use("/", accessControl, routes)
+app.use("/", routes)
 
 const PORT = process.env.AUTH_PORT || 4000
 app.listen(PORT, async () => {

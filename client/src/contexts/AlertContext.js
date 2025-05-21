@@ -1,5 +1,6 @@
 import { createContext, useContext, useState } from "react"
-import { useAuthUpdate } from "./AuthContext"
+import { useAuthUpdate, useRefreshToken } from "./AuthContext"
+import axios from "axios"
 
 const AlertContext = createContext()
 const ErrorMessageContext = createContext()
@@ -19,14 +20,25 @@ export const useSuccessMessage = () => {
 
 export const AlertProvider = ({ children }) => {
   const setToken = useAuthUpdate()
+  const refreshToken = useRefreshToken()
   const [alert, setAlert] = useState(undefined)
 
   const handleSuccess = (message) => {
     setAlert({ message: message, variant: "success" })
   }
 
-  const handleError = (error) => {
-    if (error.response?.status === 401 || error.response?.status === 403) {
+  const handleError = async (error) => {
+    if (error.response?.status === 401) {
+      const response = await axios
+        .post(process.env.REACT_APP_AUTH_URL + "token", {
+          token: refreshToken,
+        })
+        .catch(handleError)
+      if (response?.data?.accessToken) setToken(response.data.accessToken)
+      else setToken()
+      return
+    }
+    if (error.response?.status === 403) {
       setAlert({
         message: error.response?.data?.error,
         variant: "danger",

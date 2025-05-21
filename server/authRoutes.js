@@ -15,16 +15,27 @@ module.exports = (sequelize) => {
   })
 
   function generateAccessToken(user) {
-    return jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, { expiresIn: "1d" })
+    const expirationDate = Math.floor(Date.now() / 1000) + 10
+    return jwt.sign(
+      { ...user, exp: expirationDate },
+      process.env.ACCESS_TOKEN_SECRET
+    )
   }
 
   function authenticateAccessToken(req, res, next) {
     const authHeader = req.headers["authorization"]
     const token = authHeader && authHeader.split(" ")[1]
-    if (token == null) return res.sendStatus(401)
+    if (token == null)
+      return res.status(403).send({ error: "Authentifizierung fehlgeschlagen" })
 
     jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
-      if (err) return res.sendStatus(401)
+      if (err) {
+        if (err.name === "TokenExpiredError")
+          res.status(401).send({ error: "Die Sitzung ist abgelaufen" })
+        return res
+          .status(403)
+          .send({ error: "Authentifizierung fehlgeschlagen" })
+      }
       req.user = user
       next()
     })
@@ -137,12 +148,12 @@ module.exports = (sequelize) => {
   // Refresh token
   router.post("/token", async (req, res) => {
     const refreshToken = req.body.token
-    if (refreshToken == null) return res.sendStatus(401)
-    if (sequelize.models.refreshTokens.findByPk(refreshToken) === undefined)
+    if (refreshToken == null) return res.sendStatus(403)
+    if (!(await sequelize.models.refreshTokens.findByPk(refreshToken)))
       return res.sendStatus(403)
     jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, user) => {
       if (err) return res.sendStatus(403)
-      const accessToken = generateAccessToken({ name: user.name })
+      const accessToken = generateAccessToken(user)
       res.json({ accessToken: accessToken })
     })
   })
@@ -167,18 +178,18 @@ module.exports = (sequelize) => {
   router.post("/login", async (req, res) => {
     if (req.body.email === undefined || req.body.password === undefined)
       return res
-        .status(401)
+        .status(403)
         .send({ error: "E-Mail-Adresse oder Passwort sind nicht korrekt." })
     let user = await sequelize.models.users.findOne({
       where: { email: req.body.email },
     })
     if (!user)
       return res
-        .status(401)
+        .status(403)
         .send({ error: "E-Mail-Adresse oder Passwort sind nicht korrekt." })
     if (!(await validPassword(user.password, req.body.password)))
       return res
-        .status(401)
+        .status(403)
         .send({ error: "E-Mail-Adresse oder Passwort sind nicht korrekt." })
     user = user.dataValues
     delete user.password

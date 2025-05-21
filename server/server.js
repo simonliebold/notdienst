@@ -19,11 +19,15 @@ app.use(cors())
 function authenticateToken(req, res, next) {
   const authHeader = req.headers["authorization"]
   const token = authHeader && authHeader.split(" ")[1]
-  if (token == null) return res.status(401).send({ error: "Bitte logge dich erneut ein" })
+  if (token == null)
+    return res.status(403).send({ error: "Authentifizierung fehlgeschlagen" })
 
   jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
-    if (err)
+    if (err) {
+      if (err.name === "TokenExpiredError")
+        return res.status(401).send({ error: "Die Sitzung ist abgelaufen" })
       return res.status(403).send({ error: "Authentifizierung fehlgeschlagen" })
+    }
     req.user = user
     next()
   })
