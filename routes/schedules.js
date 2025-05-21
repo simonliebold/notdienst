@@ -215,6 +215,7 @@ module.exports = (models, sequelize) => {
     for (const [eventId, event] of Object.entries(req.events)) {
       for (const [employeeId, employee] of Object.entries(event["employees"])) {
         employees[employeeId] = {
+          id: employeeId,
           ...employee,
           possibleHours: 0,
           workHours: 0,
@@ -301,11 +302,22 @@ module.exports = (models, sequelize) => {
     next()
   }
 
-  // TODO: order works by possible employee count
-  const orderWorks = async (req, res, next) => {
+  // Order works by possible employee count
+  const orderWorks = (req, res, next) => {
     req.works.sort((a, b) => {
       if (a.employeeIds.length < b.employeeIds.length) return -1
       else if (a.employeeIds.length < b.employeeIds.length) return 1
+      else return 0
+    })
+    next()
+  }
+
+  // Order employees by possibleHours
+  const orderEmployees = (req, res, next) => {
+    req.employees = Object.values(req.employees)
+    req.employees.sort((a, b) => {
+      if (a.possibleHours < b.possibleHours) return -1
+      else if (a.possibleHours > b.possibleHours) return 1
       else return 0
     })
     next()
@@ -319,6 +331,7 @@ module.exports = (models, sequelize) => {
     getFreetimes,
     getWorks,
     orderWorks,
+    orderEmployees,
     async (req, res) => {
       res.send({
         schedule: req.schedule,
