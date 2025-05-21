@@ -15,6 +15,7 @@ import Logout from "./pages/Logout"
 import {
   EmployeePage,
   EmploymentPage,
+  ExchangePage,
   FreetimePage,
   JobPage,
   MissionPage,
@@ -26,6 +27,7 @@ import {
 import {
   EmployeesPage,
   EmploymentsPage,
+  ExchangesPage,
   FreetimesPage,
   JobsPage,
   MissionsPage,
@@ -94,6 +96,11 @@ function App() {
         <MissionsPage />
       </Prot>
     ),
+    exchanges: (
+      <Prot>
+        <ExchangesPage />
+      </Prot>
+    ),
   }
 
   const resource = {
@@ -150,6 +157,11 @@ function App() {
         <MissionPage />
       </Prot>
     ),
+    exchange: (
+      <Prot>
+        <ExchangePage />
+      </Prot>
+    ),
   }
 
   return (
@@ -193,6 +205,9 @@ function App() {
 
               <Route path="missions" element={resources.missions} />
               <Route path="missions/:id/" element={resource.mission} />
+
+              <Route path="exchanges" element={resources.exchanges} />
+              <Route path="exchanges/:id/" element={resource.exchange} />
             </Routes>
           </div>
         </Container>

@@ -106,6 +106,11 @@ function Navigation() {
       icon: icons.mission,
       path: "/missions",
     },
+    {
+      name: titles.exchange,
+      icon: icons.exchange,
+      path: "/exchanges",
+    },
   ]
 
   const logout = { name: "Logout", path: "/logout", icon: faRightFromBracket }

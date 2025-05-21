@@ -141,7 +141,11 @@ export const EmployeePage = () => {
           resourceName="employment"
         />
         <MultiBadge items={employee?.jobs} resourceName="job" />
-        <MultiBadge items={employee?.freetimes} resourceName="freetime" disabled />
+        <MultiBadge
+          items={employee?.freetimes}
+          resourceName="freetime"
+          disabled
+        />
         {/* <ContainsItems resources={employee?.freetimes} resourceName="freetime" /> */}
       </ResourcePage>
       <EmployeeCalendar employee={employee} />
@@ -168,7 +172,11 @@ export const FreetimePage = () => {
       <EditableText value={freetime?.title} label="title" />
       <EditableText value={freetime?.start} label="start" />
       <EditableText value={freetime?.end} label="end" />
-      <EditableBadge resource={freetime?.employee} resourceName="employee" disabled />
+      <EditableBadge
+        resource={freetime?.employee}
+        resourceName="employee"
+        disabled
+      />
     </ResourcePage>
   )
 }
@@ -261,11 +269,22 @@ export const WorkPage = () => {
       <MultiBadge items={work?.employees} resourceName="employee" />
       <EditableBadge resource={work?.shift} resourceName="shift" />
       <EditableBadge resource={work?.schedule} resourceName="schedule" />
-
       <MultiBadge items={work?.jobs} resourceName="job" disabled />
+    </ResourcePage>
+  )
+}
 
-      {/* <span>{titles.mission}:</span>
-      <MultiTitleCard resources={work?.missions} resourceName="mission" /> */}
+export const ExchangePage = () => {
+  const [exchange, setExchange] = useState(null)
+
+  return (
+    <ResourcePage resourceName="exchange" setData={setExchange}>
+      <EditableText value={exchange?.short} label="short" />
+      <EditableText value={exchange?.title} label="title" />
+      <MultiBadge items={exchange?.sender} resourceName="employee" />
+      <EditableBadge resource={exchange?.outgoing} resourceName="work" />
+      <MultiBadge items={exchange?.receiver} resourceName="employee" />
+      <EditableBadge resource={exchange?.incoming} resourceName="work" />
     </ResourcePage>
   )
 }

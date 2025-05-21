@@ -41,6 +41,7 @@ export const titles = {
   freetime: "Dienstplanwünsche",
   rrule: "Wiederholungen",
   mission: "Einsatzprotokolle",
+  exchange: "Tausche",
   default: "Objekte",
 }
 
@@ -54,6 +55,7 @@ export const title = {
   freetime: "Dienstplanwunsch",
   rrule: "Wiederholung",
   mission: "Einsatzprotokoll",
+  exchange: "Tausch",
   default: "Objekt",
 }
 

@@ -1,5 +1,6 @@
 const Employee = require("./schemas/Employee")
 const Employment = require("./schemas/Employment")
+const Exchange = require("./schemas/Exchange")
 const Freetime = require("./schemas/Freetime")
 const Job = require("./schemas/Job")
 const Rrule = require("./schemas/Rrule")
@@ -16,6 +17,7 @@ const loadTestData = async () => {
   await Schedule.deleteMany({})
   await Freetime.deleteMany({})
   await Rrule.deleteMany({})
+  await Exchange.deleteMany({})
 
   const minijob = new Employment({
     short: "MINI",
@@ -25,12 +27,13 @@ const loadTestData = async () => {
   })
   minijob.save()
 
-  new Employment({
+  const teilzeit = new Employment({
     short: "TEIL",
     title: "Teilzeit",
     maxHours: 180,
     minHours: 160,
-  }).save()
+  })
+  teilzeit.save()
 
   const anod = new Job({ short: "ÄNoD", title: "Ärztlicher Notdienst" })
   anod.save()
@@ -43,6 +46,14 @@ const loadTestData = async () => {
     jobIds: [anod._id],
   })
   lbd.save()
+
+  const pap = new Employee({
+    short: "pap",
+    title: "Niklas Pape",
+    employmentId: teilzeit._id,
+    jobIds: [anod._id],
+  })
+  pap.save()
 
   const freetime = new Freetime({
     short: "Free 1",
@@ -76,17 +87,39 @@ const loadTestData = async () => {
   })
   jan24.save()
 
-  const work = new Work({
-    short: "WORK 1",
-    title: "Test-Dienst",
-    start: new Date().toISOString(),
-    end: new Date().toISOString(),
+  const workA = new Work({
+    short: "work A",
+    title: "Test-Dienst A",
+    start: new Date(2024, 2, 19, 19).toISOString(),
+    end: new Date(2024, 2, 20, 8).toISOString(),
+    shiftId: a1Nacht._id,
+    scheduleId: jan24._id,
+    employeeIds: [pap._id],
+  })
+  workA.save()
+
+  const workB = new Work({
+    short: "work B",
+    title: "Test-Dienst B",
+    start: new Date(2024, 2, 4, 18).toISOString(),
+    end: new Date(2024, 2, 5, 8).toISOString(),
     shiftId: a1Nacht._id,
     scheduleId: jan24._id,
     employeeIds: [lbd._id],
   })
+  workB.save()
 
-  work.save()
+  const exchange = new Exchange({
+    short: "A-b",
+    title: "Tausch LBD und PAP",
+    status: "Angebot",
+    outgoingId: workB._id,
+    incomingId: workA._id,
+    senderIds: [lbd._id],
+    receiverIds: [pap._id],
+  })
+
+  exchange.save()
 }
 
 module.exports = loadTestData

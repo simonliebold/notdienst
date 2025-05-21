@@ -26,6 +26,9 @@ module.exports = (models, sequelize) => {
   const works = require("./routes/works.js")(models)
   router.use("/works", works)
 
+  const exchanges = require("./routes/exchanges.js")(models)
+  router.use("/exchanges", exchanges)
+
   // const missions = require('./routes/missions.js')(models)
   // router.use("/missions", missions)
 

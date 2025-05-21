@@ -179,4 +179,20 @@ export function WorksPage() {
   )
 }
 
+export function ExchangesPage() {
+  const [exchanges] = useResource("exchanges")
+  return (
+    <ResourcesPage resources={exchanges} resourceName="exchange">
+      <EditableText label="short" />
+      <EditableText label="title" />
+      <EditableText label="start" />
+      <EditableText label="end" />
+      <EditableBadge resourceName="work" />
+      <EditableBadge resourceName="work" />
+      <MultiBadge resourceName="employee" />
+      <MultiBadge resourceName="employee" />
+    </ResourcesPage>
+  )
+}
+
 export default ResourcesPage
