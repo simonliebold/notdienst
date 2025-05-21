@@ -93,12 +93,12 @@ app.listen(PORT, async () => {
   await sequelize.sync({ force: true })
   await sequelize.models.users.create({
     id: 1,
-    email: "lieb@asb.de",
+    email: "lieb@lie-bold.de",
     password: "lieb",
   })
   await sequelize.models.users.create({
     id: 2,
-    email: "rer@asb.de",
+    email: "rer@lie-bold.de",
     password: "rer",
     role: 10,
   })

@@ -2,6 +2,17 @@ module.exports = (sequelize) => {
   const router = require("express").Router()
   const jwt = require("jsonwebtoken")
   const bcrypt = require("bcrypt")
+  const nodemailer = require("nodemailer")
+
+  const transporter = nodemailer.createTransport({
+    host: process.env.MAIL_HOST,
+    port: process.env.MAIL_PORT,
+    secure: process.env.MAIL_SECURE,
+    auth: {
+      user: process.env.MAIL_USER,
+      pass: process.env.MAIL_PASS,
+    },
+  })
 
   function generateAccessToken(user) {
     return jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, { expiresIn: "1d" })
@@ -81,7 +92,7 @@ module.exports = (sequelize) => {
     authenticateCredentialsToken,
     async (req, res) => {
       try {
-        const [count, user] = await sequelize.models.users.update(
+        const [count, users] = await sequelize.models.users.update(
           {
             email: req.body.email,
             password: req.body.password,
@@ -89,6 +100,11 @@ module.exports = (sequelize) => {
           { where: { id: req.user.id }, individualHooks: true }
         )
         if (count < 1) return res.sendStatus(400)
+        await transporter.sendMail({
+          from: '"ASB" <asb@lie-bold.de>',
+          to: users[0].email,
+          subject: "Account-Daten erfolgreich geändert",
+        })
         return res.sendStatus(200)
       } catch (error) {
         return res.status(400).send({ error: error.message })
