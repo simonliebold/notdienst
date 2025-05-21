@@ -5,32 +5,22 @@ import useResource, {
 } from "./useResource"
 import { useCallback, useEffect, useState } from "react"
 import useInput from "./useInput"
+import useSave from "./useSave"
 
 const useResourcePage = ({ resourceName }) => {
   const { id } = useParams()
-  const [resource, updateResource, loading] = useResource(
+  const [resource, refreshResource, loading] = useResource(
     resourceName + "s/" + id
   )
-  const [input, onInput] = useInput(loading)
-
-  const [save, saving] = useResourceUpdate(resourceName + "s/" + id)
-
-  const onSaveRequest = useCallback(async () => {
-    await save(input)
-    await updateResource()
-    setEdit(false)
-  }, [input, save, updateResource])
-
   const [edit, setEdit] = useState(false)
-  
-  const onEditRequest = useCallback(() => {
-    setEdit(true)
-  }, [setEdit])
 
-  const onCloseRequest = useCallback(() => {
-    setEdit(false)
-  }, [setEdit])
-
+  const [input, onInput] = useInput(loading)
+  const [saving, onSaveRequest] = useSave(
+    resourceName,
+    input,
+    refreshResource,
+    setEdit
+  )
 
   return {
     resource,
@@ -38,10 +28,8 @@ const useResourcePage = ({ resourceName }) => {
     saving,
     onSaveRequest,
     edit,
-    onEditRequest,
-    onCloseRequest,
+    setEdit,
     onInput,
-    updateResource,
   }
 }
 export default useResourcePage

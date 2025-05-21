@@ -25,6 +25,8 @@ import Calendar, {
 } from "../../components/Calendar"
 import { AsyncAllocateWorksButton } from "../../components/CardButton"
 import useResourcePage from "../../hooks/useResourcePage"
+import useInput from "../../hooks/useInput"
+import useSave from "../../hooks/useSave"
 
 function ResourcePage({ resourceName, buttons, children }) {
   return (
@@ -65,26 +67,22 @@ function ResourcePage({ resourceName, buttons, children }) {
 }
 
 export const EmployeePage = () => {
-  // const [employee, setEmployee] = useState(null)
-  // const { employee: resource } = useResourcePage("employee", setEmployee)
+  const resourceName = "employee"
 
-  // return <ResourcePage resourceName="employee" />
+  const { id } = useParams()
+  const [resource, refreshResource, loading] = useResource(
+    resourceName + "s/" + id
+  )
+  const [edit, setEdit] = useState(false)
+  const employee = resource
 
-  const {
-    resource: employee,
-    showConfirmDeletePopup,
-    onDeleteClose,
-    onDeleteRequest,
-    onDeleteConfirm,
-    loading,
-    saving,
-    onSaveRequest,
-    edit,
-    onEditRequest,
-    onCloseRequest,
-    onInput,
-    updateResource,
-  } = useResourcePage({ resourceName: "employee" })
+  const [input, onInput] = useInput(loading)
+  const [saving, onSaveRequest] = useSave(
+    resourceName,
+    input,
+    refreshResource,
+    setEdit
+  )
 
   return (
     <>
@@ -95,22 +93,18 @@ export const EmployeePage = () => {
         saving={saving}
         onSaveRequest={onSaveRequest}
         edit={edit}
-        onEditRequest={onEditRequest}
-        onCloseRequest={onCloseRequest}
-        onDeleteRequest={onDeleteRequest}
+        setEdit={setEdit}
       >
         <EditableText
           value={employee?.short}
           label="short"
           onInput={onInput}
-          updateResource={updateResource}
           edit={edit}
         />
         <EditableText
           value={employee?.title}
           label="title"
           onInput={onInput}
-          updateResource={updateResource}
           edit={edit}
         />
 
@@ -118,21 +112,18 @@ export const EmployeePage = () => {
           resource={employee?.employment}
           resourceName="employment"
           onInput={onInput}
-          updateResource={updateResource}
           edit={edit}
         />
         <MultiBadge
           items={employee?.jobs}
           resourceName="job"
           onInput={onInput}
-          updateResource={updateResource}
           edit={edit}
         />
         <MultiBadge
           items={employee?.freetimes}
           resourceName="freetime"
           onInput={onInput}
-          updateResource={updateResource}
           edit={edit}
           disabled
         />

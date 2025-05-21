@@ -11,7 +11,7 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faPlus, faTrash, faX } from "@fortawesome/free-solid-svg-icons"
 import { title } from "../variables"
-import usePopup, { useDeletePopup } from "../hooks/usePopup"
+import usePopup, { useDeletePopup } from "../hooks/useDelete"
 
 function Popup({ children, title, icon, buttons, show, onClose, ...props }) {
   return (
@@ -60,31 +60,6 @@ export const ConfirmDeletePopup = ({
         onChange={onInput}
       ></FormControl>
     </Popup>
-  )
-}
-
-export const ConfirmDelete = ({ resource, resourceName }) => {
-  const [show, open, close, submit, deleting, input, onInput, disabled] =
-    useDeletePopup(resource, resourceName)
-
-  useEffect(() => {
-    console.log(deleting)
-  }, [deleting])
-
-  return (
-    <>
-      <ConfirmDeletePopup
-        resource={resource}
-        show={show}
-        close={close}
-        submit={submit}
-        disabled={disabled}
-        input={input}
-        onInput={onInput}
-        deleting={deleting}
-      />
-      <CardDeleteButton onClick={open} />
-    </>
   )
 }
 

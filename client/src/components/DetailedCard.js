@@ -6,15 +6,40 @@ import CloseButton from "react-bootstrap/CloseButton"
 import Spinner from "react-bootstrap/Spinner"
 
 import Badge from "./Badge"
-import CardButton, {
+import {
   CardDeleteButton,
   CardEditButton,
   CardSaveButton,
   ExpandButton,
 } from "./CardButton"
-import { Link } from "react-router-dom"
-import Button from "react-bootstrap/esm/Button"
-import { ConfirmDelete } from "./Popup"
+import useDelete from "../hooks/useDelete"
+import { ConfirmDeletePopup } from "./Popup"
+import useSave from "../hooks/useSave"
+
+export const ConfirmDelete = ({ resource, resourceName }) => {
+  const [show, open, close, submit, deleting, input, onInput, disabled] =
+    useDelete(resource, resourceName)
+
+  useEffect(() => {
+    console.log(deleting)
+  }, [deleting])
+
+  return (
+    <>
+      <ConfirmDeletePopup
+        resource={resource}
+        show={show}
+        close={close}
+        submit={submit}
+        disabled={disabled}
+        input={input}
+        onInput={onInput}
+        deleting={deleting}
+      />
+      <CardDeleteButton onClick={open} />
+    </>
+  )
+}
 
 const DetailedCard = ({
   resource,
@@ -22,17 +47,16 @@ const DetailedCard = ({
   children,
   className,
   loading = true,
+  // input,
+  // refreshResource,
   saving = false,
   onSaveRequest,
   edit,
-  onEditRequest,
-  onCloseRequest,
-  onDeleteRequest,
+  setEdit,
 }) => {
   const { title } = resource || {}
 
   const [expanded, setExpanded] = useState(true)
-
   useEffect(() => {
     if (resource?.works?.length === 0) setExpanded(true)
     if (resource?.works && resource?.works?.length !== 0) setExpanded(false)
@@ -81,7 +105,7 @@ const DetailedCard = ({
           {title}
           {edit && " bearbeiten "}
         </div>
-        {edit && <CloseButton onClick={onCloseRequest} />}
+        {edit && <CloseButton onClick={() => setEdit(false)} />}
         {!edit && resource?.works?.length !== 0 && (
           <ExpandButton expanded={expanded} />
         )}
@@ -92,13 +116,16 @@ const DetailedCard = ({
           <Card.Footer className="d-flex justify-content-end align-items-center">
             {edit && (
               <>
-                <ConfirmDelete resource={resource} resourceName={resourceName} />
+                <ConfirmDelete
+                  resource={resource}
+                  resourceName={resourceName}
+                />
                 <CardSaveButton onClick={onSaveRequest} />
               </>
             )}
             {!edit && (
               <>
-                <CardEditButton onClick={onEditRequest} />
+                <CardEditButton onClick={() => setEdit(true)} />
               </>
             )}
           </Card.Footer>

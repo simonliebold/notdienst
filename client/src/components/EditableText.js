@@ -3,7 +3,7 @@ import Form from "react-bootstrap/Form"
 import FloatingLabel from "react-bootstrap/esm/FloatingLabel"
 import { labels } from "../variables"
 
-const EditableText = ({ value, label, onInput, disabled, className, edit }) => {
+const EditableText = ({ value, label, onInput, className, edit }) => {
   const [input, setInput] = useState(value)
 
   const onChange = useCallback((e) => {
@@ -15,7 +15,7 @@ const EditableText = ({ value, label, onInput, disabled, className, edit }) => {
     setInput(value)
   }, [value])
 
-  if (disabled || !edit)
+  if (!edit)
     return (
       <p className={"mb-0 "+className}>
         {labels[label] + ": "}

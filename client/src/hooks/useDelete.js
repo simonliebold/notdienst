@@ -2,7 +2,7 @@ import { useCallback, useState } from "react"
 import { useResourceDelete } from "./useResource"
 import { useNavigate } from "react-router-dom"
 
-export const useDeletePopup = (resource, resourceName) => {
+export const useDelete = (resource, resourceName) => {
   const [show, setShow] = useState(false)
   const navigate = useNavigate()
   const [destroy, deleting] = useResourceDelete(resourceName + "s/" + resource?._id)
@@ -37,5 +37,4 @@ export const useDeletePopup = (resource, resourceName) => {
   return [show, open, close, submit, deleting, input, onInput, disabled]
 }
 
-const usePopup = () => {}
-export default usePopup
+export default useDelete
