@@ -1,9 +1,9 @@
 const mongoose = require("mongoose")
 const { Schema, model } = mongoose
 
-const rruleSchema = new Rrule({
-  start: { type: Date, required: true },
-  end: { type: Date, required: true },
+const rruleSchema = new Schema({
+  start: { type: String, required: true },
+  end: { type: String, required: true },
   content: { type: String, required: true },
 })
 

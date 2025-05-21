@@ -7,8 +7,8 @@ const workSchema = new Schema({
   start: { type: Date, required: true },
   end: { type: Date, required: true },
   shiftId: { type: Schema.Types.ObjectId, ref: "Shift" },
-  scheduleId: { type: Schema.Types.ObjectId, ref: "Schedule", required: true },
-  jobIds: [{ type: Schema.Types.ObjectId, ref: "Job", required: true }],
+  scheduleId: { type: Schema.Types.ObjectId, ref: "Schedule", required: false },
+  jobIds: [{ type: Schema.Types.ObjectId, ref: "Job", required: false }],
   employeeIds: [{ type: Schema.Types.ObjectId, ref: "Employee" }],
 })
 

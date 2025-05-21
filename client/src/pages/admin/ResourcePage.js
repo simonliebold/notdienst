@@ -260,11 +260,13 @@ export const WorkPage = () => {
 
   return (
     <ResourcePage resourceName="work" setData={setWork}>
+      <EditableText value={work?.short} label="short" />
+      <EditableText value={work?.title} label="title" />
       <EditableText value={work?.start} label="start" />
       <EditableText value={work?.end} label="end" />
 
       <MultiBadge items={work?.employees} resourceName="employee" />
-      <EditableBadge resource={work?.rrule} resourceName="rrule" disabled />
+      <EditableBadge resource={work?.shift} resourceName="shift" disabled />
       <EditableBadge
         resource={work?.schedule}
         resourceName="schedule"
