@@ -3,7 +3,7 @@ import Col from "react-bootstrap/Col"
 import Card from "react-bootstrap/Card"
 import Badge from "react-bootstrap/Badge"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { faCalendarDays, faUser } from "@fortawesome/free-solid-svg-icons"
+import { faCalendarDays, faHashtag, faUser } from "@fortawesome/free-solid-svg-icons"
 
 const WorkCard = ({ work }) => {
   const dateString =
@@ -30,7 +30,7 @@ const WorkCard = ({ work }) => {
       >
         <Card.Header className="fs-6 m-0">
           <Badge className="me-2">
-            <FontAwesomeIcon icon={faCalendarDays} className="me-1" />
+            <FontAwesomeIcon icon={faHashtag} className="me-1" />
             {work.id}
           </Badge>
           {work.event.title}
@@ -41,7 +41,7 @@ const WorkCard = ({ work }) => {
             {work?.employees?.length > 0 &&
               work.employees.map((employee) => {
                 return (
-                  <Badge key={"badge-"+employee.initials} className="ms-2">
+                  <Badge key={"badge-" + employee.initials} className="ms-2">
                     <FontAwesomeIcon icon={faUser} className="me-1" />
                     {employee.initials}
                   </Badge>

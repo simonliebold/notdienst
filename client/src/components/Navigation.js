@@ -48,16 +48,6 @@ function Navigation() {
       icon: faHome,
       path: "/",
     },
-    {
-      name: "Mitarbeiter",
-      icon: faUser,
-      path: "/employees",
-    },
-    {
-      name: "Dienstpläne",
-      icon: faCalendar,
-      path: "/schedules",
-    },
   ]
 
   const logout = { name: "Logout", path: "/logout", icon: faRightFromBracket }
