@@ -159,7 +159,6 @@ module.exports = (models, sequelize) => {
     next()
   }
 
-  // TODO: just safe employee-ids
   const getEvents = async (req, res, next) => {
     const [results, metadata] = await sequelize.query(
       `SELECT shifts.id "shiftId", events.id "eventId", events.title "eventTitle", events.requiredEmployees "eventRequiredEmployees", events.timeStart "eventTimeStart", events.timeEnd "eventTimeEnd", events.repeatWeekday "eventRepeatWeekday", employees.id "employeeId", employees.initials "employeeInitials", employees.name "employeeName", employments.minHours "employeeMinHours", employments.maxHours "employeeMaxHours" FROM schedules, schedules_shifts, shifts, events, jobs_shifts, jobs, jobs_employees, employees, employments WHERE schedules.id = schedules_shifts.scheduleId AND schedules_shifts.shiftId = shifts.id AND shifts.id = events.shiftId AND jobs_shifts.shiftId = shifts.id AND jobs_shifts.jobId = jobs.id AND jobs_employees.jobId = jobs.id AND jobs_employees.employeeId = employees.id AND employees.id NOT IN (SELECT employeeId FROM schedules_employees WHERE scheduleId = schedules.id) AND employees.employmentId = employments.id;`
@@ -262,6 +261,7 @@ module.exports = (models, sequelize) => {
 
         const duration = (end.getTime() - start.getTime()) / 3600000
 
+        // TODO: move isFree-check in own function
         let possibleEmployeeIds = []
         for (const [employeeId, employee] of Object.entries(event.employees)) {
           const isFree = req.employees[employeeId].freetimes.every(

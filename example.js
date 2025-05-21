@@ -171,14 +171,14 @@ module.exports = async (models) => {
     {
       title: "C2 früh Samstag",
       timeStart: "08:00",
-      timeEnd: "16:00",
+      timeEnd: "13:00",
       repeatWeekday: 6,
       shiftId: 8,
     },
     {
       title: "C2 früh Sonntag",
       timeStart: "08:00",
-      timeEnd: "16:00",
+      timeEnd: "13:00",
       repeatWeekday: 0,
       shiftId: 8,
     },
@@ -191,7 +191,7 @@ module.exports = async (models) => {
     },
     {
       title: "C1 spät Sonntag",
-      timeStart: "16:00",
+      timeStart: "19:00",
       timeEnd: "23:00",
       repeatWeekday: 0,
       shiftId: 9,
@@ -205,7 +205,7 @@ module.exports = async (models) => {
     },
     {
       title: "C2 spät Sonntag",
-      timeStart: "16:00",
+      timeStart: "19:00",
       timeEnd: "23:00",
       repeatWeekday: 0,
       shiftId: 10,
@@ -309,9 +309,9 @@ module.exports = async (models) => {
 
   await models.Schedule.create({
     title: "November ÄNoD",
-    start: "2023-10-01",
-    end: "2023-10-31",
-    deadline: "2023-09-29",
+    start: "2023-11-01",
+    end: "2023-11-30",
+    deadline: "2023-10-29",
   })
 
   for (let i = 1; i <= 10; i++) {

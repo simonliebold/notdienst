@@ -8,7 +8,7 @@ app.use(express.json())
 const helmet = require("helmet")
 app.use(helmet())
 
-// TODO: Add authentification
+// TODO: add jwt authentification
 
 const routes = require("./routes")(models, db.sequelize)
 app.use("/", routes)

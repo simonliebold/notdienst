@@ -71,5 +71,6 @@ module.exports = (models) => {
     }
   })
 
+  // TODO: add / remove employee from work
   return router
 }
