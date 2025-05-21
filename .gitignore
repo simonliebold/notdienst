@@ -1,6 +1,6 @@
 **.env
 **.rest
 **/node_modules
-**/db-model
 launch.json
 .DS_STORE
+server/testData.js
