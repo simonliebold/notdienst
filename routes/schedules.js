@@ -3,13 +3,13 @@ module.exports = (models) => {
 
   // Get all
   router.get("/", async (req, res) => {
-    const response = await models.Job.findAll()
+    const response = await models.Schedule.findAll()
     res.send({ response: response })
   })
 
   // Get one
   router.get("/:id", async (req, res) => {
-    const response = await models.Job.findByPk(req.params.id)
+    const response = await models.Schedule.findByPk(req.params.id)
     if (response === null) res.status(404).send({ message: "Not found" })
     else res.send({ response: response })
   })
@@ -17,7 +17,7 @@ module.exports = (models) => {
   // Create one
   router.post("/", async (req, res) => {
     try {
-      const response = await models.Job.create({ ...req.body })
+      const response = await models.Schedule.create({ ...req.body })
       res.send({ response: response })
     } catch (error) {
       res.status(400).send({ error: error })
@@ -27,7 +27,7 @@ module.exports = (models) => {
   // Update one
   router.put("/:id", async (req, res) => {
     try {
-      const response = await models.Job.update(
+      const response = await models.Schedule.update(
         { ...req.body },
         {
           where: { id: req.params.id },
@@ -43,11 +43,12 @@ module.exports = (models) => {
     }
   })
 
-  // Add Employee to Job
+  // Add Employee to Schedule
+  // TODO: enable adding multiple employees at once
   router.post("/:id/employee", async (req, res) => {
     try {
-      const response = await models.JobEmployee.create({
-        jobId: req.params.id,
+      const response = await models.ScheduleEmployee.create({
+        scheduleId: req.params.id,
         employeeId: req.body.employeeId,
       })
       res.send({ response: response })
@@ -55,26 +56,31 @@ module.exports = (models) => {
       res.status(400).send({ error: error })
     }
   })
-
-  // Delete Employee from Job
+  
+  // Delete Employee from Schedule
+  // TODO: enable deleting multiple employees at once
   router.delete("/:id/employee", async (req, res) => {
     try {
-      const response = await models.JobEmployee.destroy({
-        where: { jobId: req.params.id, employeeId: req.body.employeeId },
+      const response = await models.ScheduleEmployee.destroy({
+        where: { scheduleId: req.params.id, employeeId: req.body.employeeId },
       })
       response > 0
-        ? res.status(200).send({ message: "Deleted successfully" })
-        : res.status(404).send({ message: "Not found" })
+      ? res.status(200).send({ message: "Deleted successfully" })
+      : res.status(404).send({ message: "Not found" })
     } catch (error) {
       res.status(400).send({ error: error })
     }
   })
-
-  // Add Shift to Job
+  
+  // TODO: get all employees
+  // TODO: get all shifts
+  
+  // Add Shift to Schedule
+  // TODO: enable adding multiple shifts at once
   router.post("/:id/shift", async (req, res) => {
     try {
-      const response = await models.JobShift.create({
-        jobId: req.params.id,
+      const response = await models.ScheduleShift.create({
+        scheduleId: req.params.id,
         shiftId: req.body.shiftId,
       })
       res.send({ response: response })
@@ -82,12 +88,13 @@ module.exports = (models) => {
       res.status(400).send({ error: error })
     }
   })
-
-  // Delete Shift from Job
+  
+  // Delete Shift from Schedule
+  // TODO: enable deleting multiple shifts at once
   router.delete("/:id/shift", async (req, res) => {
     try {
-      const response = await models.JobShift.destroy({
-        where: { jobId: req.params.id, shiftId: req.body.shiftId },
+      const response = await models.ScheduleShift.destroy({
+        where: { scheduleId: req.params.id, shiftId: req.body.shiftId },
       })
       response > 0
         ? res.status(200).send({ message: "Deleted successfully" })
@@ -100,7 +107,7 @@ module.exports = (models) => {
   // Delete one
   router.delete("/:id", async (req, res) => {
     try {
-      const response = await models.Job.destroy({
+      const response = await models.Schedule.destroy({
         where: { id: req.params.id },
       })
       response > 0
@@ -110,10 +117,6 @@ module.exports = (models) => {
       res.status(400).send({ error: error })
     }
   })
-
-  // TODO: get all employees
-  // TODO: get all shifts
-  // TODO: enable adding / removing multiple employees / shifts
 
   return router
 }
