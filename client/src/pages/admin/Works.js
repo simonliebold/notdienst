@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useEffect, useState } from "react"
 import useResource from "../../hooks/useResource"
 import { WorkDetailedCard } from "../../components/DetailedCard"
 import TitleCard from "../../components/TitleCard"
@@ -6,7 +6,14 @@ import CardList from "../../components/CardList"
 import Breadcrumb from "../../components/Breadcrumb"
 
 function Works() {
-  const works = useResource("works")
+  const getWorks = useResource("works")
+  const [works, setWorks] = useState(null)
+  useEffect(() => {
+    const refresh = async () => {
+      setWorks(await getWorks())
+    }
+    refresh()
+  }, [])
 
   return (
     <>

@@ -1,19 +1,26 @@
-import React from "react"
+import React, { useEffect, useState } from "react"
 import useResource from "../../hooks/useResource"
-import { EmployeeDetailedCard, EmploymentDetailedCard, FreetimeDetailedCard, WorkDetailedCard } from "../../components/DetailedCard"
 import TitleCard from "../../components/TitleCard"
 import CardList from "../../components/CardList"
 import Breadcrumb from "../../components/Breadcrumb"
 
 function Freetimes() {
-  const freetimes = useResource("freetimes")
+  const getFreetimes = useResource("freetimes")
+  const [freetimes, setFreetimes] = useState(null)
+
+  useEffect(() => {
+    const refresh = async () => {
+      setFreetimes(await getFreetimes())
+    }
+    refresh()
+  }, [])
 
   return (
     <>
-    <Breadcrumb resourceName="freetime" />
+      <Breadcrumb resourceName="freetime" />
       <CardList className="mt-2">
         {freetimes?.map((freetime) => {
-            // return <FreetimeDetailedCard key={"freetime-" + freetime.id} freetime={freetime} />
+          // return <FreetimeDetailedCard key={"freetime-" + freetime.id} freetime={freetime} />
           return (
             <TitleCard
               key={"freetime-titlecard-" + freetime.id}

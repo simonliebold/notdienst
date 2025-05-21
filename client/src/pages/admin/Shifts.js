@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useEffect, useState } from "react"
 import useResource from "../../hooks/useResource"
 import {
   RruleDetailedCard,
@@ -9,7 +9,14 @@ import CardList from "../../components/CardList"
 import Breadcrumb from "../../components/Breadcrumb"
 
 function Shifts() {
-  const shifts = useResource("shifts")
+  const getShifts = useResource("shifts")
+  const [shifts, setShifts] = useState(null)
+  useEffect(() => {
+    const refresh = async () => {
+      setShifts(await getShifts())
+    }
+    refresh()
+  }, [])
 
   return (
     <>

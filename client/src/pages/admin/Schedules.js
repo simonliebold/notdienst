@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useEffect, useState } from "react"
 import useResource from "../../hooks/useResource"
 import { RruleDetailedCard, ScheduleDetailedCard } from "../../components/DetailedCard"
 import TitleCard from "../../components/TitleCard"
@@ -6,7 +6,14 @@ import CardList from "../../components/CardList"
 import Breadcrumb from "../../components/Breadcrumb"
 
 function Schedules() {
-  const schedules = useResource("schedules")
+  const getSchedules = useResource("schedules")
+  const [schedules, setSchedules] = useState(null)
+  useEffect(() => {
+    const refresh = async () => {
+      setSchedules(await getSchedules())
+    }
+    refresh()
+  }, [])
 
   return (
     <>

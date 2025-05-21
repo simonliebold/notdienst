@@ -1,9 +1,5 @@
 import React, { useEffect, useState } from "react"
 import useResource from "../../hooks/useResource"
-import {
-  EmployeeDetailedCard,
-  WorkDetailedCard,
-} from "../../components/DetailedCard"
 import TitleCard from "../../components/TitleCard"
 import CardList from "../../components/CardList"
 import Breadcrumb from "../../components/Breadcrumb"

@@ -1,18 +1,20 @@
-import React from "react"
+import React, { useEffect, useState } from "react"
 import useResource from "../../hooks/useResource"
-import {
-  EmployeeDetailedCard,
-  EmploymentDetailedCard,
-  FreetimeDetailedCard,
-  JobDetailedCard,
-  WorkDetailedCard,
-} from "../../components/DetailedCard"
 import TitleCard from "../../components/TitleCard"
 import CardList from "../../components/CardList"
 import Breadcrumb from "../../components/Breadcrumb"
 
 function Jobs() {
-  const jobs = useResource("jobs")
+  const getJobs = useResource("jobs")
+
+  const [jobs, setJobs] = useState(null)
+
+  useEffect(() => {
+    const refresh = async () => {
+      setJobs(await getJobs())
+    }
+    refresh()
+  }, [])
 
   return (
     <>

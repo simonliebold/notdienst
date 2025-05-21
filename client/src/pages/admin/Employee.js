@@ -21,8 +21,6 @@ function Employee() {
     refresh()
   }, [employeeId])
 
-  // refresh()
-
   return (
     <>
       <Breadcrumb resourceName="employee" resource={employee} />
