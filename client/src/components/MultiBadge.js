@@ -22,7 +22,7 @@ function MultiBadge({
   const onChange = (items) => {
     if (onInput)
       onInput(
-        resourceName + "s",
+        resourceName + "Ids",
         items.map((item) => {
           return item.value
         })

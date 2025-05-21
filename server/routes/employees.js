@@ -34,19 +34,18 @@ module.exports = () => {
       },
       { $unwind: { path: "$employment", preserveNullAndEmptyArrays: true } },
     ]).catch(next)
-    console.log("employee")
     if (!employee) return next(new Error("Nicht gefunden"))
     return res.send(employee[0])
   })
 
   // Create one
   router.post("/", roles.requireAdmin, async (req, res, next) => {
-    const { short, title, employment, jobs } = req?.body || {}
+    const { short, title, employmentId, jobIds } = req?.body || {}
     const employee = new Employee({
       short,
       title,
-      employment,
-      jobs,
+      employmentId,
+      jobIds,
     })
 
     await employee.save().catch(next)

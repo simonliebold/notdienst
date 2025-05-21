@@ -72,7 +72,7 @@ export const EditableBadge = ({
             value: resource?._id,
             icon: icons[resourceName],
           }}
-          onChange={(item) => onInput(resourceName, item.value)}
+          onChange={(item) => onInput(resourceName+"Id", item.value)}
         />
       </div>
     )
