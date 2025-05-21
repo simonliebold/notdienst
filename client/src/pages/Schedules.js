@@ -15,6 +15,7 @@ import Form from "react-bootstrap/Form"
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faCalendar, faPlus } from "@fortawesome/free-solid-svg-icons"
+import MultiSelect from "../components/MultiSelect"
 
 const ScheduleModal = () => {
   const { scheduleId } = useParams()
@@ -24,26 +25,13 @@ const ScheduleModal = () => {
   const navigate = useNavigate()
 
   const [schedule, setSchedule] = useState(null)
-  const [allShifts, setAllShifts] = useState(null)
   const [allEmployees, setAllEmployees] = useState(null)
 
   const title = useRef(null)
   const start = useRef(null)
   const end = useRef(null)
   const deadline = useRef(null)
-  const shifts = useRef(null)
   const employees = useRef(null)
-
-  const fetchShifts = useCallback(async () => {
-    const res = await axios
-      .get(process.env.REACT_APP_URL + "shifts")
-      .catch(handleError)
-    setAllShifts(
-      res?.data?.shifts?.map((shift) => {
-        return { value: shift.id, label: shift.title }
-      })
-    )
-  }, [])
 
   const fetchEmployees = useCallback(async () => {
     const res = await axios
@@ -68,7 +56,9 @@ const ScheduleModal = () => {
     start.current.value = res.data.schedule.start
     end.current.value = res.data.schedule.end
     const d = new Date(res.data.schedule.deadline)
-    const datetimeLocal = (new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString()).slice(0, -1);
+    const datetimeLocal = new Date(d.getTime() - d.getTimezoneOffset() * 60000)
+      .toISOString()
+      .slice(0, -1)
     deadline.current.value = datetimeLocal
   }, [scheduleId, handleError])
 
@@ -95,10 +85,9 @@ const ScheduleModal = () => {
   useEffect(() => {
     if (scheduleId) {
       fetchSchedule()
-      fetchShifts()
       fetchEmployees()
     } else setSchedule(null)
-  }, [scheduleId, fetchSchedule, fetchShifts])
+  }, [scheduleId, fetchSchedule])
 
   return (
     <Modal
@@ -107,77 +96,67 @@ const ScheduleModal = () => {
       backdrop="static"
       keyboard={false}
       fullscreen={"md-down"}
+      size="lg"
     >
-      <Form onSubmit={handleFormSubmit}>
-        <Modal.Header closeButton>
-          <Modal.Title>
-            <Badge className="me-2">
-              <FontAwesomeIcon icon={faCalendar} className="me-2" />
-              {schedule?.id}
-            </Badge>{" "}
-            {schedule?.title}
-          </Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <Row xs={1} className="g-4 mt-0  align-items-stretch">
-            <Col className="mt-0">
-              <h2 className="fs-6">Titel</h2>
-              <Form.Control required ref={title} />
-            </Col>
-            <Col>
-              <h2 className="fs-6">Start</h2>
-              <Form.Control required type="date" ref={start} />
-            </Col>
-            <Col>
-              <h2 className="fs-6">Ende</h2>
-              <Form.Control required type="date" ref={end} />
-            </Col>
-            <Col>
-              <h2 className="fs-6">Abgabefrist</h2>
-              <Form.Control required type="datetime-local" ref={deadline} />
-            </Col>
-            <Col>
-              {schedule?.shifts && (
-                <>
-                  <h2 className="fs-6">Schichten</h2>
-                  <Select
-                    defaultValue={schedule.shifts.map((shift) => {
-                      return { value: shift.id, label: shift.title }
-                    })}
-                    isMulti
-                    name="shifts"
-                    options={allShifts}
-                    className="basic-multi-select"
-                    classNamePrefix="select"
-                    ref={shifts}
-                  />
-                </>
-              )}
-            </Col>
-            <Col>
-              {schedule?.employees && (
-                <>
-                  <h2 className="fs-6">Mitarbeiter</h2>
-                  <Select
-                    defaultValue={schedule.employees.map((employee) => {
-                      return { value: employee.id, label: employee.initials }
-                    })}
-                    isMulti
-                    name="employees"
-                    options={allEmployees}
-                    className="basic-multi-select"
-                    classNamePrefix="select"
-                    ref={employees}
-                  />
-                </>
-              )}
-            </Col>
-          </Row>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button as="input" type="submit" value="Submit" />{" "}
-        </Modal.Footer>
-      </Form>
+      <Modal.Header closeButton>
+        <Modal.Title>
+          <Badge className="me-2">
+            <FontAwesomeIcon icon={faCalendar} className="me-2" />
+            {schedule?.id}
+          </Badge>{" "}
+          {schedule?.title}
+        </Modal.Title>
+      </Modal.Header>
+      <Modal.Body>
+        <Row xs={1} className="g-4 mt-0  align-items-stretch">
+          <Col className="mt-0">
+            <h2 className="fs-6">Titel</h2>
+            <Form.Control required ref={title} />
+          </Col>
+          <Col xs={6}>
+            <h2 className="fs-6">Start</h2>
+            <Form.Control required type="date" ref={start} />
+          </Col>
+          <Col xs={6}>
+            <h2 className="fs-6">Ende</h2>
+            <Form.Control required type="date" ref={end} />
+          </Col>
+          <Col>
+            <h2 className="fs-6">Abgabefrist</h2>
+            <Form.Control required type="datetime-local" ref={deadline} />
+          </Col>
+          <Col>
+            <h2 className="fs-6">Schichten</h2>
+            <MultiSelect
+              valueType="shifts"
+              objectType="schedules"
+              objectId={schedule?.id}
+              defaultValues={schedule?.shifts}
+            />
+          </Col>
+          <Col>
+            {schedule?.employees && (
+              <>
+                <h2 className="fs-6">Mitarbeiter</h2>
+                <Select
+                  defaultValue={schedule.employees.map((employee) => {
+                    return { value: employee.id, label: employee.initials }
+                  })}
+                  isMulti
+                  name="employees"
+                  options={allEmployees}
+                  className="basic-multi-select"
+                  classNamePrefix="select"
+                  ref={employees}
+                />
+              </>
+            )}
+          </Col>
+        </Row>
+      </Modal.Body>
+      <Modal.Footer>
+        {/* <Button type="submit" onSubmit={handleFormSubmit}>Speichern</Button> */}
+      </Modal.Footer>
     </Modal>
   )
 }

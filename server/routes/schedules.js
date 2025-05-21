@@ -62,9 +62,11 @@ module.exports = (models, sequelize) => {
         }
       )
       if (response[0] > 0)
-        return res.status(200).send({ message: "Dienstplan erfolgreich aktualisiert" })
+        return res
+          .status(200)
+          .send({ message: "Dienstplan erfolgreich aktualisiert" })
 
-      return res.status(404).send({error: "Keine Änderungen vorgenommen"})
+      return res.status(404).send({ error: "Keine Änderungen vorgenommen" })
     } catch (error) {
       return res.status(400).send({ error: error.message })
     }
@@ -137,12 +139,33 @@ module.exports = (models, sequelize) => {
   // TODO: return shift table
   router.get("/:id/shift", roles.requireAdmin, async (req, res) => {
     const response = await models.ScheduleShift.findAll({
-      where: { scheduleId: req.params.id },
+      where: { scheduleId: req.params.id }
     })
     if (response.length === 0) return res.sendStatus(404)
     return res.send({ response: response })
   })
 
+  // update schedule shifts
+  router.put("/:id/shifts", roles.requireAdmin, async (req, res) => {
+    try {
+      await models.ScheduleShift.destroy({
+        where: { scheduleId: req.params.id },
+      })
+
+      const newShifts =
+        req.body?.values?.map((shiftId) => ({
+          scheduleId: req.params.id,
+          shiftId: shiftId,
+        })) || []
+
+      await models.ScheduleShift.bulkCreate(newShifts)
+
+      return res.send({ message: "Erfolgreich aktualisiert" })
+
+    } catch (error) {
+      return res.status(400).send({ error: error.message })
+    }
+  })
   // Add Shifts to Schedule
   router.post("/:id/shift", roles.requireAdmin, async (req, res) => {
     try {
