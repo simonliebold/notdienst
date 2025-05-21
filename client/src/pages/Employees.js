@@ -18,7 +18,13 @@ import Alert from "react-bootstrap/Alert"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import {
   faCalendarDays,
+  faCode,
+  faDiceSix,
+  faDownload,
+  faKey,
   faPlus,
+  faSave,
+  faSpinner,
   faUser,
 } from "@fortawesome/free-solid-svg-icons"
 import Button from "react-bootstrap/Button"
@@ -238,121 +244,133 @@ const EmployeeModal = () => {
         )}
       </Modal.Header>
       <Modal.Body>
-        <h2 className="fs-6">Name</h2>
-        {isLoading && (
-          <Placeholder as="p" animation="glow">
-            <Placeholder disabled as={Form.Control} />
-          </Placeholder>
-        )}
-        {!isLoading && (
-          <Form.Control
-            defaultValue={employee.name}
-            onChange={(e) => setName(e.target.value)}
-          />
-        )}
-        <h2 className="fs-6 mt-3">Kürzel</h2>
-        {isLoading && (
-          <Placeholder as="p" animation="glow">
-            <Placeholder disabled as={Form.Control} />
-          </Placeholder>
-        )}
-        {!isLoading && (
-          <Form.Control
-            defaultValue={employee.initials}
-            onChange={(e) => setInitials(e.target.value)}
-          />
-        )}
-        <h2 className="fs-6 mt-3">Anstellungsverhältnis</h2>
-        {isLoading && (
-          <Placeholder as="p" animation="glow">
-            <Placeholder disabled as={Form.Control} />
-          </Placeholder>
-        )}
-        {!isLoading && (
-          <Select
-            defaultValue={{
-              value: employee.employment.id,
-              label: employee.employment.title,
-            }}
-            name="employment"
-            options={allEmployments}
-            className="basic-multi-select"
-            classNamePrefix="select"
-            onChange={(value) => setEmploymentId(value.value)}
-          />
-        )}
-        <h2 className="fs-6 mt-3">Jobs</h2>
-        {isLoading && (
-          <Placeholder as="p" animation="glow">
-            <Placeholder disabled as={Form.Control} />
-          </Placeholder>
-        )}
-        {!isLoading && (
-          <Select
-            defaultValue={employee.jobs.map((job) => {
-              return { value: job.id, label: job.title }
-            })}
-            isMulti
-            name="jobs"
-            options={allJobs}
-            className="basic-multi-select"
-            classNamePrefix="select"
-            onChange={(values) =>
-              setJobs(
-                values.map((value) => {
-                  return value.value
-                })
-              )
-            }
-          />
-        )}
-        {isLoading && (
-          <Placeholder as="p" animation="glow">
-            <Placeholder.Button className="mt-3">Lädt...</Placeholder.Button>
-          </Placeholder>
-        )}
-        {!isLoading && (
-          <Button
-            className="mt-3"
-            onClick={updateEmployee}
-            disabled={isButtonDisabled || isButtonLoading}
-          >
-            {isButtonLoading && "Lädt..."}
-            {!isButtonLoading && "Speichern"}
-          </Button>
-        )}
-        <hr />
-        <h2 className="fs-6 mt-3">Account-Daten ändern</h2>
-        {!token && (
-          <Button onClick={createToken} variant="primary">
-            Token generieren
-          </Button>
-        )}
-        {token && (
-          <Card bg="" text="">
-            <Card.Body>
-              <Card.Title>Code: {token.code}</Card.Title>
-              Besuche folgende Seite, um die Account-Daten festzulegen:{" "}
-              <a href={"http://localhost:3001/credentials/" + token.code}>
-                {"http://localhost:3001/credentials/" + token.code}
-              </a>
-            </Card.Body>
-            <Card.Footer>
-              Gültig bis: {new Date(token.expiresAt).toLocaleString("de-DE")}
-            </Card.Footer>
-          </Card>
-        )}
-        <hr />
-        <h2 className="fs-6 mt-3">Arbeitsplanung</h2>
-        {(isLoading || works.length === 0) && (
-          <Alert variant="secondary">Keine aktuellen Schichten gefunden</Alert>
-        )}
-        <Row className="g-3" xs={1} lg={2}>
-          {!isLoading &&
-            works.map((work) => {
-              return <WorkCard key={"work-" + work.id} work={work} />
-            })}
-        </Row>
+        <Form>
+          <Row>
+            <Col xs={3}>
+              <h2 className="fs-6">Kürzel</h2>
+              {isLoading && (
+                <Placeholder as="p" animation="glow">
+                  <Placeholder disabled as={Form.Control} />
+                </Placeholder>
+              )}
+              {!isLoading && (
+                <Form.Control
+                  defaultValue={employee.initials}
+                  onChange={(e) => setInitials(e.target.value)}
+                />
+              )}
+            </Col>
+            <Col>
+              <h2 className="fs-6">Name</h2>
+              {isLoading && (
+                <Placeholder as="p" animation="glow">
+                  <Placeholder disabled as={Form.Control} />
+                </Placeholder>
+              )}
+              {!isLoading && (
+                <Form.Control
+                  defaultValue={employee.name}
+                  onChange={(e) => setName(e.target.value)}
+                />
+              )}
+            </Col>
+          </Row>
+          <h2 className="fs-6 mt-3">Anstellungsverhältnis</h2>
+          {isLoading && (
+            <Placeholder as="p" animation="glow">
+              <Placeholder disabled as={Form.Control} />
+            </Placeholder>
+          )}
+          {!isLoading && (
+            <Select
+              defaultValue={{
+                value: employee.employment.id,
+                label: employee.employment.title,
+              }}
+              name="employment"
+              options={allEmployments}
+              className="basic-multi-select"
+              classNamePrefix="select"
+              onChange={(value) => setEmploymentId(value.value)}
+            />
+          )}
+          <h2 className="fs-6 mt-3">Jobs</h2>
+          {isLoading && (
+            <Placeholder as="p" animation="glow">
+              <Placeholder disabled as={Form.Control} />
+            </Placeholder>
+          )}
+          {!isLoading && (
+            <Select
+              defaultValue={employee.jobs.map((job) => {
+                return { value: job.id, label: job.title }
+              })}
+              isMulti
+              name="jobs"
+              options={allJobs}
+              className="basic-multi-select"
+              classNamePrefix="select"
+              onChange={(values) =>
+                setJobs(
+                  values.map((value) => {
+                    return value.value
+                  })
+                )
+              }
+            />
+          )}
+          {isLoading && (
+            <Placeholder as="p" animation="glow">
+              <Placeholder.Button className="mt-3">Lädt...</Placeholder.Button>
+            </Placeholder>
+          )}
+          {!isLoading && (
+            <Button
+              className="mt-3"
+              onClick={updateEmployee}
+              disabled={isButtonDisabled || isButtonLoading}
+            >
+              <FontAwesomeIcon className="me-2" icon={faSave} />
+              {isButtonLoading && "Lädt..."}
+              {!isButtonLoading && "Speichern"}
+            </Button>
+          )}
+          <hr />
+          <h2 className="fs-6 mt-3">Account-Daten ändern</h2>
+          {!token && (
+            <Button onClick={createToken} variant="primary">
+              <FontAwesomeIcon className="me-2" icon={faKey} />
+              Token generieren
+            </Button>
+          )}
+          {token && (
+            <Card bg="" text="">
+              <Card.Body>
+                <Card.Title>Code: {token.code}</Card.Title>
+                Besuche folgende Seite, um die Account-Daten festzulegen:{" "}
+                <a href={"http://localhost:3001/credentials/" + token.code}>
+                  {"http://localhost:3001/credentials/" + token.code}
+                </a>
+              </Card.Body>
+              <Card.Footer>
+                Gültig bis: {new Date(token.expiresAt).toLocaleString("de-DE")}
+              </Card.Footer>
+            </Card>
+          )}
+          <hr />
+          <h2 className="fs-6 mt-3">Arbeitsplanung</h2>
+          {(isLoading || works.length === 0) && (
+            <Alert variant="secondary">
+              Keine aktuellen Schichten gefunden
+            </Alert>
+          )}
+          <Row className="g-3" xs={1} lg={2}>
+            {!isLoading &&
+              works.map((work) => {
+                return <WorkCard key={"work-" + work.id} work={work} />
+              })}
+          </Row>
+        </Form>
       </Modal.Body>
     </Modal>
   )
