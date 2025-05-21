@@ -17,6 +17,7 @@ function Work() {
       <EditableBadge resource={work?.rrule} resourceName="rrule" disabled />
       <EditableBadge resource={work?.schedule} resourceName="schedule" disabled />
       <MultiBadge items={work?.employees} resourceName="employee" />
+      <MultiBadge items={work?.missions} resourceName="mission" />
     </Resource>
   )
 }

@@ -98,7 +98,7 @@ function Navigation() {
       path: "/employments",
     },
     {
-      name: "Einsätze",
+      name: titles.mission,
       icon: icons.mission,
       path: "/missions",
     },

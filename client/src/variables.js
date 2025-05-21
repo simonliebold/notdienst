@@ -17,10 +17,10 @@ export const icons = {
   work: faBriefcase,
   employment: faClock,
   shift: faCalendarDay,
-  job: faCar,
+  job: faFileLines,
   freetime: faTable,
   rrule: faRepeat,
-  mission: faFileLines,
+  mission: faCar,
   default: faHashtag,
 }
 
@@ -33,7 +33,7 @@ export const titles = {
   job: "Jobs",
   freetime: "Dienstplanwünsche",
   rrule: "Wiederholungsmuster",
-  mission: "Einsätze",
+  mission: "Einsatzprotokolle",
   default: "Objekte",
 }
 
@@ -46,7 +46,7 @@ export const title = {
   job: "Job",
   freetime: "Dienstplanwunsch",
   rrule: "Wiederholungsmuster",
-  mission: "Einsatz",
+  mission: "Einsatzprotokoll",
   default: "Objekt",
 }
 

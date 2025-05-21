@@ -12,7 +12,6 @@ module.exports = (models) => {
         models.Schedule,
         {
           model: models.Work,
-          where: { end: { [Op.gt]: new Date() } },
           required: false,
           include: [models.Schedule],
         },

@@ -24,7 +24,22 @@ module.exports = (models) => {
       ],
     })
     if (!work) return res.status(404).send({ error: "Dienst nicht gefunden" })
-    return res.send(work)
+
+    const missions = await models.Mission.findAll({
+      where: { workId: work.id },
+    })
+
+    return res.send({
+      id: work.id,
+      title: work.title,
+      short: work.short,
+      start: work.start,
+      end: work.end,
+      employees: work.employees,
+      rrule: work.rrule,
+      schedule: work.schedule,
+      missions: missions,
+    })
   })
 
   // Create one
