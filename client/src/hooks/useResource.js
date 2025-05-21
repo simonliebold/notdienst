@@ -49,6 +49,27 @@ export const useResourceUpdate = (resourceUrl) => {
 
   return update
 }
+
+export const useResourceDelete = (resourceUrl) => {
+  const handleError = useErrorMessage()
+  const handleSuccess = useSuccessMessage()
+
+  const update = useCallback(
+    async (updatedData) => {
+      const response = await axios
+        .delete(process.env.REACT_APP_URL + resourceUrl)
+        .catch(handleError)
+      if (process.env.NODE_ENV === "development")
+        console.log("DELETE:", resourceUrl, response?.data?.message)
+
+      handleSuccess(response?.data?.message)
+      return response?.data?.message
+    },
+    [handleError, handleSuccess, resourceUrl]
+  )
+
+  return update
+}
 // TODO: create update resource api call
 
 export default useResource

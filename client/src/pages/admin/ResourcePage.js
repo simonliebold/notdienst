@@ -3,11 +3,13 @@ import React, { useCallback, useEffect, useState } from "react"
 import { useNavigate, useParams } from "react-router-dom"
 import DetailedCard from "../../components/DetailedCard"
 
-import useResource, { useResourceUpdate } from "../../hooks/useResource"
+import useResource, { useResourceDelete, useResourceUpdate } from "../../hooks/useResource"
 import Breadcrumb from "../../components/Breadcrumb"
 import Popup, { DeletePopup } from "../../components/Popup"
 
 function ResourcePage({ resourceName, setData, children }) {
+  const navigate = useNavigate()
+
   // fetch data
   const { id } = useParams()
   const [resource, updateResource] = useResource(resourceName + "s/" + id)
@@ -33,7 +35,6 @@ function ResourcePage({ resourceName, setData, children }) {
   // save data
   const [saving, setSaving] = useState(false)
   const save = useResourceUpdate(resourceName + "s/" + id)
-  const navigate = useNavigate()
   const onSaveRequest = useCallback(async () => {
     setSaving(true)
     await save(input)
@@ -43,7 +44,7 @@ function ResourcePage({ resourceName, setData, children }) {
     setInput({})
     setEdit(false)
     setLoading(false)
-  }, [input, navigate, save, updateResource])
+  }, [input, save, updateResource])
 
   const [edit, setEdit] = useState(false)
   const onEditRequest = useCallback(() => {
@@ -54,15 +55,23 @@ function ResourcePage({ resourceName, setData, children }) {
     setEdit(false)
   }, [setEdit])
 
+  // popup delete
+  const destroy = useResourceDelete(resourceName + "s/" + id)
   const [showDeletePopup, setShowDeletePopup] = useState(false)
 
   const onDeleteRequest = useCallback(() => {
     setShowDeletePopup(true)
   }, [setShowDeletePopup])
 
-  const onDeleteConfirm = useCallback(() => {
-    alert("Löschen bestätigt")
-  }, [])
+  const onDeleteConfirm = useCallback(async () => {
+    await destroy()
+    setShowDeletePopup(false)
+    navigate("./../")
+  }, [destroy])
+
+  const onDeleteClose = useCallback(() => {
+    setShowDeletePopup(false)
+  }, [setShowDeletePopup])
 
   return (
     <>
@@ -70,6 +79,7 @@ function ResourcePage({ resourceName, setData, children }) {
       <DeletePopup
         show={showDeletePopup}
         onConfirm={onDeleteConfirm}
+        onClose={onDeleteClose}
         resource={resource}
         resourceName={resourceName}
       >

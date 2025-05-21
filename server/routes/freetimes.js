@@ -74,15 +74,31 @@ module.exports = (models) => {
 
   // Delete one
   // TODO: enable deletion by admin
-  router.delete("/:id", async (req, res) => {
+  // router.delete("/:id", async (req, res) => {
+  //   try {
+  //     const response = await models.Freetime.destroy({
+  //       where: { id: req.params.id, employeeId: req.user.id },
+  //     })
+  //     if (response === 0) return res.sendStatus(404)
+  //     return res.status(200).send({ message: "Deleted successfully" })
+  //   } catch (error) {
+  //     res.status(400).send({ errors: error.message })
+  //   }
+  // })
+  router.delete("/:id", roles.requireAdmin, async (req, res) => {
     try {
-      const response = await models.Freetime.destroy({
-        where: { id: req.params.id, employeeId: req.user.id },
+      const freetime = await models.Freetime.destroy({
+        where: { id: req.params.id },
       })
-      if (response === 0) return res.sendStatus(404)
-      return res.status(200).send({ message: "Deleted successfully" })
+      if (freetime === 0)
+        return res
+          .status(404)
+          .send({ error: "Dienstplanwunsch nicht gefunden" })
+      return res
+        .status(200)
+        .send({ message: "Dienstplanwunsch erfolgreich gelöscht" })
     } catch (error) {
-      res.status(400).send({ errors: error.message })
+      res.status(400).send({ error: error.message })
     }
   })
 

@@ -1,4 +1,10 @@
-import { faPen, faSave, faTrash } from "@fortawesome/free-solid-svg-icons"
+import {
+  faCancel,
+  faPen,
+  faSave,
+  faTrash,
+  faX,
+} from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import React from "react"
 import Button from "react-bootstrap/esm/Button"
@@ -8,7 +14,7 @@ import { title } from "../variables"
 function CardButton({ icon, children, ...props }) {
   return (
     <Button {...props}>
-      <FontAwesomeIcon icon={icon} className="me-2" />
+      {icon && <FontAwesomeIcon icon={icon} className="me-2" />}
       {children}
     </Button>
   )
@@ -52,6 +58,15 @@ export const ConfirmDeleteButton = ({ resource, resourceName, ...props }) => {
     <CardButton variant="danger" icon={faTrash} {...props}>
       {/* {title[resourceName] + " " + resource?.title + " löschen"} */}
       Löschen bestätigen
+    </CardButton>
+  )
+}
+
+export const CancelButton = ({ ...props }) => {
+  return (
+    <CardButton variant="secondary" {...props}>
+      {/* {title[resourceName] + " " + resource?.title + " löschen"} */}
+      Abbrechen
     </CardButton>
   )
 }
