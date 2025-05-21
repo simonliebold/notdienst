@@ -5,7 +5,7 @@ function Home() {
   const user = useUser()
   return (
     <div className="">
-      <h1 className="mt-3 text-center">Willkommen, {user?.title}! 👋</h1>
+      <h1 className="mt-3 text-center">Hallo, {user?.title}! 👋</h1>
     </div>
   )
 }
