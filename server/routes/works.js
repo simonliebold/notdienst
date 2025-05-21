@@ -1,5 +1,5 @@
 const { default: mongoose } = require("mongoose")
-const Work = require("../schemas/Work")
+const Work = require("../models/Work")
 
 const router = require("express").Router()
 const roles = require("../roles")

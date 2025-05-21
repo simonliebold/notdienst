@@ -1,6 +1,6 @@
 const router = require("express").Router()
 const roles = require("../roles")
-const Employment = require("../schemas/Employment")
+const Employment = require("../models/Employment")
 
 // Get all
 router.get("/", roles.requireAdmin, async (req, res, next) => {
