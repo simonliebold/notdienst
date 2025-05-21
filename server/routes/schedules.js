@@ -202,10 +202,12 @@ module.exports = (models, sequelize) => {
       let ruleStart = new Date(req.schedule.start.getTime())
       ruleStart.setHours(...rrule.start.split(":"))
 
+      let ruleEnd = new Date(req.schedule.end.getTime())
+      ruleEnd.setHours(23, 59, 59)
+
       let options = RRule.parseString(rrule?.content)
       options.dtstart = new Date(ruleStart.getTime())
-      options.until = new Date(req.schedule.end.getTime())
-
+      options.until = new Date(ruleEnd.getTime())
       const dates = new RRule(options).all()
 
       dates.forEach((start) => {
