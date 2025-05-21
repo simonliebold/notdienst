@@ -76,10 +76,7 @@ function EditCredentials({ result, setLoggedIn, oldEmail }) {
 
   return (
     <div className="">
-      <h1 className="mb-2 fw-bold">Account-Daten ändern</h1>
-      <p className="text-muted mb-4">
-        Gib bitte die Daten ein, die geändert werden sollen.
-      </p>
+      <h1 className="mb-2 fw-bold mb-4">Account-Daten festlegen</h1>
       <Form noValidate validated={validated} onSubmit={handleOnSubmit}>
         <Form.Group className="mb-3" controlId="email">
           <FloatingLabel
@@ -100,10 +97,10 @@ function EditCredentials({ result, setLoggedIn, oldEmail }) {
           </FloatingLabel>
         </Form.Group>
         <Form.Group className="mb-3" controlId="password">
-          <FloatingLabel controlId="password" label="Passwort" className="mb-3">
+          <FloatingLabel controlId="password" label="Neues Passwort" className="mb-3">
             <Form.Control
               type="password"
-              placeholder="Passwort"
+              placeholder="Neues Passwort"
               onChange={(e) => setPassword(e.target.value)}
               isInvalid={isPassInvalid}
             />
@@ -116,12 +113,12 @@ function EditCredentials({ result, setLoggedIn, oldEmail }) {
         <Form.Group className="" controlId="passwordRepeat">
           <FloatingLabel
             controlId="passwordRepeat"
-            label="Passwort wiederholen"
+            label="Neues Passwort wiederholen"
             className="mb-4"
           >
             <Form.Control
               type="password"
-              placeholder="Passwort wiederholen"
+              placeholder="Neues Passwort wiederholen"
               onChange={(e) => {
                 setPasswordRepeat(e.target.value)
               }}
@@ -140,7 +137,7 @@ function EditCredentials({ result, setLoggedIn, oldEmail }) {
           }
         >
           {loading && <>Lädt...</>}
-          {!loading && <>Daten ändern</>}
+          {!loading && <>Account-Daten speichern</>}
         </Button>
       </Form>
     </div>
@@ -178,7 +175,7 @@ function InputCode({ result, setResult, setLoggedIn, setOldEmail }) {
     <>
       <h1 className="mb-2 fw-bold">Code eingeben</h1>
       <p className="text-muted mb-4">
-        Um die Account-Daten zu ändern, gib bitte den sechsstelligen Code ein.
+        Um die Account-Daten zu ändern, gib bitte den vierstelligen Code ein.
       </p>
       <form onSubmit={handleOnSubmit}>
         <AuthCode
@@ -209,7 +206,7 @@ function SignUp() {
 
   return (
     <div
-      className="position-absolute d-flex flex-column row-cols-lg-2 justify-content-center w-100"
+      className="position-absolute d-flex flex-column row-cols-lg-2 justify-content-center w-100 align-items-center align-items-lg-start text-center text-lg-start"
       style={{ height: "100vh" }}
     >
       {loggedIn && (

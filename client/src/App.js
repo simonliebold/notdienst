@@ -11,25 +11,43 @@ import Login from "./pages/Login"
 import Credentials from "./pages/Credentials"
 import Container from "react-bootstrap/esm/Container"
 import AlertBox from "./components/AlertBox"
+import Navigation from "./components/Navigation"
 
 function App() {
+  const routes = [
+    { name: "Home", path: "/", protected: true, element: <Home /> },
+    { name: "Login", path: "/login", protected: false, element: <Login /> },
+    {
+      name: "Credentials",
+      path: "/credentials",
+      protected: false,
+      element: <Credentials />,
+    },
+  ]
+
   return (
     <AuthProvider>
       <AlertProvider>
         <Container>
           <div className="position-relative">
             <AlertBox />
+
             <Routes>
-              <Route path="/login" element={<Login />} />
-              <Route path="/credentials" element={<Credentials />} />
-              <Route
-                path="/"
-                element={
-                  <ProtectedRoute>
-                    <Home />
-                  </ProtectedRoute>
-                }
-              />
+              {routes.map((route) => {
+                if (route.protected)
+                  return (
+                    <Route
+                      path={route.path}
+                      element={
+                        <ProtectedRoute>
+                          <Navigation routes={routes} />
+                          {route.element}
+                        </ProtectedRoute>
+                      }
+                    />
+                  )
+                else return <Route path={route.path} element={route.element} />
+              })}
             </Routes>
           </div>
         </Container>

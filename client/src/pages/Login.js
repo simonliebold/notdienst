@@ -108,13 +108,8 @@ function Login() {
           </FloatingLabel>
         </Form.Group>
         <div className="d-flex align-items-center">
-          <Button
-            size="lg"
-            type="submit"
-            disabled={loading || isEmailInvalid || isPassInvalid}
-          >
-            {loading && <>Lädt...</>}
-            {!loading && <>Einloggen</>}
+          <Button size="lg" type="submit" disabled={!password || !email}>
+            Einloggen
           </Button>
           <p className="mb-0 ms-3 text-small">
             <Link to="/credentials" className="text-muted text-decoration-none">

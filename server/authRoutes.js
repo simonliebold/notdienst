@@ -105,11 +105,9 @@ module.exports = (sequelize) => {
         })
 
       if (users[0].password === null || users[0].password === null)
-        return res
-          .status(400)
-          .send({
-            error: "Bitte lege eine E-Mail-Adresse und ein Passwort fest.",
-          })
+        return res.status(400).send({
+          error: "Bitte lege eine E-Mail-Adresse und ein Passwort fest.",
+        })
       await sequelize.models.credentialsCodes.destroy({
         where: { code: req.params.code },
       })
@@ -120,8 +118,15 @@ module.exports = (sequelize) => {
       // })
       return res
         .status(200)
-        .send({ message: "Account-Daten erfolgreich geändert" })
+        .send({ message: "Account-Daten erfolgreich festgelegt" })
     } catch (error) {
+      if (error.name === "SequelizeUniqueConstraintError")
+        return res
+          .status(400)
+          .send({
+            error:
+              "E-Mail-Adresse wird bereits von einem anderen Account verwendet.",
+          })
       return res.status(400).send({ error: error.message })
     }
   })
