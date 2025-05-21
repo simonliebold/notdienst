@@ -41,14 +41,14 @@ function Calendar({ works, view, ...props }) {
 
   const initialDate = useCallback(() => {
     const first = new Date(works[0]?.start).getTime()
-    const last = new Date(works[works.length-1]?.start).getTime()
+    const last = new Date(works[works.length - 1]?.start).getTime()
     const today = new Date().getTime()
 
-    if(today > last) return last
-    if(today < last && today > first) return today
+    if (today > last) return last
+    if (today < last && today > first) return today
     return first
 
-    return 
+    return
   }, [])
 
   if (!works) return <MultiBadge resourceName="work" />
@@ -61,12 +61,7 @@ function Calendar({ works, view, ...props }) {
         headerToolbar={{
           right: "prev,next",
         }}
-        views={{
-          three: {
-            type: "timeGrid",
-            duration: { days: 3 },
-          },
-        }}
+        firstDay={1}
         height={"auto"}
         initialDate={initialDate()}
         allDaySlot={false}
