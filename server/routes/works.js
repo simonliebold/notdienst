@@ -97,7 +97,7 @@ module.exports = (models) => {
       if (response === 0) return res.sendStatus(404)
       return res.status(200).send({ message: "Deleted successfully" })
     } catch (error) {
-      return res.status(400).send({ errors: error })
+      return res.status(400).send({ error: error.message })
     }
   })
 

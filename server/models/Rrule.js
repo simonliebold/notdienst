@@ -18,6 +18,8 @@ module.exports = (sequelize) => {
         },
       },
       content: { type: Sequelize.STRING, allowNull: false },
+      start: { type: Sequelize.TIME },
+      end: { type: Sequelize.TIME },
       shiftId: {
         type: Sequelize.INTEGER,
         allowNull: false,

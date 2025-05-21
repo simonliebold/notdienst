@@ -1,4 +1,5 @@
 const { Op } = require("sequelize")
+const { RRule, datetime } = require("rrule")
 
 module.exports = (models, sequelize) => {
   const router = require("express").Router()
@@ -166,8 +167,9 @@ module.exports = (models, sequelize) => {
       id: schedule?.id,
       short: schedule?.short,
       title: schedule?.title,
-      deadline: schedule?.deadline,
-      end: schedule?.end,
+      deadline: new Date(schedule?.deadline),
+      start: new Date(schedule?.start),
+      end: new Date(schedule?.end),
       shifts: schedule?.shifts,
       shiftIds: schedule?.shifts?.map((shift) => shift.id),
     }
@@ -195,33 +197,32 @@ module.exports = (models, sequelize) => {
       })
 
     let works = []
-    const first = new Date(req.schedule.start)
-    const last = new Date(req.schedule.end)
-    for (const eventInd in req.events) {
-      const event = req.events[eventInd]
-      const eventId = req.events[eventInd].id
-      const timeStart = event.timeStart.split(":")
-      const timeEnd = event.timeEnd.split(":")
-      for (let i = new Date(first); i <= last; i.setDate(i.getDate() + 1)) {
-        if (i.getDay() !== event.repeatWeekday) continue
-        const start = new Date(i)
-        start.setHours(timeStart[0], timeStart[1], timeStart[2])
 
-        const end = new Date(i)
-        if (timeStart[0] > timeEnd[0]) end.setDate(end.getDate() + 1)
-        end.setHours(timeEnd[0], timeEnd[1], timeEnd[2])
+    req.rrules.forEach((rrule) => {
+      let ruleStart = new Date(req.schedule.start.getTime())
+      ruleStart.setHours(...rrule.start.split(":"))
 
-        const duration = (end.getTime() - start.getTime()) / 3600000
+      let options = RRule.parseString(rrule?.content)
+      options.dtstart = new Date(ruleStart.getTime())
+      options.until = new Date(req.schedule.end.getTime())
+
+      const dates = new RRule(options).all()
+
+      dates.forEach((start) => {
+        let end = new Date(start.getTime())
+        end.setHours(...rrule.end.split(":"))
+
+        if (end < start) end.setDate(end.getDate() + 1)
 
         works.push({
           start: start,
           end: end,
-          duration: duration,
+          rruleId: rrule.id,
           scheduleId: req.schedule.id,
-          eventId: eventId,
         })
-      }
-    }
+      })
+    })
+
     req.works = await models.Work.bulkCreate(works)
 
     next()
@@ -233,9 +234,9 @@ module.exports = (models, sequelize) => {
     roles.requireAdmin,
     getSchedule,
     getRrules,
-    // createWorks,
+    createWorks,
     async (req, res) => {
-      return res.send(req.rrules)
+      return res.send(req.works)
     }
   )
 

@@ -19,6 +19,7 @@
     "jsonwebtoken": "^9.0.2",
     "mariadb": "^2.3.3",
     "nodemailer": "^6.9.7",
+    "rrule": "^2.8.1",
     "sequelize": "^6.33.0"
   },
   "devDependencies": {
