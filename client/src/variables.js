@@ -54,7 +54,10 @@ export const labels = {
   maxHours: "Maximum",
   date: "Datum",
   type: "Art",
-  content: "Inhalt"
+  content: "Inhalt",
+  start: "Start",
+  end: "Ende",
+  deadline: "Deadline"
 }
 
 export const localeString = {

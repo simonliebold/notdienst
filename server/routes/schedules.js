@@ -55,23 +55,41 @@ module.exports = (models, sequelize) => {
   // Update one
   router.put("/:id", roles.requireAdmin, async (req, res) => {
     try {
-      const response = await models.Schedule.update(
+      const schedule = await models.Schedule.findByPk(req.params.id)
+      await models.Schedule.update(
         {
-          title: req?.body?.title,
-          start: req?.body?.start,
-          end: req?.body?.end,
-          deadline: req?.body?.deadline,
+          title: req.body.title,
+          start: req.body.start,
+          end: req.body.end,
+          deadline: req.body.deadline,
         },
         {
           where: { id: req.params.id },
         }
       )
-      if (response[0] > 0)
-        return res
-          .status(200)
-          .send({ message: "Dienstplan erfolgreich aktualisiert" })
 
-      return res.status(404).send({ error: "Keine Änderungen vorgenommen" })
+      if (req.body.employeeIds) {
+        await models.ScheduleEmployee.destroy({
+          where: { scheduleId: schedule.id },
+        })
+        await models.ScheduleEmployee.bulkCreate(
+          req.body.employeeIds.map((employeeId) => {
+            return { employeeId: employeeId, scheduleId: schedule.id }
+          })
+        )
+      }
+      if (req.body.shiftIds) {
+        await models.ScheduleShift.destroy({
+          where: { scheduleId: schedule.id },
+        })
+        await models.ScheduleShift.bulkCreate(
+          req.body.shiftIds.map((shiftId) => {
+            return { shiftId: shiftId, scheduleId: schedule.id }
+          })
+        )
+      }
+      // No update of workIds because the need to be associated to a schedule
+      return res.status(200).send({ message: "Änderungen gespeichert" })
     } catch (error) {
       return res.status(400).send({ error: error.message })
     }

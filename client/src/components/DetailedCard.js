@@ -130,39 +130,5 @@ export const ShiftDetailedCard = ({ shift }) => {
   )
 }
 
-export const ScheduleDetailedCard = ({ schedule, className }) => {
-  const { employees, shifts, works } = schedule || {}
-
-  const start = new Date(schedule?.start).toLocaleDateString(
-    localeString.country
-  )
-  const end = new Date(schedule?.end).toLocaleDateString(localeString.country)
-  const deadline = new Date(schedule?.deadline).toLocaleString(
-    localeString.country
-  )
-
-  return (
-    <DetailedCard
-      resourceName="schedule"
-      resource={schedule}
-      className={className}
-    >
-      Start: {start && start}
-      <br />
-      Ende: {end && end}
-      <br />
-      Deadline: {deadline && deadline}
-      <hr />
-      Dienste:
-      <MultiBadge items={works} resourceName="work" />
-      <hr />
-      Schichten:
-      <MultiBadge items={shifts} resourceName="shift" />
-      <hr />
-      Mitarbeiter:
-      <MultiBadge items={employees} resourceName="employee" />
-    </DetailedCard>
-  )
-}
 
 export default DetailedCard
