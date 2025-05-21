@@ -31,12 +31,13 @@ function Breadcrumb({ resourceName, resource }) {
       <h1 className="d-flex align-items-center mb-4">
         {resource && (
           <>
-            {title[resourceName]}
-            <Badge
+            {title[resourceName]+": "}
+            {/* <Badge
               resource={resource}
               resourceName={resourceName}
-              className="ms-3"
-            />
+              className="me-3"
+            /> */}
+            {resource.title}
           </>
         )}
 
