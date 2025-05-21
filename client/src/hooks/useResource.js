@@ -146,4 +146,22 @@ export const useAllocateWorks = () => {
   return allocate
 }
 
+export const useGenerateCredentialsToken = () => {
+  const handleError = useErrorMessage()
+
+  const generate = useCallback(
+    async (userId) => {
+      if (!userId) return
+      const response = await axios
+        .post(process.env.REACT_APP_AUTH_URL + "credentials/generate/" + userId)
+        .catch(handleError)
+      if (process.env.NODE_ENV === "development")
+        console.log("useGenerateCredentialsToken:", response?.data)
+      return response?.data
+    },
+    [handleError]
+  )
+  return generate
+}
+
 export default useResource

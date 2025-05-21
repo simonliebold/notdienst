@@ -7,10 +7,11 @@ import { EmployeeCalendar, ScheduleCalendar } from "../../components/Calendar"
 import {
   AsyncAllocateWorksButton,
   AsyncGenerateWorksButton,
+  CredentialsButton,
 } from "../../components/CardButton"
 
 import { useParams } from "react-router-dom"
-import useResource from "./../../hooks/useResource"
+import useResource, { useGenerateCredentialsToken } from "./../../hooks/useResource"
 import useInput from "./../../hooks/useInput"
 import useSave from "./../../hooks/useSave"
 
@@ -95,6 +96,7 @@ export const EmployeePage = () => {
           edit={edit}
           disabled
         />
+        <CredentialsButton userId={employee?._id} />
         {/* <ContainsItems resources={employee?.freetimes} resourceName="freetime" /> */}
       </DetailedCard>
       <EmployeeCalendar employee={employee} />

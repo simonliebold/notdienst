@@ -7,6 +7,7 @@ import {
   faCaretLeft,
   faCaretRight,
   faExpand,
+  faKey,
   faPen,
   faPlus,
   faSave,
@@ -19,7 +20,11 @@ import Button from "react-bootstrap/esm/Button"
 import { Link } from "react-router-dom"
 import { icons, title, titles } from "../variables"
 import Spinner from "react-bootstrap/esm/Spinner"
-import { useAllocateWorks, useGenerateWorks } from "../hooks/useResource"
+import {
+  useAllocateWorks,
+  useGenerateCredentialsToken,
+  useGenerateWorks,
+} from "../hooks/useResource"
 import Placeholder from "react-bootstrap/Placeholder"
 
 function CardButton({ icon, children, ...props }) {
@@ -180,6 +185,15 @@ export const ExpandButton = ({ expanded, ...props }) => {
       className="text-decoration-none text-secondary p-0"
       {...props}
     ></CardButton>
+  )
+}
+
+export const CredentialsButton = ({ userId }) => {
+  const generate = useGenerateCredentialsToken()
+  return (
+    <CardButton icon={faKey} onClick={(e) => generate(userId)}>
+      Token generieren
+    </CardButton>
   )
 }
 

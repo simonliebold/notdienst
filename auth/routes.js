@@ -7,8 +7,8 @@ const jwt = require("jsonwebtoken")
 const CredentialsToken = require("./models/CredentialsToken")
 
 function generateAccessToken(user) {
-  const expirationDate = Math.floor(Date.now() / 1000)
-  // const expirationDate = Math.floor(Date.now() / 1000) + 180000
+  // const expirationDate = Math.floor(Date.now() / 1000)
+  const expirationDate = Math.floor(Date.now() / 1000) + 180000
   return jwt.sign(
     { ...user, exp: expirationDate },
     process.env.ACCESS_TOKEN_SECRET
@@ -39,13 +39,16 @@ router.post(
   async (req, res) => {
     if (req.user.role < 10 && req.user.id !== Math.floor(req.params.id))
       return res.sendStatus(403)
-    let users = await sequelize.models.users.findOrCreate({
-      where: { id: req.params.id },
-    })
-    if (users === null)
-      return res
-        .status(404)
-        .send({ error: "Nutzer konnte nicht gefunden werden" })
+
+    const user = await User.findById(req.params.id)
+    if (!user) await User.create({ _id: req.params.id })
+    // let users = await sequelize.models.users.findOrCreate({
+    //   where: { id: req.params.id },
+    // })
+    // if (users === null)
+    //   return res
+    //     .status(404)
+    //     .send({ error: "Nutzer konnte nicht gefunden werden" })
 
     const now = new Date()
     const expiresAt = now.setDate(now.getDate() + 1)
@@ -55,16 +58,22 @@ router.post(
       code += codeString.charAt(Math.floor(Math.random() * codeString.length))
     }
     try {
-      await sequelize.models.credentialsCodes.destroy({
-        where: { userId: req.params.id },
-      })
-      const credentialsCode = await sequelize.models.credentialsCodes.create({
+      await CredentialsToken.deleteMany({ userId: req.params.id })
+      const token = await CredentialsToken.create({
         code: code,
         userId: req.params.id,
         expiresAt: expiresAt,
       })
+      // await sequelize.models.credentialsCodes.destroy({
+      //   where: { userId: req.params.id },
+      // })
+      // const credentialsCode = await sequelize.models.credentialsCodes.create({
+      //   code: code,
+      //   userId: req.params.id,
+      //   expiresAt: expiresAt,
+      // })
 
-      return res.send(credentialsCode)
+      return res.send(token)
     } catch (error) {
       return res.status(400).send({ error: error.message })
     }

@@ -2,10 +2,10 @@ const { Schema, model } = require("mongoose")
 const bcrypt = require("bcrypt")
 
 const userSchema = new Schema({
-  email: { type: String, unique: true, required: true },
+  email: { type: String, unique: true, required: false },
   tel: { type: String, required: false },
-  password: { type: String, required: true },
-  role: { type: Number, required: true },
+  password: { type: String, required: false },
+  role: { type: Number, required: true, default: "1" },
 })
 
 userSchema.pre("save", async function (next) {
