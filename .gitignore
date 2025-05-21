@@ -3,4 +3,4 @@
 **/node_modules
 launch.json
 .DS_STORE
-server/testData.js
+**/testData.js
