@@ -1,18 +1,14 @@
-import React, { useEffect, useState } from "react"
+import React from "react"
 
-import { Link, useNavigate, useParams } from "react-router-dom"
+import { useNavigate, useParams } from "react-router-dom"
 
 import Card from "react-bootstrap/Card"
 import Placeholder from "react-bootstrap/Placeholder"
 import CloseButton from "react-bootstrap/CloseButton"
 import Spinner from "react-bootstrap/Spinner"
 
-import Badge, { EditableBadge } from "./Badge"
-import MultiBadge from "./MultiBadge"
+import Badge from "./Badge"
 import { CardDeleteButton, CardEditButton, CardSaveButton } from "./CardButton"
-import { labels, localeString } from "../variables"
-import EditableText from "./EditableText"
-import { useResourceUpdate } from "../hooks/useResource"
 
 const DetailedCard = ({
   resource,
@@ -86,6 +82,5 @@ const DetailedCard = ({
     </Card>
   )
 }
-
 
 export default DetailedCard
