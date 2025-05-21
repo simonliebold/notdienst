@@ -135,6 +135,15 @@ const ScheduleModal = () => {
             />
           </Col>
           <Col>
+            <h2 className="fs-6">Schichten</h2>
+            <MultiSelect
+              valueType="employees"
+              objectType="schedules"
+              objectId={schedule?.id}
+              defaultValues={schedule?.employees}
+            />
+          </Col>
+          {/* <Col>
             {schedule?.employees && (
               <>
                 <h2 className="fs-6">Mitarbeiter</h2>
@@ -151,7 +160,7 @@ const ScheduleModal = () => {
                 />
               </>
             )}
-          </Col>
+          </Col> */}
         </Row>
       </Modal.Body>
       <Modal.Footer>
