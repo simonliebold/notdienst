@@ -2,8 +2,10 @@ const express = require("express")
 const app = express()
 const { Sequelize, DataTypes } = require("sequelize")
 const bcrypt = require("bcrypt")
+const helmet = require("helmet")
 
 app.use(express.json())
+app.use(helmet())
 
 const sequelize = new Sequelize(
   process.env.AUTH_DB_NAME,
@@ -15,16 +17,21 @@ const sequelize = new Sequelize(
   }
 )
 
-sequelize.define(
-  "credentialsTokens",
+const CredentialsCode = sequelize.define(
+  "credentialsCodes",
   {
     code: {
-      type: DataTypes.STRING(4),
+      type: DataTypes.STRING(6),
       allowNull: false,
       primaryKey: true,
     },
-    token: {
-      type: DataTypes.STRING,
+    userId: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      unique: true,
+    },
+    expiresAt: {
+      type: DataTypes.DATE,
       allowNull: false,
     },
   },
@@ -71,8 +78,16 @@ const User = sequelize.define(
   }
 )
 
+CredentialsCode.belongsTo(User)
+
+const accessControl = (req, res, next) => {
+  res.header("Access-Control-Allow-Origin", "*")
+  res.header("Access-Control-Allow-Headers", "*")
+  next()
+}
+
 const routes = require("./authRoutes")(sequelize)
-app.use("/", routes)
+app.use("/", accessControl, routes)
 
 const PORT = process.env.AUTH_PORT || 4000
 app.listen(PORT, async () => {

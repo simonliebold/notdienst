@@ -18,25 +18,6 @@ module.exports = (sequelize) => {
     return jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, { expiresIn: "1d" })
   }
 
-  function generateCredentialsToken(user) {
-    return jwt.sign(user, process.env.CREDENTIALS_TOKEN_SECRET, {
-      expiresIn: "1d",
-    })
-  }
-
-  function authenticateCredentialsToken(req, res, next) {
-    const authHeader = req.headers["authorization"]
-    const token = authHeader && authHeader.split(" ")[1]
-    if (token == null) return res.sendStatus(401)
-    req.credentialsToken = token
-
-    jwt.verify(token, process.env.CREDENTIALS_TOKEN_SECRET, (err, user) => {
-      if (err) return res.sendStatus(401)
-      req.user = user
-      next()
-    })
-  }
-
   function authenticateAccessToken(req, res, next) {
     const authHeader = req.headers["authorization"]
     const token = authHeader && authHeader.split(" ")[1]
@@ -50,67 +31,79 @@ module.exports = (sequelize) => {
   }
 
   // Generate credentials token
-  router.post("/credentials/:id", authenticateAccessToken, async (req, res) => {
-    if (req.user.role < 10 && req.user.id !== Math.floor(req.params.id))
-      return res.sendStatus(403)
-    let user = await sequelize.models.users.findByPk(req.params.id)
-    if (user === null) return res.sendStatus(404)
-    user = user.dataValues
-    delete user.password
-    const token = generateCredentialsToken(user)
-
-    const codeString = "ABCDEFGHIJKLMNPQRSTUVWXYZ123456789"
-    let code = ""
-    for (let i = 0; i < 4; i++) {
-      code += codeString.charAt(Math.floor(Math.random() * codeString.length))
-    }
-    try {
-      const credentialsToken = await sequelize.models.credentialsTokens.create({
-        code: code,
-        token: token,
-      })
-      return res.send({ code: credentialsToken.code })
-    } catch (error) {
-      return res.sendStatus(400)
-    }
-  })
-
-  // Get credentials token by code
-  router.get("/credentials/:code", async (req, res) => {
-    const credentialsToken = await sequelize.models.credentialsTokens.findOne({
-      where: { code: req.params.code },
-    })
-    if (credentialsToken === null) return res.sendStatus(404)
-    const token = credentialsToken.token
-    await credentialsToken.destroy()
-    return res.send({ token: token })
-  })
-
-  // Change email / password
   router.post(
-    "/credentials",
-    authenticateCredentialsToken,
+    "/credentials/generate/:id",
+    authenticateAccessToken,
     async (req, res) => {
+      if (req.user.role < 10 && req.user.id !== Math.floor(req.params.id))
+        return res.sendStatus(403)
+      let user = await sequelize.models.users.findByPk(req.params.id)
+      if (user === null) return res.sendStatus(404)
+
+      const now = new Date()
+      const expiresAt = now.setDate(now.getDate() + 1)
+      const codeString = "ABCDEFGHIJKLMNPQRSTUVWXYZ123456789"
+      let code = ""
+      for (let i = 0; i < 6; i++) {
+        code += codeString.charAt(Math.floor(Math.random() * codeString.length))
+      }
       try {
-        const [count, users] = await sequelize.models.users.update(
-          {
-            email: req.body.email,
-            password: req.body.password,
-          },
-          { where: { id: req.user.id }, individualHooks: true }
-        )
-        if (count < 1) return res.sendStatus(400)
-        await transporter.sendMail({
-          from: '"ASB" <asb@lie-bold.de>',
-          to: users[0].email,
-          subject: "Account-Daten erfolgreich geändert",
+        await sequelize.models.credentialsCodes.destroy({
+          where: { userId: user.id },
         })
-        return res.sendStatus(200)
+        const credentialsCode = await sequelize.models.credentialsCodes.create({
+          code: code,
+          userId: user.id,
+          expiresAt: expiresAt,
+        })
+
+        return res.send(credentialsCode)
       } catch (error) {
         return res.status(400).send({ error: error.message })
       }
     }
   )
+
+  // Check if token is expired
+  router.get("/credentials/check/:code", async (req, res) => {
+    const credentialsCode = await sequelize.models.credentialsCodes.findOne({
+      where: { code: req.params.code },
+    })
+    if (credentialsCode === null || credentialsCode.expiresAt < Date.now())
+      return res.sendStatus(404)
+    return res.sendStatus(200)
+  })
+
+  // Change email / password
+  router.post("/credentials/change/:code", async (req, res) => {
+    const credentialsCode = await sequelize.models.credentialsCodes.findByPk(
+      req.params.code
+    )
+    if (credentialsCode === null || credentialsCode.expiresAt < Date.now())
+      return res.sendStatus(404)
+
+    try {
+      const [count, users] = await sequelize.models.users.update(
+        {
+          email: req.body.email,
+          password: req.body.password,
+        },
+        { where: { id: credentialsCode.userId }, individualHooks: true }
+      )
+      if (count < 1) return res.sendStatus(400)
+      await sequelize.models.credentialsCodes.destroy({
+        where: { code: req.params.code },
+      })
+      await transporter.sendMail({
+        from: '"ASB" <asb@lie-bold.de>',
+        to: users[0].email,
+        subject: "Account-Daten erfolgreich geändert",
+      })
+      return res.sendStatus(200)
+    } catch (error) {
+      return res.status(400).send({ error: error.message })
+    }
+  })
 
   // Refresh token
   router.post("/token", async (req, res) => {
