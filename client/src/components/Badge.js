@@ -9,14 +9,14 @@ import useResource from "../hooks/useResource"
 import { icons, selectStyles, title } from "./../variables"
 
 function Badge({ resource, resourceName, disabled, className, ...props }) {
-  const { id, short } = resource || {}
+  const { _id, short } = resource || {}
 
   const icon = icons[resourceName] || icons.default
 
   return (
     <BootstrapBadge
       as={disabled ? BootstrapBadge : Link}
-      to={"/" + resourceName + "s/" + id}
+      to={"/" + resourceName + "s/" + _id}
       className={className + " text-decoration-none w-auto text-light"}
       bg={disabled ? "secondary" : "primary"}
       {...props}
@@ -56,7 +56,7 @@ export const EditableBadge = ({
           options={options?.map((option) => ({
             icon: icons[resourceName],
             label: option.short,
-            value: option.id,
+            value: option._id,
           }))}
           placeholder="Keine Daten"
           noOptionsMessage={() => "Keine Optionen"}
@@ -72,7 +72,7 @@ export const EditableBadge = ({
             value: resource?._id,
             icon: icons[resourceName],
           }}
-          onChange={(item) => onInput(resourceName + "Id", item.value)}
+          onChange={(item) => onInput(resourceName, item.value)}
         />
       </div>
     )

@@ -1,104 +1,42 @@
-const { Op } = require("sequelize")
+const Employment = require("../schemas/Employment")
 
-module.exports = (models) => {
+module.exports = () => {
   const router = require("express").Router()
+  const roles = require("../roles")
 
   // Get all
-  router.get("/", async (req, res) => {
-    const employments = await models.Employment.findAll()
-    res.send(employments)
+  router.get("/", roles.requireAdmin, async (req, res, next) => {
+    const employments = await Employment.find({}).catch(next)
+    if (!employments) return next(new Error("Nicht gefunden"))
+    return res.send(employments)
   })
 
   // Get one
-  router.get("/:id", async (req, res) => {
-    const employment = await models.Employment.findByPk(req.params.id)
-    if (employment === null)
-      return res
-        .status(404)
-        .send({ message: "Anstellungsverhältnis nicht gefunden" })
-
-    const employees = await models.Employee.findAll({
-      where: { employmentId: req.params.id },
-    })
-    return res.send({ ...employment.dataValues, employees })
+  router.get("/:id", roles.requireAdmin, async (req, res, next) => {
+    const employment = await Employment.findById(req.params.id)
+      .catch(next)
+    if (!employment) return next(new Error("Nicht gefunden"))
+    return res.send(employment)
   })
 
   // Create one
-  router.post("/", async (req, res) => {
-    try {
-      const employment = await models.Employment.create({
-        short: req?.body?.short,
-        title: req?.body?.title,
-        minHours: req?.body?.minHours,
-        maxHours: req?.body?.maxHours,
-      })
-
-      res.send(employment)
-    } catch (error) {
-      res.status(400).send({ error: error })
-    }
-  })
+  router.post("/", roles.requireAdmin, async (req, res) => {})
 
   // Update one
-  router.put("/:id", async (req, res) => {
-    try {
-      const employment = await models.Employment.findByPk(req.params.id)
+  router.put("/:id", roles.requireAdmin, async (req, res, next) => {
+    const { short, title, employment, jobs } = req?.body || {}
+    await Employment.findByIdAndUpdate(req.params.id, {
+      short,
+      title,
+    }).catch(next)
 
-      if (!employment)
-        return res
-          .status(400)
-          .send({ error: "Anstellungsverhältnis nicht gefunden" })
-      await models.Employment.update(
-        {
-          short: req.body?.short,
-          title: req.body?.title,
-          minHours: req.body?.minHours,
-          maxHours: req.body?.maxHours,
-        },
-        {
-          where: { id: req.params.id },
-        }
-      )
-
-      if (req.body?.employeeIds) {
-        await models.Employee.update(
-          { employmentId: null },
-          {
-            where: {
-              employmentId: employment.id,
-            },
-          }
-        )
-        await models.Employee.update(
-          { employmentId: employment.id },
-          {
-            where: {
-              [Op.or]: req.body.employeeIds.map((id) => {
-                return { id: id }
-              }),
-            },
-          }
-        )
-      }
-
-      return res.status(200).send({ message: "Änderungen gespeichert" })
-    } catch (error) {
-      res.status(400).send({ error: error.message })
-    }
+    return res.send({ message: "Erfolgreich aktualisiert" })
   })
 
   // Delete one
-  router.delete("/:id", async (req, res) => {
-    try {
-      const employment = await models.Employment.destroy({
-        where: { id: req.params.id },
-      })
-      employment > 0
-        ? res.status(200).send({ message: "Deleted successfully" })
-        : res.status(404).send({ message: "Not found" })
-    } catch (error) {
-      res.status(400).send({ error: error })
-    }
+  router.delete("/:id", roles.requireAdmin, async (req, res, next) => {
+    await Employment.findByIdAndDelete(req.params.id).catch(next)
+    return res.send({ message: "Endgültig gelöscht" })
   })
 
   return router

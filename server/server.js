@@ -16,6 +16,7 @@ app.use(helmet())
 const jwt = require("jsonwebtoken")
 
 const cors = require("cors")
+const loadTestData = require("./testData.js")
 app.use(cors())
 
 // TODO: add rate limit https://express-rate-limit.mintlify.app/quickstart/usage
@@ -45,6 +46,7 @@ const handleError = (err, req, res, next) => {
 
 const routes = require("./routes.js")(models, db.sequelize)
 app.use("/", authenticateToken, routes, handleError)
+ 
 
 const port = process.env.PORT || 3000
 app.listen(port, async () => {
@@ -61,30 +63,10 @@ app.listen(port, async () => {
 
     await mongoose.connect(process.env.MONGO_CONN)
     console.log("Connected to db")
+    
+    await loadTestData()
+    console.log("Test data loaded")
 
-    await Employee.deleteMany({})
-    await Employment.deleteMany({})
-    await Job.deleteMany({})
-
-    const employment = new Employment({
-      short: "MINI",
-      title: "Minijob",
-      maxHours: 44,
-      minHours: 20,
-    })
-    const job = new Job({ short: "ÄNoD", title: "Fahrer KVWL" })
-    const employee = new Employee({
-      short: "lbd",
-      title: "Simon Liebold",
-      employment: employment._id,
-      jobs: [job._id],
-    })
-
-
-
-    await job.save()
-    await employment.save()
-    await employee.save()
   } catch (error) {
     console.error("Unable to connect to the database:", error)
   }

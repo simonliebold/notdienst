@@ -156,8 +156,6 @@ export const EmploymentPage = () => {
       <EditableText value={employment?.title} label="title" />
       <EditableText value={employment?.minHours || ""} label="minHours" />
       <EditableText value={employment?.maxHours || ""} label="maxHours" />
-
-      <MultiBadge items={employment?.employees} resourceName="employee" />
     </ResourcePage>
   )
 }
