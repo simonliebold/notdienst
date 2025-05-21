@@ -13,21 +13,34 @@ module.exports = () => {
 
   // Get one
   router.get("/:id", roles.requireAdmin, async (req, res, next) => {
-    const employment = await Employment.findById(req.params.id)
-      .catch(next)
+    const employment = await Employment.findById(req.params.id).catch(next)
     if (!employment) return next(new Error("Nicht gefunden"))
     return res.send(employment)
   })
 
   // Create one
-  router.post("/", roles.requireAdmin, async (req, res) => {})
+  router.post("/", roles.requireAdmin, async (req, res, next) => {
+    const { short, title, maxHours, minHours } = req?.body || {}
+    const employee = new Employee({
+      short,
+      title,
+      maxHours,
+      minHours,
+    })
+
+    await employee.save().catch(next)
+
+    return res.send(employee)
+  })
 
   // Update one
   router.put("/:id", roles.requireAdmin, async (req, res, next) => {
-    const { short, title, employment, jobs } = req?.body || {}
+    const { short, title, maxHours, minHours } = req?.body || {}
     await Employment.findByIdAndUpdate(req.params.id, {
       short,
       title,
+      maxHours,
+      minHours,
     }).catch(next)
 
     return res.send({ message: "Erfolgreich aktualisiert" })

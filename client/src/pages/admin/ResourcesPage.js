@@ -28,7 +28,7 @@ function ResourcesPage({ resourceName, resources, children }) {
   const onCreateConfirm = useCallback(async () => {
     setCreating(true)
     const created = await create(input)
-    navigate("./" + created?.id)
+    navigate("./" + created?._id)
   }, [create, input])
 
   return (

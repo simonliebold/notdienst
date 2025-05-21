@@ -22,7 +22,19 @@ module.exports = () => {
   })
 
   // Create one
-  router.post("/", roles.requireAdmin, async (req, res) => {})
+  router.post("/", roles.requireAdmin, async (req, res, next) => {
+    const { short, title, employment, jobs } = req?.body || {}
+    const employee = new Employee({
+      short,
+      title,
+      employment,
+      jobs,
+    })
+
+    await employee.save().catch(next)
+
+    return res.send(employee)
+  })
 
   // Update one
   router.put("/:id", roles.requireAdmin, async (req, res, next) => {
