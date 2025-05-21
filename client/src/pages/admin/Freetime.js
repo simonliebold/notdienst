@@ -13,7 +13,7 @@ function Freetime() {
   return (
     <>
       <Breadcrumb className="mt-3">
-        <Breadcrumb.Item as={Link} to="/schedules/" href="/schedules/">
+        <Breadcrumb.Item as={Link} to="/freetimes/" href="/freetimes/">
           Dienstplanwünsche
         </Breadcrumb.Item>
         <Breadcrumb.Item active>{freetime?.short}</Breadcrumb.Item>
