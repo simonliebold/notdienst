@@ -14,42 +14,59 @@ import Button from "react-bootstrap/Button"
 import Form from "react-bootstrap/Form"
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { faCalendar, faCalendarDays, faPlus } from "@fortawesome/free-solid-svg-icons"
+import {
+  faCalendar,
+  faCalendarDays,
+  faPlus,
+  faUser,
+} from "@fortawesome/free-solid-svg-icons"
 import MultiSelect from "../components/MultiSelect"
 import ListGroup from "react-bootstrap/ListGroup"
 
 const ScheduleModal = () => {
   const WorkCard = ({ work }) => {
-    const dateOptions = {
-      weekday: "long",
-      year: "numeric",
-      month: "numeric",
-      day: "numeric",
-      hour: "numeric",
-      minute: "numeric",
-    }
+    const dateString =
+      new Date(work.start).toLocaleString("de-DE", {
+        weekday: "long",
+        year: "numeric",
+        month: "numeric",
+        day: "numeric",
+        hour: "numeric",
+        minute: "numeric",
+      }) +
+      " bis " +
+      new Date(work.end).toLocaleString("de-DE", {
+        hour: "numeric",
+        minute: "numeric",
+      })
 
     return (
       <Col>
         <Card>
-          <Card.Body>
-            <Card.Title className="fs-6 m-0">
+            <Card.Header className="fs-6 m-0">
+
               <Badge className="me-2">
                 <FontAwesomeIcon icon={faCalendarDays} className="me-1" />
                 {work.id}
               </Badge>
               {work.event.title}
-            </Card.Title>
+            </Card.Header>
+          <Card.Body>
+            Mitarbeiter:
+              {work?.employees &&
+                work.employees.map((employee) => {
+                  return (
+                    <Badge className="mx-2">
+                      <FontAwesomeIcon icon={faUser} className="me-1" />
+                      {employee.initials}
+                    </Badge>
+                  )
+                })}
+
           </Card.Body>
-          <ListGroup variant="flush">
-            <ListGroup.Item>
-              Beginn:{" "}
-              {new Date(work.start).toLocaleString("de-DE", dateOptions)}
-            </ListGroup.Item>
-            <ListGroup.Item>
-              Ende: {new Date(work.end).toLocaleString("de-DE", dateOptions)}
-            </ListGroup.Item>
-          </ListGroup>
+          <Card.Footer>
+            {dateString}
+          </Card.Footer>
         </Card>
       </Col>
     )
@@ -62,7 +79,7 @@ const ScheduleModal = () => {
   const navigate = useNavigate()
 
   const [schedule, setSchedule] = useState(null)
-  const [works, setWorks] = useState(null)
+  const [works, setWorks] = useState([])
 
   const title = useRef(null)
   const start = useRef(null)
@@ -77,7 +94,7 @@ const ScheduleModal = () => {
 
   const fetchSchedule = useCallback(async () => {
     setSchedule(null)
-    setWorks(null)
+    setWorks([])
     const res = await axios
       .get(process.env.REACT_APP_URL + "schedules/" + scheduleId)
       .catch(handleError)
@@ -119,6 +136,14 @@ const ScheduleModal = () => {
 
     console.log(res)
   }, [handleError, handleSuccess, scheduleId])
+
+  const allocateWorks = useCallback(async () => {
+    const res = await axios
+      .post(process.env.REACT_APP_URL + "schedules/" + scheduleId + "/allocate")
+      .catch(handleError)
+
+    console.log(res?.data)
+  })
 
   useEffect(() => {
     if (scheduleId) {
@@ -181,9 +206,11 @@ const ScheduleModal = () => {
               defaultValues={schedule?.employees}
             />
           </Col>
+
           <Col>
             <h2 className="fs-6">Dienste</h2>
-            {works === null && (
+            <Button onClick={allocateWorks}>Dienste verteilen</Button>
+            {works.length === 0 && (
               <Button
                 onClick={generateWorks}
                 className="w-100"
@@ -193,9 +220,9 @@ const ScheduleModal = () => {
                 Dienste generieren
               </Button>
             )}
-            {works !== null &&
+            {works.length > 0 &&
               works.map((work) => {
-                return <WorkCard key={"schedule-"+schedule.id+"+work-"+work.id} work={work} />
+                return <WorkCard key={"work-" + work.id} work={work} />
               })}
           </Col>
         </Row>

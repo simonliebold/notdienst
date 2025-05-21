@@ -29,7 +29,7 @@ module.exports = (models, sequelize) => {
     if (schedule === null) return res.sendStatus(404)
     const works = await models.Work.findAll({
       where: { scheduleId: req.params.id },
-      include: models.Event
+      include: [models.Event, models.Employee],
     })
     return res.send({ schedule: schedule, works: works })
   })
@@ -168,11 +168,9 @@ module.exports = (models, sequelize) => {
       where: { scheduleId: req.schedule.id },
     })
     if (count > 0)
-      return res
-        .status(400)
-        .send({
-          error: "Es existieren bereits Dienste für diesen Schichtplan",
-        })
+      return res.status(400).send({
+        error: "Es existieren bereits Dienste für diesen Schichtplan",
+      })
 
     let works = []
     const first = new Date(req.schedule.start)
@@ -359,8 +357,14 @@ module.exports = (models, sequelize) => {
       bestEmployee.workHours += req.works[0].duration
       req.works.shift()
     }
-    req.works = await models.WorkEmployee.bulkCreate(workEmployees)
-    next()
+    try {
+      req.works = await models.WorkEmployee.bulkCreate(workEmployees)
+      next()
+    } catch (error) {
+      return res
+        .status(400)
+        .send({ error: "Dienste wurden bereits zugeteilt" })
+    }
   }
 
   // Allocate works
@@ -375,7 +379,7 @@ module.exports = (models, sequelize) => {
     orderWorks,
     allocateWorks,
     async (req, res) => {
-      res.send({
+      return res.send({
         schedule: req.schedule,
         employees: req.employees,
         works: req.works,
