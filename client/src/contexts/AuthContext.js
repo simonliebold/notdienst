@@ -1,5 +1,6 @@
 import { createContext, useContext, useLayoutEffect, useState } from "react"
 import axios from "axios"
+import { jwtDecode } from "jwt-decode";
 
 const AuthContext = createContext()
 const AuthUpdateContext = createContext()
@@ -27,6 +28,8 @@ export const AuthProvider = ({ children }) => {
 
   useLayoutEffect(() => {
     if (token) {
+      const decoded = jwtDecode(token);
+      // console.log(decoded)
       axios.defaults.headers.common["Authorization"] = "Bearer " + token
       axios.defaults.headers.post["Authorization"] = "Bearer " + token
       localStorage.setItem("refreshToken", refreshToken)

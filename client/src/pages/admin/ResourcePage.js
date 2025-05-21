@@ -227,7 +227,7 @@ export const SchedulePage = () => {
         <EditableText value={schedule?.start} label="start" />
         <EditableText value={schedule?.end} label="end" />
         <EditableText value={schedule?.deadline} label="deadline" />
-        <hr />
+        {/* <hr /> */}
         {/* <MultiBadge items={schedule?.works} resourceName="work" disabled /> */}
         <MultiBadge items={schedule?.shifts} resourceName="shift" />
         <MultiBadge items={schedule?.employees} resourceName="employee" />
