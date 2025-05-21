@@ -44,6 +44,20 @@ module.exports = (models) => {
     }
   })
 
+  // Delete one
+  router.delete("/:id", async (req, res) => {
+    try {
+      const response = await models.Job.destroy({
+        where: { id: req.params.id },
+      })
+      response > 0
+        ? res.status(200).send({ message: "Deleted successfully" })
+        : res.status(404).send({ message: "Not found" })
+    } catch (error) {
+      res.status(400).send({ error: error })
+    }
+  })
+
   // Get all employees
   router.get("/:id/employee", async (req, res) => {
     const response = await models.JobEmployee.findAll({
@@ -52,24 +66,37 @@ module.exports = (models) => {
     res.send({ response: response })
   })
 
-  // Add Employee to Job
+  // Add Employees to Job
   router.post("/:id/employee", async (req, res) => {
     try {
-      const response = await models.JobEmployee.create({
-        jobId: req.params.id,
-        employeeId: req.body.employeeId,
-      })
+      const response = await models.JobEmployee.bulkCreate(
+        req.body.employeeIds.map((employeeId) => ({
+          jobId: req.params.id,
+          employeeId: employeeId,
+        }))
+      )
       res.send({ response: response })
     } catch (error) {
       res.status(400).send({ error: error })
     }
   })
 
-  // Delete Employee from Job
+  // Delete Employees from Job
   router.delete("/:id/employee", async (req, res) => {
+    const employeeIds = req.body.employeeIds.map((val) => {
+      return { employeeId: val }
+    })
+    console.log(employeeIds)
     try {
       const response = await models.JobEmployee.destroy({
-        where: { jobId: req.params.id, employeeId: req.body.employeeId },
+        where: {
+          [Op.and]: [
+            { jobId: req.params.id },
+            {
+              [Op.or]: [...employeeIds],
+            },
+          ],
+        },
       })
       response > 0
         ? res.status(200).send({ message: "Deleted successfully" })
@@ -87,7 +114,7 @@ module.exports = (models) => {
     res.send({ response: response })
   })
 
-  // Add Shift to Job
+  // Add Shifts to Job
   router.post("/:id/shift", async (req, res) => {
     try {
       const response = await models.JobShift.bulkCreate(
@@ -102,12 +129,10 @@ module.exports = (models) => {
     }
   })
 
-  // Delete Shift from Job
+  // Delete Shifts from Job
   router.delete("/:id/shift", async (req, res) => {
     const shiftIds = req.body.shiftIds.map((val) => {
-      return {
-        shiftId: val,
-      }
+      return { shiftId: val }
     })
     console.log(shiftIds)
     try {
@@ -128,22 +153,6 @@ module.exports = (models) => {
       res.status(400).send({ error: error })
     }
   })
-
-  // Delete one
-  router.delete("/:id", async (req, res) => {
-    try {
-      const response = await models.Job.destroy({
-        where: { id: req.params.id },
-      })
-      response > 0
-        ? res.status(200).send({ message: "Deleted successfully" })
-        : res.status(404).send({ message: "Not found" })
-    } catch (error) {
-      res.status(400).send({ error: error })
-    }
-  })
-
-  // TODO: enable adding / removing multiple employees / shifts
 
   return router
 }
