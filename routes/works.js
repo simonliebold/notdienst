@@ -1,33 +1,59 @@
 module.exports = (models) => {
   const router = require("express").Router()
-
-  // TODO: !! add admin check
+  const roles = require("./../roles")
 
   // Get all
-  router.get("/", async (req, res) => {
-    const response = await models.Work.findAll()
-    res.send({ response: response })
+  router.get("/", roles.requireAdmin, async (req, res) => {
+    try {
+      const response = await models.Work.findAll()
+      res.send({ response: response })
+    } catch (error) {
+      return res.status(400).send({ error: error.message })
+    }
+  })
+
+  // Get (self) all by schedule id
+  // TODO: delete employees for works
+  router.get("/self/schedule/:id", async (req, res) => {
+    try {
+      const works = await models.Work.findAll({
+        include: {
+          model: models.Employee,
+          where: { id: req.user.id },
+          through: { attributes: [] },
+        },
+        where: { scheduleId: req.params.id },
+      })
+      if (works === null) return res.sendStatus(404)
+      return res.send({ works: works })
+    } catch (error) {
+      return res.status(400).send({ error: error.message })
+    }
   })
 
   // Get one
-  router.get("/:id", async (req, res) => {
-    const response = await models.Work.findByPk(req.params.id)
-    if (response === null) res.status(404).send({ message: "Not found" })
-    else res.send({ response: response })
+  router.get("/:id", roles.requireAdmin, async (req, res) => {
+    try {
+      const work = await models.Work.findByPk(req.params.id)
+      if (work === null) return res.sendStatus(404)
+      return res.send({ work: work })
+    } catch (error) {
+      return res.status(400).send({ error: error.message })
+    }
   })
 
   // Create one
-  router.post("/", async (req, res) => {
+  router.post("/", roles.requireAdmin, async (req, res) => {
     try {
-      const response = await models.Work.create({ ...req.body })
-      res.send({ response: response })
+      const work = await models.Work.create({ ...req.body })
+      res.send({ work: work })
     } catch (error) {
-      res.status(400).send({ errors: error.errors })
+      res.status(400).send({ error: error.message })
     }
   })
 
   // Update one
-  router.put("/:id", async (req, res) => {
+  router.put("/:id", roles.requireAdmin, async (req, res) => {
     try {
       const response = await models.Work.update(
         { ...req.body },
@@ -35,41 +61,36 @@ module.exports = (models) => {
           where: { id: req.params.id },
         }
       )
-      response[0] > 0
-        ? res
-            .status(200)
-            .send({ message: "Updated successfully", rows: response[0] })
-        : res.status(404).send({ message: "Not found", rows: response[0] })
+      if (response[0] === 0) return res.sendStatus(404)
+      return res.status(200).send({ message: "Updated successfully" })
     } catch (error) {
-      res.status(400).send({ errors: error })
+      return res.status(400).send({ errors: error })
     }
   })
 
   // Delete one
-  router.delete("/:id", async (req, res) => {
+  router.delete("/:id", roles.requireAdmin, async (req, res) => {
     try {
       const response = await models.Work.destroy({
         where: { id: req.params.id },
       })
-      response > 0
-        ? res.status(200).send({ message: "Deleted successfully" })
-        : res.status(404).send({ message: "Not found" })
+      if (response === 0) return res.sendStatus(404)
+      return res.status(200).send({ message: "Deleted successfully" })
     } catch (error) {
-      res.status(400).send({ errors: error })
+      return res.status(400).send({ errors: error })
     }
   })
 
-  // Delete one by schedule id
-  router.delete("/schedule/:id", async (req, res) => {
+  // Delete all by schedule id
+  router.delete("/schedule/:id", roles.requireAdmin, async (req, res) => {
     try {
       const response = await models.Work.destroy({
         where: { scheduleId: req.params.id },
       })
-      response > 0
-        ? res.status(200).send({ message: "Deleted successfully" })
-        : res.status(404).send({ message: "Not found" })
+      if (response === 0) return res.sendStatus(404)
+      return res.status(200).send({ message: "Deleted successfully" })
     } catch (error) {
-      res.status(400).send({ errors: error })
+      return res.status(400).send({ error: error.message })
     }
   })
 
