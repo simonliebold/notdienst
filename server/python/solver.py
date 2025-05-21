@@ -67,7 +67,6 @@ def allocate(works, employees):
     for employee in employees:
         emp_id = employee['short']
         emp_works = works  # Filter this if possible
-        emp_hours = employee['maxHours']
 
         # 1. Keine überlappenden Schichten
         for id1, id2 in overlapping_pairs:
@@ -80,8 +79,7 @@ def allocate(works, employees):
             works_employees[(work['_id'], emp_id)] *
             ((work_times[work['_id']][1] - work_times[work['_id']][0]).total_seconds() / 3600)
             for work in emp_works
-        ) <= emp_hours, f"Hours_Limit_{emp_id}"
-
+        ) <= employee['maxHours'], f"Max_Hours_Limit_{emp_id}"
         # 3. Freizeit 
         freetime_periods = [
             (

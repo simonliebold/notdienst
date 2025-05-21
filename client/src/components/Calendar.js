@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react"
+import React, { useCallback, useEffect, useState } from "react"
 import FullCalendar from "@fullcalendar/react"
 import deLocale from "@fullcalendar/core/locales/de"
 import timeGridPlugin from "@fullcalendar/timegrid"
@@ -32,8 +32,6 @@ const event = (arg) => {
 function Calendar({ works, view, initialDate, ...props }) {
   const navigate = useNavigate()
 
-  const [lastDate, setLastDate] = useState(new Date())
-
   const initialView = useCallback(() => {
     if (window.innerWidth < 992) {
       return view || "listDay"
@@ -47,11 +45,8 @@ function Calendar({ works, view, initialDate, ...props }) {
   return (
     <div {...props}>
       <FullCalendar
-        //   {...props}
+        {...props}
         plugins={[timeGridPlugin, listPlugin]}
-        datesSet={(dateInfo) => {
-          setLastDate(new Date(dateInfo.end))
-        }}
         initialView={initialView()}
         headerToolbar={{
           right: "prev,next",
@@ -111,18 +106,57 @@ export const ScheduleCalendar = ({
 }
 
 export const EmployeeCalendar = ({ employee, ...props }) => {
+  const [lastDate, setLastDate] = useState(new Date())
+  const [firstDate, setFirstDate] = useState(new Date())
+  const [workHours, setWorkHours] = useState(0)
+
+  useEffect(() => {
+    console.log("First date", firstDate)
+    console.log("Last date", lastDate)
+    console.log(workHours)
+  }, [firstDate, lastDate, workHours])
+
+  useEffect(() => {
+    if (employee?.works) {
+      // Filter works within the date range
+      const filteredWorks = employee.works.filter((work) => {
+        const workStart = new Date(work.start)
+        const workEnd = new Date(work.end)
+        return workStart >= firstDate && workEnd <= lastDate
+      })
+
+      // Calculate total work hours
+      const totalHours = filteredWorks.reduce((sum, work) => {
+        const workStart = new Date(work.start)
+        const workEnd = new Date(work.end)
+        const hours = (workEnd - workStart) / (1000 * 60 * 60) // Convert milliseconds to hours
+        return sum + hours
+      }, 0)
+
+      setWorkHours(totalHours)
+    }
+  }, [firstDate, lastDate, employee?.works])
+
   if (!employee) return
   if (!employee.works || employee.works.length === 0) return
   return (
-    <Calendar
-      works={employee.works}
-      view="listMonth"
-      initialDate={
-        new Date(employee.works[employee.works.length - 1].start) || new Date()
-      }
-      className="my-3"
-      {...props}
-    />
+    <>
+      <h1>Stunden: {employee?.employment?.minHours} ≤ {workHours} ≤ {employee?.employment?.maxHours}</h1>
+      <Calendar
+        works={employee.works}
+        view="listMonth"
+        datesSet={(dateInfo) => {
+          setFirstDate(new Date(dateInfo.start))
+          setLastDate(new Date(dateInfo.end))
+        }}
+        initialDate={
+          new Date(employee.works[employee.works.length - 1].start) ||
+          new Date()
+        }
+        className="my-3"
+        {...props}
+      />
+    </>
   )
 }
 
