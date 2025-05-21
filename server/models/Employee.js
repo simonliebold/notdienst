@@ -10,12 +10,12 @@ module.exports = (sequelize) => {
         autoIncrement: true,
         allowNull: false,
       },
-      initials: {
+      short: {
         type: Sequelize.STRING,
         unique: true,
         allowNull: false,
         set(value) {
-          this.setDataValue("initials", value.toUpperCase())
+          this.setDataValue("short", value.toUpperCase())
         },
         validate: {
           notEmpty: {
