@@ -26,8 +26,8 @@ module.exports = (models, sequelize) => {
   const works = require("./routes/works.js")(models)
   router.use("/works", works)
 
-  const missions = require('./routes/missions.js')(models)
-  router.use("/missions", missions)
+  // const missions = require('./routes/missions.js')(models)
+  // router.use("/missions", missions)
 
   return router
 }
