@@ -26,10 +26,13 @@ module.exports = (models) => {
   // Create one
   router.post("/", async (req, res) => {
     try {
-      const response = await models.Shift.create({ ...req.body })
-      res.send({ response: response })
+      const shift = await models.Shift.create({
+        short: req.body.short,
+        title: req.body.title,
+      })
+      res.send(shift)
     } catch (error) {
-      res.status(400).send({ error: error })
+      res.status(400).send({ error: error.message })
     }
   })
 

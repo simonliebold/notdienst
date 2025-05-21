@@ -167,7 +167,12 @@ export function SchedulesPage() {
 
 export function ShiftsPage() {
   const [shifts] = useResource("shifts")
-  return <ResourcesPage resources={shifts} resourceName="shift"></ResourcesPage>
+  return (
+    <ResourcesPage resources={shifts} resourceName="shift">
+      <EditableText label="short" />
+      <EditableText label="title" />
+    </ResourcesPage>
+  )
 }
 
 export function WorksPage() {
