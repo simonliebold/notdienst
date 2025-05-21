@@ -35,7 +35,8 @@ function authenticateToken(req, res, next) {
 
 // Error handling
 const handleError = (err, req, res, next) => {
-  return res.status(400).send({ error: err.message })
+  if (err) return res.status(400).send({ error: err.message })
+  else return res.send({error: "No content"})
 }
 
 const routes = require("./routes.js")

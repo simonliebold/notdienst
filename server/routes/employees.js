@@ -1,104 +1,101 @@
 const { default: mongoose } = require("mongoose")
 const Employee = require("../schemas/Employee")
+const router = require("express").Router()
+const roles = require("./../roles")
 
-module.exports = () => {
-  const router = require("express").Router()
-  const roles = require("./../roles")
+// Get all
+router.get("/", roles.requireAdmin, async (req, res, next) => {
+  try {
+    const employees = await Employee.find({})
+    if (!employees) return next(new Error("Nicht gefunden"))
+    return res.send(employees)
+  } catch (err) {
+    return next(err)
+  }
+})
 
-  // Get all
-  router.get("/", roles.requireAdmin, async (req, res, next) => {
-    try {
-      const employees = await Employee.find({})
-      if (!employees) return next(new Error("Nicht gefunden"))
-      return res.send(employees)
-    } catch (err) {
-      return next(err)
-    }
-  })
-
-  // Get one
-  router.get("/:id", roles.requireAdmin, async (req, res, next) => {
-    try {
-      const employee = await Employee.aggregate([
-        { $match: { _id: new mongoose.Types.ObjectId(req.params.id) } },
-        {
-          $lookup: {
-            from: "jobs",
-            localField: "jobIds",
-            foreignField: "_id",
-            as: "jobs",
-          },
+// Get one
+router.get("/:id", roles.requireAdmin, async (req, res, next) => {
+  try {
+    const employee = await Employee.aggregate([
+      { $match: { _id: new mongoose.Types.ObjectId(req.params.id) } },
+      {
+        $lookup: {
+          from: "jobs",
+          localField: "jobIds",
+          foreignField: "_id",
+          as: "jobs",
         },
-        {
-          $lookup: {
-            from: "employments",
-            localField: "employmentId",
-            foreignField: "_id",
-            as: "employment",
-          },
+      },
+      {
+        $lookup: {
+          from: "employments",
+          localField: "employmentId",
+          foreignField: "_id",
+          as: "employment",
         },
-        { $unwind: { path: "$employment", preserveNullAndEmptyArrays: true } },
-        {
-          $lookup: {
-            from: "freetimes",
-            localField: "_id",
-            foreignField: "employeeId",
-            as: "freetimes",
-          },
+      },
+      { $unwind: { path: "$employment", preserveNullAndEmptyArrays: true } },
+      {
+        $lookup: {
+          from: "freetimes",
+          localField: "_id",
+          foreignField: "employeeId",
+          as: "freetimes",
         },
-      ])
-      if (!employee) return next(new Error("Nicht gefunden"))
-      return res.send(employee[0])
-    } catch (err) {
-      return next(err)
-    }
-  })
+      },
+    ])
+    if (!employee) return next(new Error("Nicht gefunden"))
+    return res.send(employee[0])
+  } catch (err) {
+    return next(err)
+  }
+})
 
-  // Create one
-  router.post("/", roles.requireAdmin, async (req, res, next) => {
-    try {
-      const { short, title, employmentId, jobIds } = req?.body || {}
-      const employee = new Employee({
-        short,
-        title,
-        employmentId,
-        jobIds,
-      })
+// Create one
+router.post("/", roles.requireAdmin, async (req, res, next) => {
+  try {
+    const { short, title, employmentId, jobIds } = req?.body || {}
+    const employee = new Employee({
+      short,
+      title,
+      employmentId,
+      jobIds,
+    })
 
-      await employee.save()
+    await employee.save()
 
-      return res.send(employee)
-    } catch (err) {
-      return next(err)
-    }
-  })
+    return res.send(employee)
+  } catch (err) {
+    return next(err)
+  }
+})
 
-  // Update one
-  router.put("/:id", roles.requireAdmin, async (req, res, next) => {
-    try {
-      const { short, title, employmentId, jobIds } = req?.body || {}
-      await Employee.findByIdAndUpdate(req.params.id, {
-        short,
-        title,
-        employmentId,
-        jobIds,
-      })
+// Update one
+router.put("/:id", roles.requireAdmin, async (req, res, next) => {
+  try {
+    const { short, title, employmentId, jobIds } = req?.body || {}
+    await Employee.findByIdAndUpdate(req.params.id, {
+      short,
+      title,
+      employmentId,
+      jobIds,
+    })
 
-      return res.send({ message: "Erfolgreich aktualisiert" })
-    } catch (err) {
-      return next(err)
-    }
-  })
+    return res.send({ message: "Erfolgreich aktualisiert" })
+  } catch (err) {
+    return next(err)
+  }
+})
 
-  // Delete one
-  router.delete("/:id", roles.requireAdmin, async (req, res, next) => {
-    try {
-      await Employee.findByIdAndDelete(req.params.id)
-      return res.send({ message: "Endgültig gelöscht" })
-    } catch (err) {
-      return next(err)
-    }
-  })
+// Delete one
+router.delete("/:id", roles.requireAdmin, async (req, res, next) => {
+  try {
+    await Employee.findByIdAndDelete(req.params.id)
+    return res.send({ message: "Endgültig gelöscht" })
+  } catch (err) {
+    return next(err)
+  }
+})
 
-  return router
-}
+module.exports = router
