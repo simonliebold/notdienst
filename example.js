@@ -305,9 +305,9 @@ module.exports = async (models) => {
 
   await models.Schedule.create({
     title: "November ÄNoD",
-    start: "2023-11-01",
-    end: "2023-11-30",
-    deadline: "2023-10-29",
+    start: "2023-10-01",
+    end: "2023-10-31",
+    deadline: "2023-09-29",
   })
 
   for (let i = 1; i <= names.length; i++) {

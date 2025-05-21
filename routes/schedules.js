@@ -152,6 +152,13 @@ module.exports = (models) => {
     }
   })
 
+  const getSchedule = async (req, res, next) => {
+    const schedule = await models.Schedule.findByPk(req.params.id)
+    if (schedule === null) res.status(404).send({ message: "Not found" })
+    req.schedule = schedule
+    next()
+  }
+
   // Get employees
   const getEmployees = async (req, res, next) => {
     const schedule = await models.Schedule.findByPk(req.params.id, {
@@ -223,48 +230,54 @@ module.exports = (models) => {
         repeatWeekday: event.repeatWeekday,
         employeeIds: event.employeeIds,
         shiftId: event.shiftId,
-        scheduleId: Math.floor(req.params.id),
       }
     })
 
     next()
   }
 
-  const generateWorks = async (req, res, next) => {
-    req.works = []
-    for (const eventInd in req.events) {
-      // let first = new Date(req.events[eventInd].shift.schedules[0].start)
-      // let last = new Date(req.events[eventInd].shift.schedules[0].end)
-      // console.log(first)
-      // console.log(last)
-      // const repeatWeekday = req.events[eventInd].repeatWeekday
-      // const start = req.events[eventInd].timeStart.split(":")
-      // first.setHours(start[0], start[1], start[2])
-      // console.log(first.toLocaleString('de-DE'))
-      // if (repeatWeekday !== null) {
-      // for (let i = first; i <= last; i.setDate(i.getDate() + 1)) {
-      // console.log(i.toTimeString())
-      // TODO: calculate times, save available employees
-      // try {
-      //   const work = await models.Work.create({
-      //     start: new Date(i.setHours)
-      //   })
-      // } catch (error) {
-      //   res.status(400).send({ error: error })
-      // }
-      // }
-      // }
-    }
+  // Get works
+  const getWorks = async (req, res, next) => {
+    let works = []
+    const first = new Date(req.schedule.start)
+    const last = new Date(req.schedule.end)
+    req.events.forEach(async (event) => {
+      const timeStart = event.timeStart.split(":")
+      const timeEnd = event.timeEnd.split(":")
+      for (let i = new Date(first); i <= last; i.setDate(i.getDate() + 1)) {
+        if (i.getDay() !== event.repeatWeekday) continue
+        const start = new Date(i)
+        start.setHours(timeStart[0], timeStart[1], timeStart[2])
+
+        const end = new Date(i)
+        if (timeStart[0] > timeEnd[0]) end.setDate(end.getDate() + 1)
+        end.setHours(timeEnd[0], timeEnd[1], timeEnd[2])
+
+        works.push({
+          start: start,
+          end: end,
+          scheduleId: req.schedule.id,
+          eventId: event.id,
+        })
+      }
+    })
+    req.works = await models.Work.bulkCreate(works)
     next()
   }
 
   router.post(
     "/:id/plan",
+    getSchedule,
     getEmployees,
     getEvents,
-    generateWorks,
+    getWorks,
     async (req, res) => {
-      res.send({ employees: req.employees, events: req.events })
+      res.send({
+        schedule: req.schedule,
+        employees: req.employees,
+        events: req.events,
+        works: req.works,
+      })
     }
   )
 
