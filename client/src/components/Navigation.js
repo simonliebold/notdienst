@@ -1,50 +1,77 @@
-import React from "react"
+import React, { useEffect, useState } from "react"
 import { useAuth } from "../contexts/AuthContext"
 
 import Navbar from "react-bootstrap/Navbar"
 import Nav from "react-bootstrap/Nav"
 import Container from "react-bootstrap/Container"
 import { Link, useLocation } from "react-router-dom"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import {
+  faCalendar,
+  faHome,
+  faRightFromBracket,
+  faUser,
+} from "@fortawesome/free-solid-svg-icons"
+
+const NavItem = ({ route, className }) => {
+  const location = useLocation()
+  const [link, setLink] = useState(false)
+
+  useEffect(() => {
+    if(location.pathname === route.path) setLink(location.pathname)
+    else setLink(route.path)
+    
+  }, [])
+  
+  return (
+    <Nav.Link
+      as={Link}
+      href={link}
+      to={link}
+      key={"navlink-" + route.name}
+      className={" text-primary " + className}
+    >
+      <>
+        {route.icon && <FontAwesomeIcon icon={route.icon} className="me-2" />}
+        {location.pathname === route.path && <strong>{route.name}</strong>}
+        {location.pathname !== route.path && route.name}
+      </>
+    </Nav.Link>
+  )
+}
 
 function Navigation() {
   const token = useAuth()
-  const location = useLocation()
 
   const routes = [
     {
-      name: "Home",
+      name: "Startseite",
+      icon: faHome,
       path: "/",
     },
     {
       name: "Mitarbeiter",
+      icon: faUser,
       path: "/employees",
     },
     {
-      name: "Logout",
-      path: "/logout",
+      name: "Dienstpläne",
+      icon: faCalendar,
+      path: "/schedules",
     },
   ]
 
+  const logout = { path: "/logout", icon: faRightFromBracket }
+
   if (token)
     return (
-      <Navbar className=" border start-0 end-0">
+      <Navbar className="border-bottom start-0 end-0">
         <Container>
-          <Nav className="z-1">
+          <Nav className="z-1 w-100">
             {routes.map((route) => {
-              return (
-                <Nav.Link
-                  as={Link}
-                  href="#"
-                  to={route.path}
-                  key={"navlink-" + route.name}
-                >
-                  {location.pathname === route.path && (
-                    <strong>{route.name}</strong>
-                  )}
-                  {location.pathname !== route.path && route.name}
-                </Nav.Link>
-              )
+              return <NavItem route={route} />
             })}
+            <NavItem className="ms-auto text-secondary" route={logout}></NavItem>
           </Nav>
         </Container>
       </Navbar>

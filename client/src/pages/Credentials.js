@@ -45,18 +45,16 @@ function EditCredentials({ result, setLoggedIn, oldEmail }) {
       )
       .catch(handleError)
 
-    // setLoggedIn(false)
-    handleSuccess(res.data.message)
-    navigate("/login")
+    if (res?.data?.message) {
+      handleSuccess(res.data.message)
+      navigate("/login")
+    }
 
     setLoading(false)
   }
 
   useEffect(() => {
-    if (
-      password.length > 0 &&
-      !password.match(/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/)
-    )
+    if (password.length > 0 && !password.match(/^(?=.*[A-Za-z])(?=.*\d).{8,}$/))
       setIsPassInvalid(true)
     else setIsPassInvalid(false)
     if (passwordRepeat !== password) setIsPassRepeatInvalid(true)
@@ -169,7 +167,7 @@ function InputCode({ result, setResult, setLoggedIn, setOldEmail }) {
   const checkCode = async () => {
     setLoading(true)
     const code = await axios
-      .get(process.env.REACT_APP_AUTH_URL+"credentials/check/" + result)
+      .get(process.env.REACT_APP_AUTH_URL + "credentials/check/" + result)
       .catch(handleError)
     setOldEmail(code.data.email)
     setLoggedIn(true)

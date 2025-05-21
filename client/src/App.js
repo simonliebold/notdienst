@@ -13,6 +13,7 @@ import Container from "react-bootstrap/esm/Container"
 import AlertBox from "./components/AlertBox"
 import Employees from "./pages/Employees"
 import Logout from "./pages/Logout"
+import Schedules from "./pages/Schedules"
 
 function App() {
   return (
@@ -23,14 +24,6 @@ function App() {
             <AlertBox />
             <Routes>
               <Route path="login" element={<Login />} />
-              <Route
-                path="logout"
-                element={
-                  <ProtectedRoute>
-                    <Logout />
-                  </ProtectedRoute>
-                }
-              />
               <Route path="credentials">
                 <Route path="" element={<Credentials />} />
                 <Route path=":code" element={<Credentials />} />
@@ -40,6 +33,14 @@ function App() {
                 element={
                   <ProtectedRoute>
                     <Home />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="logout"
+                element={
+                  <ProtectedRoute>
+                    <Logout />
                   </ProtectedRoute>
                 }
               />
@@ -57,6 +58,16 @@ function App() {
                   element={
                     <ProtectedRoute>
                       <Employees />
+                    </ProtectedRoute>
+                  }
+                />
+              </Route>
+              <Route path="schedules">
+              <Route
+                  path=""
+                  element={
+                    <ProtectedRoute>
+                      <Schedules />
                     </ProtectedRoute>
                   }
                 />

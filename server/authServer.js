@@ -65,7 +65,7 @@ const User = sequelize.define(
     password: {
       type: DataTypes.STRING,
       set(value) {
-        if (!value.match(/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/))
+        if (!value.match(/^(?=.*[A-Za-z])(?=.*\d).{8,}$/))
           throw new Error(
             "Das Passwort muss mindestens 8 Zeichen lang sein und einen Buchstaben und eine Nummer enthalten"
           )
@@ -104,17 +104,12 @@ app.listen(PORT, async () => {
   } catch (error) {
     console.error("Unable to connect to the auth database:", error)
   }
-  // await db.sequelize.sync()
+  // await sequelize.sync()
   await sequelize.sync({ force: true })
   await sequelize.models.users.create({
     id: 1,
-    email: "lieb@lie-bold.de",
-    password: "liebold1",
-  })
-  await sequelize.models.users.create({
-    id: 2,
-    email: "rer@lie-bold.de",
-    password: "rerucha2",
-    role: 10,
+    email: "asb",
+    password: "arbeitersamariterbund1",
+    role: 10
   })
 })
