@@ -17,10 +17,10 @@ const EditableText = ({ value, label, onInput, disabled, className }) => {
   useEffect(() => {
     setInput(value)
   }, [value])
-  
+
   if (disabled || action !== "edit")
     return (
-      <p className={className}>
+      <p className={"mb-0 "+className}>
         {labels[label] + ": "}
         {value !== null && value}
         {value === null && "Kein Wert gesetzt"}
@@ -28,15 +28,13 @@ const EditableText = ({ value, label, onInput, disabled, className }) => {
     )
   else
     return (
-      <p className={className}>
-        <FloatingLabel label={labels[label]}>
-          <Form.Control
-            placeholder=""
-            value={input}
-            onChange={onChange}
-          ></Form.Control>
-        </FloatingLabel>
-      </p>
+      <FloatingLabel label={labels[label]} className={className}>
+        <Form.Control
+          placeholder=""
+          value={input}
+          onChange={onChange}
+        ></Form.Control>
+      </FloatingLabel>
     )
 }
 

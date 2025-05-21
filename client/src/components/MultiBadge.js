@@ -8,7 +8,7 @@ import useResource from "../hooks/useResource"
 import { icons, selectStyles, title, titles } from "../variables"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 
-function MultiBadge({ items, resourceName, onInput, disabled }) {
+function MultiBadge({ items, resourceName, onInput, disabled, className }) {
   const { action } = useParams()
 
   const [options, updateOptions] = useResource(resourceName + "s")
@@ -29,7 +29,7 @@ function MultiBadge({ items, resourceName, onInput, disabled }) {
 
   if (disabled && action === "edit")
     return (
-      <p>
+      <div className={className}>
         <label className="w-100">{titles[resourceName]}:</label>
         {items?.map((item) => {
           const { short } = item || {}
@@ -43,12 +43,12 @@ function MultiBadge({ items, resourceName, onInput, disabled }) {
             />
           )
         })}
-      </p>
+      </div>
     )
 
   if (action === "edit") {
     return (
-      <p>
+      <div className={className}>
         <label className="w-100">{titles[resourceName]}:</label>
         <Select
           isMulti
@@ -73,18 +73,18 @@ function MultiBadge({ items, resourceName, onInput, disabled }) {
           }))}
           onChange={onChange}
         />
-      </p>
+      </div>
     )
   }
   if (!items || items?.length === 0)
     return (
-      <p>
+      <div className={className}>
         <label className="w-100">{titles[resourceName]}:</label>
         <Badge resource={{ short: "Keine Daten" }} disabled />
-      </p>
+      </div>
     )
   return (
-    <p>
+    <div className={className}>
       <label className="w-100">{titles[resourceName]}:</label>
       {items?.map((item) => {
         const { short } = item || {}
@@ -97,7 +97,7 @@ function MultiBadge({ items, resourceName, onInput, disabled }) {
           />
         )
       })}
-    </p>
+    </div>
   )
 }
 

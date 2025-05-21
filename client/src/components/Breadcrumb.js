@@ -6,17 +6,18 @@ import BootstrapBreadcrumb from "react-bootstrap/Breadcrumb"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faHome } from "@fortawesome/free-solid-svg-icons"
 
+// TODO: fix nesting of anchor tags
 function Breadcrumb({ resourceName, resource }) {
   return (
     <>
       <BootstrapBreadcrumb className="mt-3">
-        <BootstrapBreadcrumb.Item as={Link} to="/" href="/">
-          <FontAwesomeIcon size="sm" icon={faHome} />
-        </BootstrapBreadcrumb.Item>
+        {/* <BootstrapBreadcrumb.Item>
+          <FontAwesomeIcon size="sm" icon={faHome} as={Link} to="/" />
+        </BootstrapBreadcrumb.Item> */}
         <BootstrapBreadcrumb.Item
-          as={Link}
-          to={"/" + resourceName + "s/"}
-          href={"/" + resourceName + "s/"}
+        // as={Link}
+        // to={"/" + resourceName + "s/"}
+        // href={"/" + resourceName + "s/"}
         >
           {titles[resourceName]}
         </BootstrapBreadcrumb.Item>

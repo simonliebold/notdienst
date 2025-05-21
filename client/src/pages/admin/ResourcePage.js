@@ -51,7 +51,7 @@ function ResourcePage({ resourceName, setData, children }) {
       >
         {React.Children.map(children, (child) => {
           if (React.isValidElement(child))
-            return React.cloneElement(child, { onInput })
+            return React.cloneElement(child, { onInput, className: "mb-3" })
         })}
       </DetailedCard>
     </>
