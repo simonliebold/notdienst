@@ -8,6 +8,7 @@ const useResource = (resourceUrl) => {
 
   const getData = async () => {
     const response = await axios.get(resourceUrl).catch(handleError)
+    console.log(response?.data)
     setResource(response?.data)
   }
 

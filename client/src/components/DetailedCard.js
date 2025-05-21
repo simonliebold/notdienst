@@ -35,7 +35,7 @@ export const EmployeeDetailedCard = ({ employee }) => {
 
   return (
     <DetailedCard resourceName="employee" resource={employee}>
-      Anstellungsverhältnis: {employment.title} <br />
+      Anstellungsverhältnis: {employment?.title} <br />
       <Badge resource={employment} resourceName="employment" />
       <hr />
       Dienste:

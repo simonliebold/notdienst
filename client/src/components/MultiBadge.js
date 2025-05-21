@@ -1,9 +1,15 @@
 import React from "react"
 import Badge from "./Badge"
-import Row from "react-bootstrap/Row"
+import Alert from "react-bootstrap/Alert"
 import Container from "react-bootstrap/Container"
 
 function MultiBadge({ items, resourceName }) {
+  if (items?.length === 0)
+    return (
+      <div>
+        <Badge resource={{ short: "Keine Daten gefunden" }}> </Badge>
+      </div>
+    )
   return (
     <div>
       {items?.map((item) => {
