@@ -1,9 +1,17 @@
-import React from "react"
+import React, { useCallback, useState } from "react"
 import CardList from "../../components/CardList"
 import Breadcrumb from "../../components/Breadcrumb"
 import TitleCard from "../../components/TitleCard"
+import { CreateNewPopup } from "../../components/Popup"
+import { CreateNewButton } from "../../components/CardButton"
 
 function ResourcesPage({ resourceName, resources }) {
+  const [showCreateNewPopup, setShowCreateNewPopup] = useState(false)
+
+  const onRequestClose = useCallback(() => {
+    setShowCreateNewPopup(false)
+  }, [setShowCreateNewPopup])
+
   return (
     <>
       <Breadcrumb resourceName={resourceName} />
@@ -18,6 +26,12 @@ function ResourcesPage({ resourceName, resources }) {
           )
         })}
       </CardList>
+        <CreateNewButton
+          onClick={(e) => setShowCreateNewPopup(!showCreateNewPopup)}
+          resourceName={resourceName}
+          className="mt-2"
+        />
+      <CreateNewPopup onClose={onRequestClose} resourceName={resourceName} show={showCreateNewPopup} />
     </>
   )
 }

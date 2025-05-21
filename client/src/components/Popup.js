@@ -1,19 +1,17 @@
-import React, { useCallback, useEffect, useState } from "react"
+import React, { useCallback, useState } from "react"
 import FormControl from "react-bootstrap/FormControl"
 import Modal from "react-bootstrap/Modal"
-import {
-  CancelButton,
-  CardDeleteButton,
-  ConfirmDeleteButton,
-} from "./CardButton"
+import { CancelButton, ConfirmDeleteButton } from "./CardButton"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import { faPlus, faTrash, faX } from "@fortawesome/free-solid-svg-icons"
 import { title } from "../variables"
-import Badge from "./Badge"
 
 function Popup({
   children,
   title,
+  icon,
   buttons,
-  show = true,
+  show = false,
   onClose,
   onRequestShow,
   ...props
@@ -21,10 +19,13 @@ function Popup({
   return (
     <Modal show={show} onHide={onClose} {...props}>
       <Modal.Header closeButton>
-        <Modal.Title>{title}</Modal.Title>
+        <Modal.Title>
+          <FontAwesomeIcon icon={icon} size="xs" className="me-2" />
+          {title}
+        </Modal.Title>
       </Modal.Header>
-      <Modal.Body>{children}</Modal.Body>
-      <Modal.Footer>{buttons}</Modal.Footer>
+      {children && <Modal.Body>{children}</Modal.Body>}
+      {buttons && <Modal.Footer>{buttons}</Modal.Footer>}
     </Modal>
   )
 }
@@ -78,6 +79,16 @@ export const ConfirmDeletePopup = ({
         onChange={onInput}
       ></FormControl>
     </Popup>
+  )
+}
+
+export const CreateNewPopup = ({
+  resource,
+  resourceName,
+  ...props
+}) => {
+  return (
+    <Popup {...props} icon={faPlus} title={title[resourceName]+" erstellen"}></Popup>
   )
 }
 
