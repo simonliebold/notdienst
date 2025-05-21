@@ -228,14 +228,15 @@ const createWorks = async (schedule) => {
     else return 0
   })
 
-  await Work.insertMany(works)
+  // await Work.insertMany(works)
 
   return works
 }
 
 const generateWorks = async (scheduleId) => {
   const schedule = await getSchedule(scheduleId)
-  await createWorks(schedule)
+  const works = await createWorks(schedule)
+  await Work.insertMany(works)
 }
 
 // Create works
@@ -276,7 +277,7 @@ const sortWorks = async (works, employees) => {
           new Date(freetime.end).getTime() <= work.start.getTime() ||
           new Date(freetime.start).getTime() >= work.end.getTime()
       )
-      console.log(work.title, employee.short, "isFree " + isFree)
+      // console.log(work.title, employee.short, "isFree " + isFree)
       if (isFree) {
         const duration =
           (work.end.getTime() - work.start.getTime()) / (1000 * 60 * 60)
@@ -294,17 +295,19 @@ const sortWorks = async (works, employees) => {
 }
 
 // Find employees for work
-const allocateWorks = async (works, employees) => {
+const allocateWorks = async (works, employees, scheduleId) => {
   let workEmployees = []
+  const protocol = []
   while (works.length > 0) {
-    const protocol = []
     let bestEmployee
     let bestEmployeeRemainingHours
     const work = works[0]
     const duration =
       (work.end.getTime() - work.start.getTime()) / (1000 * 60 * 60)
     work.employeeIds.forEach((employeeId) => {
-      const employee = employees[employeeId]
+      const employee = employees.find(
+        (employee) => employee._id.toString() === employeeId.toString()
+      )
 
       employee.availableTime -= duration
 
@@ -331,8 +334,8 @@ const allocateWorks = async (works, employees) => {
 
       // TODO: Generierungsbericht
       protocol.push({
-        workId: work._id,
-        employeeId: employee._id,
+        work: work.title,
+        employee: employee.short,
         isFree: isFree,
         isBest: isBest,
         maxHoursCorrect: maxHoursCorrect,
@@ -351,17 +354,18 @@ const allocateWorks = async (works, employees) => {
       }
     })
     if (!bestEmployee) {
-      await models.Work.destroy({ where: { scheduleId: req.schedule._id } })
-      return res.status(400).send({
-        error:
-          "Es stehen zu wenig Mitarbeiter für die Anzahl an Diensten zur Verfügung.",
-        protocol: protocol,
-      })
+      await Work.deleteMany({ scheduleId: scheduleId })
+      throw new Error(
+        "Es stehen zu wenig Mitarbeiter für die Anzahl an Diensten zur Verfügung."
+      )
     }
     workEmployees.push({
       workId: work._id,
       employeeId: bestEmployee._id,
     })
+
+    // await Work.updateOne({ _id: work._id }, { employeeIds: [bestEmployee._id] })
+
     bestEmployee.freetimes.push({
       start: work.start,
       end: work.end,
@@ -371,24 +375,33 @@ const allocateWorks = async (works, employees) => {
     works.shift()
   }
 
-  return await models.WorkEmployee.bulkCreate(workEmployees)
+  const bulkUpdateOperations = workEmployees.map(({ workId, employeeId }) => ({
+    updateOne: {
+      filter: { _id: workId },
+      update: { $addToSet: { employeeIds: employeeId } },
+    },
+  }))
+
+  await Work.bulkWrite(bulkUpdateOperations)
+  return protocol
 }
 
-const allocate = async (scheduleId) => {
-  const schedule = await getSchedule(scheduleId)
+const allocate = async (schedule) => {
   const works = await getWorks(schedule?._id)
   const employees = await getEmployees(schedule)
   await sortWorks(works, employees)
-  return { works, employees }
-  // await allocateWorks(sortedWorks, employees)
+  const protocol = await allocateWorks(works, employees, schedule?._id)
+  return { protocol, employees }
   // return employees
 }
 
 // Allocate works
 router.post("/:id/allocate", roles.requireAdmin, async (req, res, next) => {
   try {
-    await generateWorks(req.params.id)
-    return res.send(await allocate(req.params.id))
+    const schedule = await getSchedule(req.params.id)
+    const works = await createWorks(schedule)
+    await Work.insertMany(works)
+    return res.send(await allocate(schedule))
   } catch (err) {
     return next(err)
   }
