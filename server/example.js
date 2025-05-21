@@ -41,21 +41,66 @@ module.exports = async (models) => {
   employees = await models.Employee.bulkCreate(employees)
 
   let shifts = [
-    { short: "A1 früh", title: "A1 früh" },
-    { short: "A2 früh", title: "A2 früh" },
-    { short: "A1 spät", title: "A1 spät" },
-    { short: "A2 spät", title: "A2 spät" },
-    { short: "A1 Nacht", title: "A1 Nacht" },
-    { short: "A2 Nacht", title: "A2 Nacht" },
-    { short: "C1 früh", title: "C1 früh" },
-    { short: "C2 früh", title: "C2 früh" },
-    { short: "C1 spät", title: "C1 spät" },
-    { short: "C2 spät", title: "C2 spät" },
+    { short: "A1", title: "A1" },
+    { short: "A2", title: "A2" },
+    { short: "C1", title: "C1" },
+    { short: "C2", title: "C2" },
   ]
 
   shifts = await models.Shift.bulkCreate(shifts)
 
-  let rrules = [{ title: "A1 früh", content: "FREQ=WEEKLY;INTERVAL=1;BYDAY=SU,SA", shiftId: 1 }]
+  let rrules = [
+    {
+      title: "A1 früh",
+      content: "FREQ=WEEKLY;INTERVAL=1;BYDAY=SU,SA",
+      shiftId: 1,
+    },
+    {
+      title: "A1 spät",
+      content: "FREQ=WEEKLY;INTERVAL=1;BYDAY=WE,FR",
+      shiftId: 1,
+    },
+    {
+      title: "A1 Nacht",
+      content: "FREQ=WEEKLY;INTERVAL=1;BYDAY=MO,TU,WE,TH,FR,SA,SU",
+      shiftId: 1,
+    },
+    {
+      title: "A2 früh",
+      content: "FREQ=WEEKLY;INTERVAL=1;BYDAY=SU,SA",
+      shiftId: 2,
+    },
+    {
+      title: "A2 spät",
+      content: "FREQ=WEEKLY;INTERVAL=1;BYDAY=WE,FR",
+      shiftId: 2,
+    },
+    {
+      title: "A2 Nacht",
+      content: "FREQ=WEEKLY;INTERVAL=1;BYDAY=MO,TU,WE,TH,FR,SA,SU",
+      shiftId: 2,
+    },
+    {
+      title: "C1 früh",
+      content: "FREQ=WEEKLY;INTERVAL=1;BYDAY=SU,SA",
+      shiftId: 3,
+    },
+    {
+      title: "C1 spät",
+      content: "FREQ=WEEKLY;INTERVAL=1;BYDAY=SU,SA",
+      shiftId: 3,
+    },
+    {
+      title: "C2 früh",
+      content: "FREQ=WEEKLY;INTERVAL=1;BYDAY=SU,SA",
+      shiftId: 4,
+    },
+    {
+      title: "C2 spät",
+      content: "FREQ=WEEKLY;INTERVAL=1;BYDAY=SU,SA",
+      shiftId: 4,
+    },
+  ]
 
   rrules = await models.Rrule.bulkCreate(rrules)
 
@@ -128,12 +173,11 @@ module.exports = async (models) => {
     })
   )
 
-    await models.Freetime.bulkCreate([
-      {type: "X", date: new Date(), scheduleId: 1, employeeId:1},
-      {type: "T", date: new Date(), scheduleId: 1, employeeId:1},
-      {type: "N", date: new Date(), scheduleId: 1, employeeId:1},
-      {type: "S", date: new Date(), scheduleId: 1, employeeId:1},
-      {type: "U", date: new Date(), scheduleId: 1, employeeId:1},
-    ])
-
+  await models.Freetime.bulkCreate([
+    { type: "X", date: new Date(), scheduleId: 1, employeeId: 1 },
+    { type: "T", date: new Date(), scheduleId: 1, employeeId: 1 },
+    { type: "N", date: new Date(), scheduleId: 1, employeeId: 1 },
+    { type: "S", date: new Date(), scheduleId: 1, employeeId: 1 },
+    { type: "U", date: new Date(), scheduleId: 1, employeeId: 1 },
+  ])
 }
