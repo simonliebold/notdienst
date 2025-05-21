@@ -21,10 +21,11 @@ import {
 
 import Container from "react-bootstrap/Container"
 import Row from "react-bootstrap/Row"
+import Col from "react-bootstrap/esm/Col"
 
 import FullCalendar from "@fullcalendar/react"
+import deLocale from "@fullcalendar/core/locales/de"
 import timeGridPlugin from "@fullcalendar/timegrid"
-import Col from "react-bootstrap/esm/Col"
 
 function ResourcePage({ resourceName, setData, children }) {
   const navigate = useNavigate()
@@ -249,7 +250,8 @@ export const SchedulePage = () => {
             plugins={[timeGridPlugin]}
             initialView="timeGridWeek"
             // weekends=
-            events={schedule?.works}
+            events={schedule?.works.map(work => {return {start: work.start, end: work.end, title: work.short}})}
+            locale="de"
             // eventContent={renderEventContent}
           />
         </Col>

@@ -12,10 +12,10 @@ module.exports = (sequelize) => {
         allowNull: false,
       },
       short: {
-        type: Sequelize.VIRTUAL,
-        get() {
-          return this.id
-        },
+        type: Sequelize.STRING,
+        // get() {
+        //   return this.title
+        // },
       },
       title: {
         type: Sequelize.STRING,
