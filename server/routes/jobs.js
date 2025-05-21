@@ -4,8 +4,10 @@ module.exports = (models) => {
 
   // Get all
   router.get("/", async (req, res) => {
-    const jobs = await models.Job.findAll()
-    res.send({ jobs: jobs })
+    const jobs = await models.Job.findAll({
+      include: [models.Employee, models.Shift],
+    })
+    res.send(jobs)
   })
 
   // Get one

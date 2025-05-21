@@ -68,7 +68,7 @@ function Navigation() {
       path: "/employees",
     },
     {
-      name: "Anstellungsverhältnis",
+      name: "Anstellungsverhältnisse",
       icon: icons.employment,
       path: "/employments",
     },
@@ -76,6 +76,11 @@ function Navigation() {
       name: "Dienstplanwünsche",
       icon: icons.freetime,
       path: "/freetimes",
+    },
+    {
+      name: "Jobs",
+      icon: icons.job,
+      path: "/jobs",
     },
     {
       name: "Elemente",

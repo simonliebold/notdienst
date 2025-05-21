@@ -17,6 +17,7 @@ import Works from "./pages/admin/Works"
 import Employees from "./pages/admin/Employees"
 import Employments from "./pages/admin/Employments"
 import Freetimes from "./pages/admin/Freetimes"
+import Jobs from "./pages/admin/Jobs"
 
 function App() {
   const home = (
@@ -55,9 +56,15 @@ function App() {
     </Prot>
   )
 
-  const freetime = (
+  const freetimes = (
     <Prot>
       <Freetimes />
+    </Prot>
+  )
+
+  const jobs = (
+    <Prot>
+      <Jobs />
     </Prot>
   )
 
@@ -79,7 +86,8 @@ function App() {
               <Route path="works" element={works} />
               <Route path="employees" element={employees} />
               <Route path="employments" element={employments} />
-              <Route path="freetimes" element={freetime} />
+              <Route path="freetimes" element={freetimes} />
+              <Route path="jobs" element={jobs} />
             </Routes>
           </div>
         </Container>
