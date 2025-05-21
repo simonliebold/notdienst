@@ -1,125 +1,307 @@
 module.exports = async (models) => {
+  const events = [
+    {
+      title: "A1 früh Samstag",
+      timeStart: "08:00",
+      timeEnd: "19:00",
+      repeatWeekday: 6,
+      shiftId: 1,
+    },
+    {
+      title: "A1 früh Sonntag",
+      timeStart: "08:00",
+      timeEnd: "19:00",
+      repeatWeekday: 0,
+      shiftId: 1,
+    },
+    {
+      title: "A2 früh Samstag",
+      timeStart: "08:00",
+      timeEnd: "19:00",
+      repeatWeekday: 6,
+      shiftId: 2,
+    },
+    {
+      title: "A2 früh Sonntag",
+      timeStart: "08:00",
+      timeEnd: "19:00",
+      repeatWeekday: 0,
+      shiftId: 2,
+    },
+    {
+      title: "A1 spät Mittwoch",
+      timeStart: "13:00",
+      timeEnd: "19:00",
+      repeatWeekday: 3,
+      shiftId: 3,
+    },
+    {
+      title: "A1 spät Freitag",
+      timeStart: "13:00",
+      timeEnd: "19:00",
+      repeatWeekday: 5,
+      shiftId: 3,
+    },
+    {
+      title: "A2 spät Mittwoch",
+      timeStart: "13:00",
+      timeEnd: "19:00",
+      repeatWeekday: 3,
+      shiftId: 4,
+    },
+    {
+      title: "A2 spät Freitag",
+      timeStart: "13:00",
+      timeEnd: "19:00",
+      repeatWeekday: 5,
+      shiftId: 4,
+    },
+    {
+      title: "A1 Nacht Montag",
+      timeStart: "18:00",
+      timeEnd: "08:00",
+      repeatWeekday: 1,
+      shiftId: 5,
+    },
+    {
+      title: "A1 Nacht Dienstag",
+      timeStart: "18:00",
+      timeEnd: "08:00",
+      repeatWeekday: 2,
+      shiftId: 5,
+    },
+    {
+      title: "A1 Nacht Donnerstag",
+      timeStart: "18:00",
+      timeEnd: "08:00",
+      repeatWeekday: 4,
+      shiftId: 5,
+    },
+    {
+      title: "A1 Nacht Mittwoch",
+      timeStart: "19:00",
+      timeEnd: "08:00",
+      repeatWeekday: 3,
+      shiftId: 5,
+    },
+    {
+      title: "A1 Nacht Freitag",
+      timeStart: "19:00",
+      timeEnd: "08:00",
+      repeatWeekday: 5,
+      shiftId: 5,
+    },
+    {
+      title: "A1 Nacht Samstag",
+      timeStart: "19:00",
+      timeEnd: "08:00",
+      repeatWeekday: 6,
+      shiftId: 5,
+    },
+    {
+      title: "A1 Nacht Sonntag",
+      timeStart: "19:00",
+      timeEnd: "08:00",
+      repeatWeekday: 0,
+      shiftId: 5,
+    },
+    {
+      title: "A2 Nacht Montag",
+      timeStart: "18:00",
+      timeEnd: "08:00",
+      repeatWeekday: 1,
+      shiftId: 6,
+    },
+    {
+      title: "A2 Nacht Dienstag",
+      timeStart: "18:00",
+      timeEnd: "08:00",
+      repeatWeekday: 2,
+      shiftId: 6,
+    },
+    {
+      title: "A2 Nacht Donnerstag",
+      timeStart: "18:00",
+      timeEnd: "08:00",
+      repeatWeekday: 4,
+      shiftId: 6,
+    },
+    {
+      title: "A2 Nacht Mittwoch",
+      timeStart: "19:00",
+      timeEnd: "08:00",
+      repeatWeekday: 3,
+      shiftId: 6,
+    },
+    {
+      title: "A2 Nacht Freitag",
+      timeStart: "19:00",
+      timeEnd: "08:00",
+      repeatWeekday: 5,
+      shiftId: 6,
+    },
+    {
+      title: "A2 Nacht Samstag",
+      timeStart: "19:00",
+      timeEnd: "08:00",
+      repeatWeekday: 6,
+      shiftId: 6,
+    },
+    {
+      title: "A2 Nacht Sonntag",
+      timeStart: "19:00",
+      timeEnd: "08:00",
+      repeatWeekday: 0,
+      shiftId: 6,
+    },
+    {
+      title: "C1 früh Samstag",
+      timeStart: "08:00",
+      timeEnd: "16:00",
+      repeatWeekday: 6,
+      shiftId: 7,
+    },
+    {
+      title: "C1 früh Sonntag",
+      timeStart: "08:00",
+      timeEnd: "16:00",
+      repeatWeekday: 0,
+      shiftId: 7,
+    },
+    {
+      title: "C2 früh Samstag",
+      timeStart: "08:00",
+      timeEnd: "16:00",
+      repeatWeekday: 6,
+      shiftId: 8,
+    },
+    {
+      title: "C2 früh Sonntag",
+      timeStart: "08:00",
+      timeEnd: "16:00",
+      repeatWeekday: 0,
+      shiftId: 8,
+    },
+    {
+      title: "C1 spät Samstag",
+      timeStart: "16:00",
+      timeEnd: "23:00",
+      repeatWeekday: 6,
+      shiftId: 9,
+    },
+    {
+      title: "C1 spät Sonntag",
+      timeStart: "16:00",
+      timeEnd: "23:00",
+      repeatWeekday: 0,
+      shiftId: 9,
+    },
+    {
+      title: "C2 spät Samstag",
+      timeStart: "16:00",
+      timeEnd: "23:00",
+      repeatWeekday: 6,
+      shiftId: 10,
+    },
+    {
+      title: "C2 spät Sonntag",
+      timeStart: "16:00",
+      timeEnd: "23:00",
+      repeatWeekday: 0,
+      shiftId: 10,
+    },
+  ]
+  const names = [
+    "Max Müller",
+    "Anna Schmidt",
+    "Michael Wagner",
+    "Laura Fischer",
+    "Markus Becker",
+    "Sarah Hoffmann",
+    "Julia Weber",
+    "Thomas Richter",
+    "Christine Lehmann",
+    "Sabine Keller",
+    "David Braun",
+    "Nicole Huber",
+    "Martin Wolf",
+    "Monika Herrmann",
+    "Peter Jung",
+  ]
+  const generateEmployees = () => {
+    let employees = []
+    for (let i = 0; i < names.length; i++) {
+      const name = names[i].split(" ")
+      const kuerzel = name[1].slice(0, 3).toUpperCase()
+      const employmentId = Math.floor(Math.random() * 3) + 1
+
+      const employeeData = {
+        initials: kuerzel,
+        name: `${name[0]} ${name[1]}`,
+        employmentId: employmentId,
+      }
+      employees.push(employeeData)
+    }
+
+    return employees
+  }
+
   await models.Job.create({ title: "ÄNoD Fahrer/-in" })
   await models.Job.create({ title: "EZ Dispo" })
   await models.Job.create({ title: "MTD / HNR Fahrer/-in" })
-  await models.Job.create({ title: "RH" })
-  await models.Job.create({ title: "RS" })
-  await models.Job.create({ title: "SH" })
-  await models.Job.create({ title: "NFS" })
+  // await models.Job.create({ title: "RH" })
+  // await models.Job.create({ title: "RS" })
+  // await models.Job.create({ title: "SH" })
+  // await models.Job.create({ title: "NFS" })
 
-  await models.Employment.create({ title: "Minijob", minHours: 10, maxHours: 40 })
-  await models.Employment.create({ title: "Teilzeit", minHours: 80, maxHours: 200 })
-  await models.Employment.create({ title: "Vollzeit", minHours: 160, maxHours: 200 })
-  
-  await models.Employee.create({
-    initials: "RER",
-    name: "Tom Rerucha",
-    employmentId: 3,
+  await models.Employment.create({
+    title: "Minijob",
+    minHours: 10,
+    maxHours: 40,
   })
-  await models.Employee.create({
-    initials: "LIEB",
-    name: "Simon Liebold",
-    employmentId: 1,
+  await models.Employment.create({
+    title: "Teilzeit",
+    minHours: 80,
+    maxHours: 200,
   })
-  await models.Employee.create({
-    initials: "PAP",
-    name: "Niklas Pape",
-    employmentId: 2,
+  await models.Employment.create({
+    title: "Vollzeit",
+    minHours: 160,
+    maxHours: 200,
   })
-  
-  await models.JobEmployee.create({ jobId: 1, employeeId: 2 })
-  await models.JobEmployee.create({ jobId: 1, employeeId: 3 })
+  const employees = await generateEmployees()
+  for (const employee in employees) {
+    await models.Employee.create(employees[employee])
+  }
 
-  await models.Shift.create({ title: "A1" })
-  await models.Shift.create({ title: "A2" })
-  await models.Shift.create({ title: "C1" })
-  await models.Shift.create({ title: "C2" })
+  for (let i = 1; i <= names.length; i++) {
+    await models.JobEmployee.create({
+      jobId: Math.floor(Math.random() * 3) + 1,
+      employeeId: i,
+    })
+  }
 
-  await models.JobShift.create({ jobId: 1, shiftId: 1 })
-  await models.JobShift.create({ jobId: 1, shiftId: 2 })
-  await models.JobShift.create({ jobId: 1, shiftId: 3 })
-  await models.JobShift.create({ jobId: 1, shiftId: 4 })
+  await models.Shift.create({ title: "A1 früh" })
+  await models.Shift.create({ title: "A2 früh" })
+  await models.Shift.create({ title: "A1 spät" })
+  await models.Shift.create({ title: "A2 spät" })
+  await models.Shift.create({ title: "A1 Nacht" })
+  await models.Shift.create({ title: "A2 Nacht" })
+  await models.Shift.create({ title: "C1 früh" })
+  await models.Shift.create({ title: "C2 früh" })
+  await models.Shift.create({ title: "C1 spät" })
+  await models.Shift.create({ title: "C2 spät" })
 
-  await models.Event.create({
-    title: "A1 spät Mittwoch",
-    dateStart: "2023-11-1",
-    timeStart: "13:00",
-    duration: 6,
-    repeatWeekday: 2,
-    shiftId: 1,
-  })
-  await models.Event.create({
-    title: "A1 spät Freitag",
-    dateStart: "2023-11-1",
-    timeStart: "13:00",
-    duration: 6,
-    repeatWeekday: 4,
-    shiftId: 1,
-  })
-  await models.Event.create({
-    title: "A1 früh Samstag",
-    dateStart: "2023-11-1",
-    timeStart: "8:00",
-    duration: 11,
-    repeatWeekday: 5,
-    shiftId: 1,
-  })
-  await models.Event.create({
-    title: "A1 früh Sonntag",
-    dateStart: "2023-11-1",
-    timeStart: "8:00",
-    duration: 11,
-    repeatWeekday: 6,
-    shiftId: 1,
-  })
-  await models.Event.create({
-    title: "A1 früh Feiertag",
-    dateStart: "2023-11-1",
-    timeStart: "8:00",
-    duration: 11,
-    repeatWeekday: 7,
-    shiftId: 1,
-  })
-  await models.Event.create({
-    title: "A2 spät Mittwoch",
-    dateStart: "2023-11-1",
-    timeStart: "13:00",
-    duration: 6,
-    repeatWeekday: 2,
-    shiftId: 2,
-  })
-  await models.Event.create({
-    title: "A2 spät Freitag",
-    dateStart: "2023-11-1",
-    timeStart: "13:00",
-    duration: 6,
-    repeatWeekday: 4,
-    shiftId: 2,
-  })
-  await models.Event.create({
-    title: "A2 früh Samstag",
-    dateStart: "2023-11-1",
-    timeStart: "8:00",
-    duration: 11,
-    repeatWeekday: 5,
-    shiftId: 2,
-  })
-  await models.Event.create({
-    title: "A2 früh Sonntag",
-    dateStart: "2023-11-1",
-    timeStart: "8:00",
-    duration: 11,
-    repeatWeekday: 6,
-    shiftId: 2,
-  })
-  await models.Event.create({
-    title: "A2 früh Feiertag",
-    dateStart: "2023-11-1",
-    timeStart: "8:00",
-    duration: 11,
-    repeatWeekday: 7,
-    shiftId: 2,
-  })
+  for (let i = 1; i <= 10; i++) {
+    await models.JobShift.create({
+      jobId: 1,
+      shiftId: i,
+    })
+  }
+
+  for (let i = 0; i < events.length; i++) {
+    await models.Event.create(events[i])
+  }
 
   await models.Schedule.create({
     title: "November ÄNoD",
@@ -128,18 +310,18 @@ module.exports = async (models) => {
     deadline: "2023-10-29",
   })
 
-  await models.ScheduleEmployee.create({scheduleId: 1, employeeId: 2})
-  await models.ScheduleEmployee.create({scheduleId: 1, employeeId: 3})
+  for (let i = 1; i <= names.length; i++) {
+    await models.ScheduleEmployee.create({ scheduleId: 1, employeeId: i })
+  }
 
-  await models.ScheduleShift.create({scheduleId: 1, shiftId: 1})
-  await models.ScheduleShift.create({scheduleId: 1, shiftId: 2})
-  await models.ScheduleShift.create({scheduleId: 1, shiftId: 3})
-  await models.ScheduleShift.create({scheduleId: 1, shiftId: 4})
+  for (let i = 1; i <= 10; i++) {
+    await models.ScheduleShift.create({ scheduleId: 1, shiftId: i })
+  }
 
-  await models.Freetime.create({
-    start: "2023-11-01T08:00:00.000Z",
-    end: "2023-11-01T19:00:00.000Z",
-    scheduleId: 1,
-    employeeId: 2
-  })
+  // await models.Freetime.create({
+  //   start: "2023-11-01T08:00:00.000Z",
+  //   end: "2023-11-01T19:00:00.000Z",
+  //   scheduleId: 1,
+  //   employeeId: 2,
+  // })
 }

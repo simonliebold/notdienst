@@ -152,7 +152,7 @@ module.exports = (models) => {
     }
   })
 
-  // Get schedule->employees
+  // Get employees
   const getEmployees = async (req, res, next) => {
     const schedule = await models.Schedule.findByPk(req.params.id, {
       include: {
@@ -163,8 +163,10 @@ module.exports = (models) => {
     })
     if (schedule === null)
       res.status(404).send({ message: "No employees found" })
-    req.employees = schedule.dataValues.employees.map((e) => {
-      return {
+    const employees = schedule.dataValues.employees
+    req.employees = {}
+    employees.forEach((e) => {
+      req.employees[e.id] = {
         id: e.id,
         initials: e.initials,
         minHours: e.employment.minHours,
@@ -173,10 +175,11 @@ module.exports = (models) => {
         workHours: 0,
       }
     })
+
     next()
   }
 
-  // Get events->shift->jobs->employees
+  // Get events
   const getEvents = async (req, res, next) => {
     const events = await models.Event.findAll({
       include: [
@@ -196,7 +199,7 @@ module.exports = (models) => {
       ],
     })
     if (events === null) res.status(404).send({ message: "No events found" })
-    
+
     req.events = events.map((event) => event.dataValues)
     for (const i in req.events) {
       const employeeIds = {}

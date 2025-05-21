@@ -188,8 +188,8 @@ POST /works
 
 content-type: application/json
 {
-    start: Timestamp,
-    end: Timestamp,
+    start: Date Time String,
+    end: Date Time String,
     scheduleId: int,
     eventId: int
 }
@@ -201,8 +201,8 @@ PUT /works/:id
 
 content-type: application/json
 {
-    start?: Timestamp,
-    end?: Timestamp,
+    start?: Date Time String,
+    end?: Date Time String,
     scheduleId?: int,
     eventId?: int
 }
@@ -264,8 +264,8 @@ POST /freetimes
 
 content-type: application/json
 {
-    start: Timestamp,
-    end: Timestamp,
+    start: Date Time String,
+    end: Date Time String,
     scheduleId: int,
     employeeId: int
 }
@@ -277,8 +277,8 @@ PUT /freetimes/:id
 
 content-type: application/json
 {
-    start?: Timestamp,
-    end?: Timestamp,
+    start?: Date Time String,
+    end?: Date Time String,
     scheduleId?: int,
     employeeId?: int
 }
@@ -303,7 +303,7 @@ content-type: application/json
     title: String,
     start: Date,
     end: Date,
-    deadline: Timestamp
+    deadline: Date Time String
 }
 </pre>
 
@@ -316,7 +316,7 @@ content-type: application/json
     title?: String,
     start?: Date,
     end?: Date,
-    deadline?: Timestamp
+    deadline?: Date Time String
 }
 </pre>
 
@@ -368,3 +368,6 @@ content-type: application/json
     shiftIds: [int]
 }
 </pre>
+
+# Formats
+[Date Time String](https://tc39.es/ecma262/multipage/numbers-and-dates.html#sec-date-time-string-format)

@@ -12,27 +12,19 @@ module.exports = (sequelize) => {
       },
       title: {
         type: Sequelize.STRING,
-        allowNull: false,
+        allowNull: true,
       },
       requiredEmployees: {
         type: Sequelize.INTEGER,
         allowNull: false,
         defaultValue: 1
       },
-      dateStart: {
-        type: Sequelize.DATEONLY,
-        allowNull: true,
-      },
-      dateEnd: {
-        type: Sequelize.DATEONLY,
-        allowNull: true,
-      },
       timeStart: {
         type: Sequelize.TIME,
         allowNull: false,
       },
-      duration: {
-        type: Sequelize.INTEGER,
+      timeEnd: {
+        type: Sequelize.TIME,
         allowNull: false,
       },
       repeatWeekday: {
