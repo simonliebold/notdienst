@@ -277,8 +277,7 @@ module.exports = (models, sequelize) => {
               new Date(freetime.start).getTime() >= end.getTime()
           )
           if (isFree) {
-            const possibleHours =
-              (end.getTime() - start.getTime()) / 3600000
+            const possibleHours = (end.getTime() - start.getTime()) / 3600000
             possibleEmployeeIds.push(employeeId)
             req.employees[employeeId].possibleHours += possibleHours
             // console.log(start, employeeId, possibleHours)
@@ -302,8 +301,16 @@ module.exports = (models, sequelize) => {
     next()
   }
 
-  // TODO: insertion sort for works
-
+  // TODO: order works by possible employee count
+  const orderWorks = async (req, res, next) => {
+    req.works.sort((a, b) => {
+      if (a.employeeIds.length < b.employeeIds.length) return -1
+      else if (a.employeeIds.length < b.employeeIds.length) return 1
+      else return 0
+    })
+    next()
+  }
+  // TODO: order employees by (minHours - workHours) / possibleHours = (remaining hours / possible hours)
   router.post(
     "/:id/plan",
     getSchedule,
@@ -311,6 +318,7 @@ module.exports = (models, sequelize) => {
     getEmployees,
     getFreetimes,
     getWorks,
+    orderWorks,
     async (req, res) => {
       res.send({
         schedule: req.schedule,
