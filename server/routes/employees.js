@@ -25,10 +25,23 @@ module.exports = () => {
   router.post("/", roles.requireAdmin, async (req, res) => {})
 
   // Update one
-  router.put("/:id", roles.requireAdmin, async (req, res) => {})
+  router.put("/:id", roles.requireAdmin, async (req, res, next) => {
+    const { short, title, employment, jobs } = req?.body || {}
+    await Employee.findByIdAndUpdate(req.params.id, {
+      short,
+      title,
+      employment,
+      jobs,
+    }).catch(next)
+
+    return res.send({ message: "Erfolgreich aktualisiert" })
+  })
 
   // Delete one
-  router.delete("/:id", roles.requireAdmin, async (req, res) => {})
+  router.delete("/:id", roles.requireAdmin, async (req, res, next) => {
+    await Employee.findByIdAndDelete(req.params.id).catch(next)
+    return res.send({ message: "Endgültig gelöscht" })
+  })
 
   return router
 }

@@ -140,8 +140,8 @@ export const EmployeePage = () => {
           resource={employee?.employment}
           resourceName="employment"
         />
-        <MultiBadge items={employee?.schedules} resourceName="schedule" />
         <MultiBadge items={employee?.jobs} resourceName="job" />
+        <MultiTitleCard items={employee?.freetimes} resourceName="freetime" />
       </ResourcePage>
       <EmployeeCalendar employee={employee} />
     </>
