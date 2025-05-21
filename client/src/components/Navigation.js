@@ -58,6 +58,16 @@ function Navigation() {
       path: "/",
     },
     {
+      name: "Dienstpläne",
+      icon: icons.schedule,
+      path: "/schedules",
+    },
+    {
+      name: "Dienstplanwünsche",
+      icon: icons.freetime,
+      path: "/freetimes",
+    },
+    {
       name: "Dienste",
       icon: icons.work,
       path: "/works",
@@ -68,29 +78,19 @@ function Navigation() {
       path: "/employees",
     },
     {
-      name: "Anstellungsverhältnisse",
-      icon: icons.employment,
-      path: "/employments",
-    },
-    {
-      name: "Dienstplanwünsche",
-      icon: icons.freetime,
-      path: "/freetimes",
-    },
-    {
       name: "Jobs",
       icon: icons.job,
       path: "/jobs",
     },
     {
+      name: "Anstellungsverhältnisse",
+      icon: icons.employment,
+      path: "/employments",
+    },
+    {
       name: "Rrules",
       icon: icons.rrule,
       path: "/rrules",
-    },
-    {
-      name: "Dienstpläne",
-      icon: icons.schedule,
-      path: "/schedules",
     },
     {
       name: "Elemente",
