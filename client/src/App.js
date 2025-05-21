@@ -13,6 +13,7 @@ import Container from "react-bootstrap/esm/Container"
 import AlertBox from "./components/AlertBox"
 import Logout from "./pages/Logout"
 import Elements from "./pages/admin/Elements"
+import Works from "./pages/admin/Works"
 
 function App() {
   const home = (
@@ -33,6 +34,12 @@ function App() {
     </Prot>
   )
 
+  const works = (
+    <Prot>
+      <Works />
+    </Prot>
+  )
+
   return (
     <AuthProvider>
       <AlertProvider>
@@ -48,6 +55,7 @@ function App() {
               <Route path="" element={home} />
               <Route path="elements" element={elements} />
               <Route path="logout" element={logout} />
+              <Route path="works" element={works} />
             </Routes>
           </div>
         </Container>

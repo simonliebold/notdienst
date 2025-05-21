@@ -13,6 +13,7 @@ import {
   faRightFromBracket,
   faUser,
 } from "@fortawesome/free-solid-svg-icons"
+import { icons } from "../variables"
 
 const NavItem = ({ route, className }) => {
   const location = useLocation()
@@ -50,9 +51,14 @@ function Navigation() {
       path: "/",
     },
     {
-      name: "Elements",
+      name: "Elemente",
       icon: faCube,
       path: "/elements",
+    },
+    {
+      name: "Dienste",
+      icon: icons.work,
+      path: "/works",
     },
   ]
 

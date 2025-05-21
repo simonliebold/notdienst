@@ -55,7 +55,7 @@ const DetailedCard = ({ resource, resourceName, children }) => {
 }
 
 export const WorkDetailedCard = ({ work }) => {
-  const { title, start, end, rrule, schedule, employees } = work || {}
+  const { start, end, rrule, schedule, employees } = work || {}
 
   const startString = new Date(start).toLocaleString(localeString.country)
   const endString = new Date(end).toLocaleString(localeString.country)
