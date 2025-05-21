@@ -63,8 +63,8 @@ export const ScheduleDetailedCard = ({ schedule }) => {
       Schichten:
       <MultiBadge items={shifts} resourceName="shift" />
       <hr />
+      Mitarbeiter:
+      <MultiBadge items={employees} resourceName="employee" />
     </DetailedCard>
   )
 }
-
-export default DetailedCard
