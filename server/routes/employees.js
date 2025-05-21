@@ -1,4 +1,5 @@
 module.exports = (models) => {
+  const { Op } = require("sequelize")
   const router = require("express").Router()
   const roles = require("./../roles")
 
@@ -18,7 +19,17 @@ module.exports = (models) => {
   // Get one
   router.get("/:id", roles.requireAdmin, async (req, res) => {
     const employee = await models.Employee.findByPk(req.params.id, {
-      include: [models.Employment, models.Job, models.Schedule, models.Work],
+      include: [
+        models.Employment,
+        models.Job,
+        models.Schedule,
+        {
+          model: models.Work,
+          where: { end: { [Op.gt]: new Date() } },
+          required: false,
+          include: [models.Event, models.Schedule],
+        },
+      ],
     })
 
     if (employee === null) return res.sendStatus(404)
