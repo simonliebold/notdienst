@@ -191,19 +191,79 @@ module.exports = (models) => {
                 through: { attributes: [] },
               },
             },
-            {
-              model: models.Schedule,
-              through: { where: { scheduleId: req.params.id }, attributes: [] },
-            },
           ],
         },
       ],
     })
     if (events === null) res.status(404).send({ message: "No events found" })
+    
     req.events = events.map((event) => event.dataValues)
+    for (const i in req.events) {
+      const employeeIds = {}
+      for (const j in req.events[i].shift.jobs) {
+        for (const k in req.events[i].shift.jobs[j].employees) {
+          const id = req.events[i].shift.jobs[j].employees[k].id
+          employeeIds[id] = id
+        }
+      }
+      req.events[i].employeeIds = Object.keys(employeeIds).map((val) =>
+        Math.floor(val)
+      )
+    }
+    req.events = req.events.map((event) => {
+      return {
+        id: event.id,
+        title: event.title,
+        requiredEmployees: event.requiredEmployees,
+        timeStart: event.timeStart,
+        timeEnd: event.timeEnd,
+        repeatWeekday: event.repeatWeekday,
+        employeeIds: event.employeeIds,
+        shiftId: event.shiftId,
+        scheduleId: Math.floor(req.params.id),
+      }
+    })
 
     next()
   }
+
+  const generateWorks = async (req, res, next) => {
+    req.works = []
+    for (const eventInd in req.events) {
+      // let first = new Date(req.events[eventInd].shift.schedules[0].start)
+      // let last = new Date(req.events[eventInd].shift.schedules[0].end)
+      // console.log(first)
+      // console.log(last)
+      // const repeatWeekday = req.events[eventInd].repeatWeekday
+      // const start = req.events[eventInd].timeStart.split(":")
+      // first.setHours(start[0], start[1], start[2])
+      // console.log(first.toLocaleString('de-DE'))
+      // if (repeatWeekday !== null) {
+      // for (let i = first; i <= last; i.setDate(i.getDate() + 1)) {
+      // console.log(i.toTimeString())
+      // TODO: calculate times, save available employees
+      // try {
+      //   const work = await models.Work.create({
+      //     start: new Date(i.setHours)
+      //   })
+      // } catch (error) {
+      //   res.status(400).send({ error: error })
+      // }
+      // }
+      // }
+    }
+    next()
+  }
+
+  router.post(
+    "/:id/plan",
+    getEmployees,
+    getEvents,
+    generateWorks,
+    async (req, res) => {
+      res.send({ employees: req.employees, events: req.events })
+    }
+  )
 
   return router
 }
