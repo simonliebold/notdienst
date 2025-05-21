@@ -31,14 +31,11 @@ function Badge({ resource, resourceName, disabled, className }) {
 export const EditableBadge = ({ resource, resourceName, onInput }) => {
   const { action } = useParams()
 
-  const [options, setOptions] = useState(null)
-  const getOptions = useResource(resourceName + "s")
+  // const [options, setOptions] = useState(null)
+  const [options, updateOptions] = useResource(resourceName + "s")
 
   useEffect(() => {
-    const refresh = async () => {
-      setOptions(await getOptions())
-    }
-    refresh()
+    updateOptions()
   }, [resourceName])
 
   if (action === "edit")

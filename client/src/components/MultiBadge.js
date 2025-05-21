@@ -11,14 +11,10 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 function MultiBadge({ items, resourceName, onInput }) {
   const { action } = useParams()
 
-  const [options, setOptions] = useState(null)
-  const getOptions = useResource(resourceName + "s")
+  const [options, updateOptions] = useResource(resourceName + "s")
 
   useEffect(() => {
-    const refresh = async () => {
-      setOptions(await getOptions())
-    }
-    refresh()
+    updateOptions()
   }, [resourceName])
 
   const onChange = (items) => {
@@ -34,30 +30,30 @@ function MultiBadge({ items, resourceName, onInput }) {
   if (action === "edit") {
     return (
       <p>
-      <Select
-        isMulti
-        getOptionLabel={(option) => (
-          <>
-            <FontAwesomeIcon icon={option.icon} className="me-2" />
-            {option.label}
-          </>
-        )}
-        placeholder="Keine Daten"
-        noOptionsMessage={() => "Keine Optionen"}
-        styles={selectStyles}
-        options={options?.map((option) => ({
-          icon: icons[resourceName],
-          label: option.short,
-          value: option.id,
-        }))}
-        defaultValue={items?.map((item) => ({
-          icon: icons[resourceName],
-          label: item.short,
-          value: item.id,
-        }))}
-        onChange={onChange}
-      />
-    </p>
+        <Select
+          isMulti
+          getOptionLabel={(option) => (
+            <>
+              <FontAwesomeIcon icon={option.icon} className="me-2" />
+              {option.label}
+            </>
+          )}
+          placeholder="Keine Daten"
+          noOptionsMessage={() => "Keine Optionen"}
+          styles={selectStyles}
+          options={options?.map((option) => ({
+            icon: icons[resourceName],
+            label: option.short,
+            value: option.id,
+          }))}
+          defaultValue={items?.map((item) => ({
+            icon: icons[resourceName],
+            label: item.short,
+            value: item.id,
+          }))}
+          onChange={onChange}
+        />
+      </p>
     )
   }
   if (items?.length === 0)

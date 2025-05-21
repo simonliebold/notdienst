@@ -2,80 +2,46 @@ import { faPen, faSave, faTrash } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import React from "react"
 import Button from "react-bootstrap/esm/Button"
-import { useNavigate, Link } from "react-router-dom"
+import { Link } from "react-router-dom"
 
-function CardButton({
-  className,
-  variant,
-  icon,
-  as,
-  link,
-  onClick,
-  resourceName,
-  resource,
-  children,
-}) {
-
-  const path = "/" + resourceName + "/" + resource?.id + "/" + link
-
+function CardButton({ icon, children, ...props }) {
   return (
-    <Button
-      variant={variant}
-      icon={icon}
-      className={className}
-      as={as}
-      to={path}
-      onClick={onClick}
-      disabled={!resource || !resourceName}
-    >
+    <Button {...props}>
       <FontAwesomeIcon icon={icon} className="me-2" />
       {children}
     </Button>
   )
 }
 
-export const CardEditButton = ({ resource, resourceName, className }) => {
+function CardButtonLink({ to, ...props }) {
+  return <CardButton as={Link} to={to} {...props} />
+}
+
+export const CardEditButton = ({ ...props }) => {
   return (
-    <CardButton
-      variant="primary"
-      icon={faPen}
-      resource={resource}
-      resourceName={resourceName}
-      link="edit"
-      as={Link}
-    >
+    <CardButtonLink icon={faPen} variant="primary" {...props}>
       Bearbeiten
-    </CardButton>
+    </CardButtonLink>
   )
 }
 
-export const CardDeleteButton = ({ resource, resourceName, className }) => {
+export const CardDeleteButton = ({ className, ...props }) => {
   return (
-    <CardButton
+    <CardButtonLink
       variant="link"
-      className={"text-secondary text-decoration-none " + className}
       icon={faTrash}
-      resource={resource}
-      resourceName={resourceName}
-      link="delete"
-      as={Link}
+      to="delete"
+      className={"text-decoration-none text-secondary " + className}
+      {...props}
     >
       Löschen
-    </CardButton>
+    </CardButtonLink>
   )
 }
 
-export const CardSaveButton = ({ resource, resourceName, onClick, link,  className }) => {
+export const CardSaveButton = ({ ...props }) => {
   return (
-    <CardButton
-      variant="primary"
-      icon={faSave}
-      resource={resource}
-      resourceName={resourceName}
-      onClick={onClick}
-      link=""
-      as={Link}
-    >
+    <CardButton variant="primary" icon={faSave} {...props}>
       Speichern
     </CardButton>
   )

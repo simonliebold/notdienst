@@ -17,21 +17,14 @@ import { useResourceUpdate } from "../hooks/useResource"
 const DetailedCard = ({
   resource,
   resourceName,
-  input,
-  refresh,
   children,
   className,
+  loading = true,
+  onSave,
 }) => {
   const { title } = resource || {}
   const { action } = useParams()
   const navigate = useNavigate()
-  const update = useResourceUpdate(resourceName + "s/" + resource?.id)
-  const [loading, setLoading] = useState(true)
-
-  useEffect(() => {
-    if (resource) return setLoading(false)
-    return setLoading(true)
-  }, [resource])
 
   if (loading)
     return (
@@ -80,26 +73,13 @@ const DetailedCard = ({
       <Card.Footer className="d-flex justify-content-end align-items-center">
         {action === "edit" && (
           <>
-            <CardDeleteButton
-              resource={resource}
-              resourceName={resourceName}
-              className="me-auto"
-            />
-            <CardSaveButton
-              resource={resource}
-              resourceName={resourceName}
-              onClick={async (e) => {
-                setLoading(true)
-                await update(input)
-                refresh()
-                setLoading(false)
-              }}
-            />
+            <CardDeleteButton className="me-auto" />
+            <CardSaveButton onClick={onSave} />
           </>
         )}
         {action !== "edit" && (
           <>
-            <CardEditButton resource={resource} resourceName={resourceName} />
+            <CardEditButton to="edit" />
           </>
         )}
       </Card.Footer>
@@ -243,62 +223,7 @@ export const EmploymentDetailedCard = ({ employment, refresh }) => {
     </DetailedCard>
   )
 }
-export const EmployeeDetailedCard = ({ employee, refresh }) => {
-  const { short, title, employment, works, schedules, jobs } = employee || {}
-  const [input, setInput] = useState(employee)
 
-  const onInput = (label, value) => {
-    setInput({ ...input, [label]: value })
-  }
-
-  return (
-    <DetailedCard
-      resourceName="employee"
-      resource={employee}
-      refresh={refresh}
-      input={input}
-    >
-      <div className="">
-        <EditableText
-          className="flex-fill"
-          value={short}
-          label="short"
-          onInput={onInput}
-        />
-        <EditableText
-          className="flex-fill"
-          value={title}
-          label="title"
-          onInput={onInput}
-        />
-      </div>
-      <div className="">
-        Anstellungsverhältnis:
-        <EditableBadge
-          resource={employment}
-          resourceName="employment"
-          onInput={onInput}
-        />
-      </div>
-      <div className="">
-        Dienste:
-        <MultiBadge items={works} resourceName="work" onInput={onInput} />
-      </div>
-      <div className="">
-        Schichtpläne:
-        <MultiBadge
-          items={schedules}
-          resourceName="schedule"
-          onInput={onInput}
-        />
-      </div>
-      <div className="">
-        Jobs:
-        <MultiBadge items={jobs} resourceName="job" onInput={onInput} />
-      </div>
-    </DetailedCard>
-  )
-}
 export const ScheduleDetailedCard = ({ schedule, className }) => {
   const { employees, shifts, works } = schedule || {}
 
@@ -333,3 +258,5 @@ export const ScheduleDetailedCard = ({ schedule, className }) => {
     </DetailedCard>
   )
 }
+
+export default DetailedCard
