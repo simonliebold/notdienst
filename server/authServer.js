@@ -14,6 +14,22 @@ const sequelize = new Sequelize(
   }
 )
 
+const AccountToken = sequelize.define(
+  "accountTokens",
+  {
+    code: {
+      type: DataTypes.STRING(4),
+      allowNull: false,
+      primaryKey: true,
+    },
+    token: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+  },
+  { timestamps: false }
+)
+
 sequelize.define(
   "refreshTokens",
   {
@@ -25,7 +41,7 @@ sequelize.define(
   { timestamps: false }
 )
 
-sequelize.define(
+const User = sequelize.define(
   "users",
   {
     id: {
@@ -41,11 +57,13 @@ sequelize.define(
     role: {
       type: DataTypes.STRING,
       allowNull: false,
-      defaultValue: 1
+      defaultValue: 1,
     },
   },
   { timestamps: false }
 )
+
+AccountToken.belongsTo(User)
 
 const routes = require("./authRoutes")(sequelize)
 app.use("/", routes)
@@ -67,6 +85,18 @@ app.listen(PORT, async () => {
   }
   // await db.sequelize.sync()
   await sequelize.sync({ force: true })
-  await sequelize.models.users.create({id: 1, email: "simon@bitel.net", password: "lieb"})
-  await sequelize.models.users.create({id: 2, email: "rerucha", password: "rer", role: 10})
+  await sequelize.models.users.create({
+    id: 1,
+    email: "simon@bitel.net",
+    password: "lieb",
+  })
+  await sequelize.models.users.create({
+    id: 2,
+    email: "rerucha",
+    password: "rer",
+    role: 10,
+  })
+
+  const today = new Date()
+
 })

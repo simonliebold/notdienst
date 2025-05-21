@@ -3,8 +3,51 @@ module.exports = (sequelize) => {
   const jwt = require("jsonwebtoken")
 
   function generateAccessToken(user) {
-    return jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, { expiresIn: "1d" })
+    return jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, { expiresIn: "1m" })
   }
+
+  function authenticateToken(req, res, next) {
+    const authHeader = req.headers["authorization"]
+    const token = authHeader && authHeader.split(" ")[1]
+    if (token == null) return res.sendStatus(401)
+
+    jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
+      if (err) return res.sendStatus(401)
+      req.user = user
+      next()
+    })
+  }
+
+  router.post("/generate/:id", authenticateToken, async (req, res) => {
+    if (req.user.role < 10) return res.sendStatus(403)
+    let user = await sequelize.models.users.findByPk(req.params.id)
+    if (user === undefined) return res.sendStatus(404)
+    user = user.dataValues
+    delete user.password
+    const token = generateAccessToken(user)
+
+    const codeString = "ABCDEFGHIJKLMNPQRSTUVWXYZ123456789"
+    let code = ""
+    for (let i = 0; i < 4; i++) {
+      code += codeString.charAt(Math.floor(Math.random() * codeString.length))
+    }
+    const accountToken = await sequelize.models.accountTokens.create({
+      code: code,
+      token: token,
+      userId: req.params.id,
+    })
+    res.send(accountToken)
+  })
+
+  router.get("/token/:code", async (req, res) => {
+    const token = await sequelize.models.accountTokens.findOne({
+      where: { code: req.params.code },
+      include: sequelize.models.users
+    })
+    if (token === null) return res.sendStatus(404)
+
+    return res.send({ token: token.token })
+  })
 
   router.post("/token", async (req, res) => {
     const refreshToken = req.body.token
