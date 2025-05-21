@@ -51,52 +51,52 @@ module.exports = async (models) => {
 
   let rrules = [
     {
-      title: "A1 früh",
+      short: "A1 früh",
       content: "FREQ=WEEKLY;INTERVAL=1;BYDAY=SU,SA",
       shiftId: 1,
     },
     {
-      title: "A1 spät",
+      short: "A1 spät",
       content: "FREQ=WEEKLY;INTERVAL=1;BYDAY=WE,FR",
       shiftId: 1,
     },
     {
-      title: "A1 Nacht",
+      short: "A1 Nacht",
       content: "FREQ=WEEKLY;INTERVAL=1;BYDAY=MO,TU,WE,TH,FR,SA,SU",
       shiftId: 1,
     },
     {
-      title: "A2 früh",
+      short: "A2 früh",
       content: "FREQ=WEEKLY;INTERVAL=1;BYDAY=SU,SA",
       shiftId: 2,
     },
     {
-      title: "A2 spät",
+      short: "A2 spät",
       content: "FREQ=WEEKLY;INTERVAL=1;BYDAY=WE,FR",
       shiftId: 2,
     },
     {
-      title: "A2 Nacht",
+      short: "A2 Nacht",
       content: "FREQ=WEEKLY;INTERVAL=1;BYDAY=MO,TU,WE,TH,FR,SA,SU",
       shiftId: 2,
     },
     {
-      title: "C1 früh",
+      short: "C1 früh",
       content: "FREQ=WEEKLY;INTERVAL=1;BYDAY=SU,SA",
       shiftId: 3,
     },
     {
-      title: "C1 spät",
+      short: "C1 spät",
       content: "FREQ=WEEKLY;INTERVAL=1;BYDAY=SU,SA",
       shiftId: 3,
     },
     {
-      title: "C2 früh",
+      short: "C2 früh",
       content: "FREQ=WEEKLY;INTERVAL=1;BYDAY=SU,SA",
       shiftId: 4,
     },
     {
-      title: "C2 spät",
+      short: "C2 spät",
       content: "FREQ=WEEKLY;INTERVAL=1;BYDAY=SU,SA",
       shiftId: 4,
     },

@@ -10,13 +10,13 @@ module.exports = (sequelize) => {
         autoIncrement: true,
         allowNull: false,
       },
-      short: {
+      short: { type: Sequelize.STRING, allowNull: false },
+      title: {
         type: Sequelize.VIRTUAL,
         get() {
-          return this.title
+          return this.content
         },
       },
-      title: { type: Sequelize.STRING, allowNull: false },
       content: { type: Sequelize.STRING, allowNull: false },
       shiftId: {
         type: Sequelize.INTEGER,

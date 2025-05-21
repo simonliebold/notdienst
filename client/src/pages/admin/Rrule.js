@@ -10,7 +10,6 @@ function Rrule() {
   return (
     <ResourcePage resourceName="rrule" setData={setRrule}>
       <EditableText value={rrule?.short} label="short" />
-      <EditableText value={rrule?.title} label="title" />
       <EditableText value={rrule?.content} label="content" />
       <hr />
       <EditableBadge resource={rrule?.shift} resourceName="shift" />
