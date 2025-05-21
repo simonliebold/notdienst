@@ -180,6 +180,7 @@ module.exports = (models) => {
         maxHours: e.employment.maxHours,
         possibleHours: 0,
         workHours: 0,
+        freetimes: [],
       }
     })
 
@@ -188,11 +189,12 @@ module.exports = (models) => {
 
   // Get freetimes
   const getFreetimes = async (req, res, next) => {
-    for (const employeeId in req.employees) {
-      req.employees[employeeId].freetimes = await models.Freetime.findAll({
-        where: { scheduleId: req.schedule.id, employeeId: employeeId },
-      })
-    }
+    const freetimes = await models.Freetime.findAll({
+      where: { scheduleId: req.params.id },
+    })
+    freetimes.forEach((freetime) => {
+      req.employees[freetime.employeeId].freetimes.push(freetime)
+    })
     next()
   }
 
@@ -286,6 +288,7 @@ module.exports = (models) => {
       res.send({
         schedule: req.schedule,
         employees: req.employees,
+        // freetimes: req.freetimes,
         events: req.events,
         works: req.works,
       })
