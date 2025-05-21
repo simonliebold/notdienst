@@ -22,7 +22,7 @@ function Badge(props) {
     >
       {/* <FontAwesomeIcon icon={faX} className="me-3" /> */}
       <FontAwesomeIcon icon={icon} className="me-2" />
-      {short.toString().toUpperCase()}
+      {short?.toString().toUpperCase()}
     </BootstrapBadge>
   )
 }

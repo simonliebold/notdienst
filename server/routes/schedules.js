@@ -31,7 +31,7 @@ module.exports = (models, sequelize) => {
       where: { scheduleId: req.params.id },
       include: [models.Employee],
     })
-    return res.send({ schedule: {...schedule.dataValues, works} })
+    return res.send({ ...schedule.dataValues, works })
   })
 
   // Create one
@@ -361,9 +361,7 @@ module.exports = (models, sequelize) => {
       req.works = await models.WorkEmployee.bulkCreate(workEmployees)
       next()
     } catch (error) {
-      return res
-        .status(400)
-        .send({ error: "Dienste wurden bereits zugeteilt" })
+      return res.status(400).send({ error: "Dienste wurden bereits zugeteilt" })
     }
   }
 
@@ -379,7 +377,7 @@ module.exports = (models, sequelize) => {
     orderWorks,
     allocateWorks,
     async (req, res) => {
-      return res.send({message: "Dienste erfolgreich verteilt"})
+      return res.send({ message: "Dienste erfolgreich verteilt" })
     }
   )
 

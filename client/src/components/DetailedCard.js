@@ -3,6 +3,7 @@ import Card from "react-bootstrap/Card"
 import Badge from "./Badge"
 import MultiBadge from "./MultiBadge"
 import { CardDeleteButton, CardEditButton } from "./CardButton"
+import { localeString } from "../variables"
 
 const DetailedCard = ({ resource, resourceName, children }) => {
   const { id, short, title } = resource || {}
@@ -34,7 +35,7 @@ export const EmployeeDetailedCard = ({ employee }) => {
 
   return (
     <DetailedCard resourceName="employee" resource={employee}>
-      Stunden: {employment.title} <br />
+      Anstellungsverhältnis: {employment.title} <br />
       <Badge resource={employment} resourceName="employment" />
       <hr />
       Dienste:
@@ -46,16 +47,19 @@ export const EmployeeDetailedCard = ({ employee }) => {
 export const ScheduleDetailedCard = ({ schedule }) => {
   const { employees, shifts, works } = schedule || {}
 
-  const start = new Date(schedule.start).toLocaleString("de-DE") || {}
-  const end = new Date(schedule.end).toLocaleString("de-DE") || {}
-  const deadline = new Date(schedule.deadline).toLocaleString("de-DE") || {}
+  const start = new Date(schedule?.start).toLocaleString(localeString.country)
+  const end = new Date(schedule?.end).toLocaleString(localeString.country)
+  const deadline = new Date(schedule?.deadline).toLocaleString(
+    localeString.country
+  )
 
   return (
     <DetailedCard resourceName="schedule" resource={schedule}>
-      Start: {new Date(start).toLocaleString("de-DE")}
+      Start: {start && start}
       <br />
-      Ende: {end} <br />
-      Deadline: {deadline}
+      Ende: {end && end}
+      <br />
+      Deadline: {deadline && deadline}
       <hr />
       Dienste:
       <MultiBadge items={works} resourceName="work" />

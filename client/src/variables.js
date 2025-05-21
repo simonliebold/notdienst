@@ -15,3 +15,8 @@ export const icons = {
   shift: faCalendarDay,
   default: faHashtag,
 }
+
+export const localeString = {
+  country: "de-DE",
+  default: {}
+}
