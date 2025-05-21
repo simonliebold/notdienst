@@ -45,8 +45,9 @@
 #### Body
 <pre>
 {
-    initials: String
-    name: String
+    initials: String,
+    name: String,
+    employmentId: int
 }
 </pre>
 
@@ -56,8 +57,9 @@
 #### Body
 <pre>
 {
-    initials?: String
-    name?: String
+    initials?: String,
+    name?: String,
+    employmentId?: int
 }
 </pre>
 
