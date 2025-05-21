@@ -4,7 +4,6 @@ const helmet = require("helmet")
 const cors = require("cors")
 const mongoose = require("mongoose")
 const routes = require("./routes")
-const User = require("./models/User")
 
 app.use(express.json())
 app.use(helmet())

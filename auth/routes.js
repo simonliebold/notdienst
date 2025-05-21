@@ -7,7 +7,8 @@ const jwt = require("jsonwebtoken")
 const CredentialsToken = require("./models/CredentialsToken")
 
 function generateAccessToken(user) {
-  const expirationDate = Math.floor(Date.now() / 1000) + 180000
+  const expirationDate = Math.floor(Date.now() / 1000)
+  // const expirationDate = Math.floor(Date.now() / 1000) + 180000
   return jwt.sign(
     { ...user, exp: expirationDate },
     process.env.ACCESS_TOKEN_SECRET
@@ -137,15 +138,20 @@ router.post("/credentials/change/:code", async (req, res) => {
 
 // Refresh token
 router.post("/token", async (req, res) => {
-  const refreshToken = req.body.token
-  if (refreshToken == null) return res.sendStatus(403)
-  if (!(await sequelize.models.refreshTokens.findByPk(refreshToken)))
-    return res.sendStatus(403)
-  jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, user) => {
-    if (err) return res.sendStatus(403)
-    const accessToken = generateAccessToken(user)
-    res.json({ accessToken: accessToken })
-  })
+  try {
+    const refreshToken = req.body.token
+    if (refreshToken == null) return res.sendStatus(403)
+    if ((await RefreshToken.findOne({ token: refreshToken })) === undefined)
+      return res.sendStatus(403)
+    jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, user) => {
+      if (err) return res.sendStatus(403)
+      const accessToken = generateAccessToken(user)
+      res.json({ accessToken: accessToken })
+    })
+  } catch (err) {
+    console.log(err)
+    return res.sendStatus(400)
+  }
 })
 
 // Destroy refreshtoken
@@ -155,10 +161,10 @@ router.delete("/logout", async (req, res) => {
     // await sequelize.models.refreshTokens.destroy({
     //   where: { token: req.body.token },
     // })
+    return res.sendStatus(204)
   } catch (error) {
     return res.sendStatus(500)
   }
-  res.sendStatus(204)
 })
 
 // Login by email and password
