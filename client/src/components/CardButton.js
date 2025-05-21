@@ -1,9 +1,4 @@
-import {
-  faPen,
-  faPencil,
-  faSave,
-  faTrash,
-} from "@fortawesome/free-solid-svg-icons"
+import { faPen, faSave, faTrash } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import React from "react"
 import Button from "react-bootstrap/esm/Button"
@@ -28,7 +23,6 @@ function CardButton({
       icon={icon}
       className={className}
       as={Link}
-      // href={path}
       to={path}
       onClick={(e) => navigate(path)}
       disabled={!resource || !resourceName}

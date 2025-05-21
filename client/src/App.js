@@ -192,7 +192,7 @@ function App() {
 
               <Route path="employments" element={employments} />
               <Route
-                path="employment/:employmentId/:action"
+                path="employment/:employmentId/"
                 element={employment}
               />
               <Route
