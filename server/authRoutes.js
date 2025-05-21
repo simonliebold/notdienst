@@ -29,6 +29,7 @@ module.exports = (sequelize) => {
     res.sendStatus(204)
   })
 
+  // TODO: !! find by email
   router.post("/login", async (req, res) => {
     let user = await sequelize.models.users.findByPk(req.body.id)
     if (user === undefined) return res.sendStatus(401)

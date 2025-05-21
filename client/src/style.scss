@@ -1,8 +1,10 @@
-/* The following block can be included in a custom.scss */
+// $primary: #c80a14;
+// $primary: #fed700;
+// $body-bg: #fed700;
+// $secondary: #c80a14;
 
-/* make the customizations */
-$primary: #fed700;
-$secondary: #c80a14;
+#content {
+    height: 100vh;
+}
 
-/* import bootstrap to set changes */
-@import '~bootstrap/scss/bootstrap';
+@import "~bootstrap/scss/bootstrap";

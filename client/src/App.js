@@ -1,17 +1,28 @@
-import React from "react"
-import Alert from "react-bootstrap/Alert"
-import Container from "react-bootstrap/Container"
+import React, { useEffect, useMemo } from "react"
+import { Routes, Route, useNavigate } from "react-router-dom"
+import Home from "./pages/Home"
+import Login from "./pages/Login"
+import { useLocalStorage } from "./hooks/useLocalStorage"
 
 function App() {
+  const navigate = useNavigate()
+  const [user, setUser] = useLocalStorage("user", null)
+
+  const login = async (data) => {
+    setUser(data);
+    navigate("/profile");
+  };
+
+  const logout = () => {
+    setUser(null);
+    navigate("/", { replace: true });
+  };
+
   return (
-    <div>
-      <Container>
-        <Alert key="1" variant="primary">
-          This is alert with <Alert.Link href="#">an example link</Alert.Link>.
-          Give it a click if you like.
-        </Alert>
-      </Container>
-    </div>
+    <Routes>
+      <Route path="/login" element={<Login />} />
+      <Route path="/" element={<Home />} />
+    </Routes>
   )
 }
 
