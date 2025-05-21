@@ -9,8 +9,12 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import {
   faCalendar,
   faCube,
+  faGear,
+  faGears,
   faHome,
   faRightFromBracket,
+  faScrewdriver,
+  faScrewdriverWrench,
   faUser,
 } from "@fortawesome/free-solid-svg-icons"
 import { icons, titles } from "../variables"
@@ -110,7 +114,7 @@ function Navigation() {
     return (
       <Navbar className="border-bottom start-0 end-0" expand="xs">
         <Container>
-          <Navbar.Toggle />
+          <Navbar.Toggle></Navbar.Toggle>
           <Navbar.Offcanvas ref={offCanvasRef}>
             <Offcanvas.Header closeButton>
               <Offcanvas.Title>Navigation</Offcanvas.Title>
