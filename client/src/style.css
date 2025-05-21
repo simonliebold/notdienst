@@ -1,3 +1,23 @@
-/* The following block can be included in a custom.scss */
-/* make the customizations */
-/* import bootstrap to set changes */
+@font-face {
+  font-family: "Noto Sans";
+  font-weight: normal;
+  src: local("Noto Sans"), url(./fonts/NotoSans-Regular.woff2) format("woff2");
+}
+@font-face {
+  font-family: "Noto Sans";
+  font-weight: normal;
+  font-style: italic;
+  src: local("Noto Sans"),
+    url(./fonts/NotoSans-Italic.woff2) format("woff2");
+}
+@font-face {
+  font-family: "Noto Sans";
+  font-weight: bold;
+  src: local("Noto Sans"), url(./fonts/NotoSans-Bold.woff2) format("woff2");
+}
+@font-face {
+  font-family: "Noto Sans Bold";
+  font-weight: bold;
+  src: local("Noto Sans"),
+    url(./fonts/NotoSans-BoldItalic.woff2) format("woff2");
+}

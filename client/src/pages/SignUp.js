@@ -83,7 +83,7 @@ function EditCredentials({
   return (
     <>
       <h1 className="mb-2">Account-Daten ändern</h1>
-      <p className="text-secondary mb-4">
+      <p className="text-muted mb-4">
         Gib bitte die Daten ein, die geändert werden sollen.
       </p>
       <Form noValidate validated={validated} onSubmit={handleOnSubmit}>
@@ -183,8 +183,9 @@ function InputCode({ result, setResult, setLoggedIn, setOldEmail, setError }) {
 
   return (
     <>
-      <h1 className="mb-2">Code eingeben</h1>
-      <p className="text-secondary mb-4">
+    {/* TODO: change text body color dynamically */}
+      <h1 className="mb-2 fw-bold">Code eingeben</h1>
+      <p className="text-muted mb-4">
         Um die Account-Daten zu ändern, gib bitte den sechsstelligen Code ein.
       </p>
       <form onSubmit={handleOnSubmit}>

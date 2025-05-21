@@ -1,14 +1,24 @@
-// $primary: #c80a14;
 // $primary: #fed700;
 // $body-bg: #fed700;
 // $secondary: #c80a14;
+// $primary: #2a3150;
+$primary: #133882;
+$danger: #c80a15;
+$warning: #fec715;
 
+$body-color: #202020;
 
+$font-family-sans-serif: "Noto Sans";
 
+.h1 {
+  font-weight: 700;
+}
+
+$border-radius-lg: 0.25rem;
 @import "~bootstrap/scss/bootstrap";
 
 .center {
-    height: 100vh;
+  height: 100vh;
 }
 
 .signupinput {
@@ -20,7 +30,7 @@
   margin-right: 8px;
   text-transform: uppercase;
   // color: ;
-  border: 1px solid #d6d6d6;
+  border: 1px solid #847e7e36;
   border-radius: 4px;
   background-clip: padding-box;
 }
