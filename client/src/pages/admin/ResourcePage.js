@@ -50,6 +50,7 @@ function ResourcePage({ resourceName, setData, children }) {
   const onEditRequest = useCallback(() => {
     setEdit(true)
   }, [setEdit])
+
   const onCloseRequest = useCallback(() => {
     setEdit(false)
   }, [setEdit])

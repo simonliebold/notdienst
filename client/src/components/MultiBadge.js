@@ -1,6 +1,5 @@
 import React, { useEffect } from "react"
 import Badge from "./Badge"
-import { useParams } from "react-router-dom"
 import Select from "react-select"
 import useResource from "../hooks/useResource"
 import { icons, selectStyles, titles } from "../variables"

@@ -5,10 +5,9 @@ import { useNavigate, Navigate, Link } from "react-router-dom"
 import {
   useAuth,
   useAuthUpdate,
-  useRefreshToken,
   useRefreshTokenUpdate,
 } from "../contexts/AuthContext"
-import { useErrorMessage, useSuccessMessage } from "../contexts/AlertContext"
+import { useErrorMessage } from "../contexts/AlertContext"
 
 import Form from "react-bootstrap/Form"
 import Button from "react-bootstrap/Button"
@@ -16,7 +15,6 @@ import FloatingLabel from "react-bootstrap/FloatingLabel"
 
 function Login() {
   const handleError = useErrorMessage()
-  const handleSuccess = useSuccessMessage()
 
   const token = useAuth()
   const setToken = useAuthUpdate()

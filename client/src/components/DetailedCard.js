@@ -1,7 +1,5 @@
 import React from "react"
 
-import { useNavigate, useParams } from "react-router-dom"
-
 import Card from "react-bootstrap/Card"
 import Placeholder from "react-bootstrap/Placeholder"
 import CloseButton from "react-bootstrap/CloseButton"

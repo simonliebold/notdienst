@@ -1,7 +1,6 @@
 import React, { useCallback, useEffect, useState } from "react"
 import Form from "react-bootstrap/Form"
 import FloatingLabel from "react-bootstrap/esm/FloatingLabel"
-import { useParams } from "react-router-dom"
 import { labels } from "../variables"
 
 const EditableText = ({ value, label, onInput, disabled, className, edit }) => {
