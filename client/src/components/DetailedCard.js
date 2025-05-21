@@ -1,13 +1,17 @@
 import React from "react"
 import Card from "react-bootstrap/Card"
 import Placeholder from "react-bootstrap/Placeholder"
+import Spinner from "react-bootstrap/Spinner"
 import Badge, { EditableBadge } from "./Badge"
 import MultiBadge from "./MultiBadge"
-import { CardDeleteButton, CardEditButton } from "./CardButton"
+import { CardDeleteButton, CardEditButton, CardSaveButton } from "./CardButton"
 import { localeString } from "../variables"
+import { useParams } from "react-router-dom"
 
 const DetailedCard = ({ resource, resourceName, children, className }) => {
   const { id, short, title } = resource || {}
+  const { action } = useParams()
+  console.log(action)
 
   if (!resource)
     return (
@@ -21,12 +25,15 @@ const DetailedCard = ({ resource, resourceName, children, className }) => {
         </Placeholder>
 
         <Card.Footer className="d-flex justify-content-end">
-          <CardDeleteButton
-            resource={resource}
-            resourceName={resourceName}
-            className="me-auto"
-          />
-          <CardEditButton resource={resource} resourceName={resourceName} />
+          <Placeholder.Button>
+            <Spinner
+              animation="border"
+              role="status"
+              size={"sm"}
+              className="me-2"
+            ></Spinner>
+            Lädt...
+          </Placeholder.Button>
         </Card.Footer>
       </Card>
     )
@@ -43,12 +50,19 @@ const DetailedCard = ({ resource, resourceName, children, className }) => {
       </Card.Header>
       <Card.Body>{children}</Card.Body>
       <Card.Footer className="d-flex justify-content-end">
-        <CardDeleteButton
-          resource={resource}
-          resourceName={resourceName}
-          className="me-auto"
-        />
-        <CardEditButton resource={resource} resourceName={resourceName} />
+        {action === "edit" && (
+          <>
+            <CardDeleteButton
+              resource={resource}
+              resourceName={resourceName}
+              className="me-auto"
+            />
+            <CardSaveButton />
+          </>
+        )}
+        {action !== "edit" && (
+          <CardEditButton resource={resource} resourceName={resourceName} />
+        )}
       </Card.Footer>
     </Card>
   )
