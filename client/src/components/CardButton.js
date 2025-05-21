@@ -29,6 +29,7 @@ import {
   useGenerateWorks,
 } from "../hooks/useResource"
 import Placeholder from "react-bootstrap/Placeholder"
+import ReportPopup from "./ReportPopup"
 
 function CardButton({ icon, children, ...props }) {
   return (
@@ -182,7 +183,6 @@ export const AsyncAllocateWorksButton = ({
   )
 }
 
-
 export const AsyncDeleteWorksButton = ({
   schedule,
   updateResource,
@@ -217,7 +217,6 @@ export const AsyncDeleteWorksButton = ({
   )
 }
 
-
 export const AsyncCreateReportButton = ({
   schedule,
   updateResource,
@@ -226,28 +225,35 @@ export const AsyncCreateReportButton = ({
 }) => {
   const createReport = useCreateReport()
   const [loading, setLoading] = useState(false)
+  const [show, setShow] = useState(false)
+  const [report, setReport] = useState([])
 
   const handleCreateReport = useCallback(async () => {
     setLoading(true)
-    await createReport(schedule?._id)
+    const response = await createReport(schedule?._id)
+    setReport(response.report)
     setLoading(false)
-  }, [createReport, schedule, updateResource])
+    setShow(true)
+  }, [createReport, schedule, updateResource, setShow, setLoading, setReport])
 
   if (schedule?.works?.length == 0) return
 
   if (loading)
-    return <LoadingButton>{title.schedule + " wird gelöscht..."}</LoadingButton>
+    return <LoadingButton>{"Bericht wird generiert..."}</LoadingButton>
 
   return (
-    <CardButton
-      {...props}
-      icon={faFile}
-      disabled={edit}
-      variant="primary"
-      onClick={handleCreateReport}
-    >
-      Bericht generieren
-    </CardButton>
+    <>
+      <CardButton
+        {...props}
+        icon={faFile}
+        disabled={edit}
+        variant="primary"
+        onClick={handleCreateReport}
+      >
+        Bericht generieren
+      </CardButton>
+      <ReportPopup show={show} close={() => setShow(false)} report={report} />
+    </>
   )
 }
 

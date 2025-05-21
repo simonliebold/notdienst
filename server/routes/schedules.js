@@ -582,7 +582,7 @@ router.get("/:id/report", roles.requireAdmin, async (req, res, next) => {
       })
 
       return {
-        employee: employee.short,
+        employee,
         totalWorkHours,
         withinHours,
         has12HourBreaks,
