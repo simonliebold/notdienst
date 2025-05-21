@@ -19,7 +19,10 @@ import Container from "react-bootstrap/Container"
 import Row from "react-bootstrap/Row"
 import Col from "react-bootstrap/esm/Col"
 
-import { ScheduleCalendar } from "../../components/Calendar"
+import Calendar, {
+  EmployeeCalendar,
+  ScheduleCalendar,
+} from "../../components/Calendar"
 import { AsyncAllocateWorksButton } from "../../components/CardButton"
 
 function ResourcePage({ resourceName, setData, buttons, children }) {
@@ -128,18 +131,20 @@ function ResourcePage({ resourceName, setData, buttons, children }) {
 export const EmployeePage = () => {
   const [employee, setEmployee] = useState(null)
   return (
-    <ResourcePage resourceName="employee" setData={setEmployee}>
-      <EditableText value={employee?.short} label="short" />
-      <EditableText value={employee?.title} label="title" />
-      <hr />
-      <EditableBadge
-        resource={employee?.employment}
-        resourceName="employment"
-      />
-      <MultiBadge items={employee?.works} resourceName="work" />
-      <MultiBadge items={employee?.schedules} resourceName="schedule" />
-      <MultiBadge items={employee?.jobs} resourceName="job" />
-    </ResourcePage>
+    <>
+      <ResourcePage resourceName="employee" setData={setEmployee}>
+        <EditableText value={employee?.short} label="short" />
+        <EditableText value={employee?.title} label="title" />
+        <hr />
+        <EditableBadge
+          resource={employee?.employment}
+          resourceName="employment"
+        />
+        <MultiBadge items={employee?.schedules} resourceName="schedule" />
+        <MultiBadge items={employee?.jobs} resourceName="job" />
+      </ResourcePage>
+      <EmployeeCalendar employee={employee} />
+    </>
   )
 }
 
@@ -228,12 +233,11 @@ export const SchedulePage = () => {
         <EditableText value={schedule?.end} label="end" />
         <EditableText value={schedule?.deadline} label="deadline" />
         {/* <hr /> */}
-        {/* <MultiBadge items={schedule?.works} resourceName="work" disabled /> */}
         <MultiBadge items={schedule?.shifts} resourceName="shift" />
         <MultiBadge items={schedule?.employees} resourceName="employee" />
         <AsyncAllocateWorksButton schedule={schedule} className="me-3" />
       </ResourcePage>
-      <ScheduleCalendar schedule={schedule} className="my-3" />
+      <ScheduleCalendar schedule={schedule} />
     </>
   )
 }

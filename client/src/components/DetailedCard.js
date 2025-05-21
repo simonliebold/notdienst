@@ -33,10 +33,8 @@ const DetailedCard = ({
   const [expanded, setExpanded] = useState(true)
 
   useEffect(() => {
-    if (resourceName === "schedule" && resource?.works?.length === 0)
-      setExpanded(true)
-    if (resourceName === "schedule" && resource?.works?.length !== 0)
-      setExpanded(false)
+    if (resource?.works?.length === 0) setExpanded(true)
+    if (resource?.works?.length !== 0) setExpanded(false)
   }, [resource, resourceName])
 
   if (loading || saving)
@@ -69,8 +67,7 @@ const DetailedCard = ({
     <Card className={"text-decoration-none " + className}>
       <Card.Header
         onClick={(e) => {
-          if (resourceName === "schedule" && resource?.works?.length !== 0)
-            setExpanded(!expanded)
+          if (resource?.works?.length !== 0) setExpanded(!expanded)
         }}
         className="fs-6 m-0 d-flex align-items-center justify-content-between"
       >
@@ -84,7 +81,7 @@ const DetailedCard = ({
           {edit && " bearbeiten "}
         </div>
         {edit && <CloseButton onClick={onCloseRequest} />}
-        {!edit && resourceName === "schedule" && resource?.works?.length !== 0 && (
+        {!edit && resource?.works?.length !== 0 && (
           <ExpandButton expanded={expanded} />
         )}
       </Card.Header>
