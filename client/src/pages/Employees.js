@@ -193,13 +193,17 @@ const EmployeeModal = () => {
     >
       <Modal.Header closeButton>
         {isLoading && (
-          <Modal.Title>
+          <Placeholder
+            as={Modal.Title}
+            className="d-inline-flex"
+            animation="glow"
+          >
             <Placeholder as={Badge} className="text-primary me-2">
               <FontAwesomeIcon icon={faUser} className="me-1" />
               MUS
             </Placeholder>
             <Placeholder>Max Mustermann</Placeholder>
-          </Modal.Title>
+          </Placeholder>
         )}
         {!isLoading && (
           <Modal.Title>
@@ -213,7 +217,11 @@ const EmployeeModal = () => {
       </Modal.Header>
       <Modal.Body>
         <h2 className="fs-6">Name</h2>
-        {isLoading && <Placeholder disabled as={Form.Control} />}
+        {isLoading && (
+          <Placeholder as="p" animation="glow">
+            <Placeholder disabled as={Form.Control} />
+          </Placeholder>
+        )}
         {!isLoading && (
           <Form.Control
             defaultValue={employee.name}
@@ -221,7 +229,11 @@ const EmployeeModal = () => {
           />
         )}
         <h2 className="fs-6 mt-3">Kürzel</h2>
-        {isLoading && <Placeholder disabled as={Form.Control} />}
+        {isLoading && (
+          <Placeholder as="p" animation="glow">
+            <Placeholder disabled as={Form.Control} />
+          </Placeholder>
+        )}
         {!isLoading && (
           <Form.Control
             defaultValue={employee.initials}
@@ -229,7 +241,11 @@ const EmployeeModal = () => {
           />
         )}
         <h2 className="fs-6 mt-3">Anstellungsverhältnis</h2>
-        {isLoading && <Placeholder disabled as={Form.Control} />}
+        {isLoading && (
+          <Placeholder as="p" animation="glow">
+            <Placeholder disabled as={Form.Control} />
+          </Placeholder>
+        )}
         {!isLoading && (
           <Select
             defaultValue={{
@@ -244,7 +260,11 @@ const EmployeeModal = () => {
           />
         )}
         <h2 className="fs-6 mt-3">Jobs</h2>
-        {isLoading && <Placeholder disabled as={Form.Control} />}
+        {isLoading && (
+          <Placeholder as="p" animation="glow">
+            <Placeholder disabled as={Form.Control} />
+          </Placeholder>
+        )}
         {!isLoading && (
           <Select
             defaultValue={employee.jobs.map((job) => {
@@ -265,7 +285,9 @@ const EmployeeModal = () => {
           />
         )}
         {isLoading && (
-          <Placeholder.Button className="mt-3">Speichern</Placeholder.Button>
+          <Placeholder as="p" animation="glow">
+            <Placeholder.Button className="mt-3">Speichern</Placeholder.Button>
+          </Placeholder>
         )}
         {!isLoading && (
           <Button
@@ -279,7 +301,7 @@ const EmployeeModal = () => {
         )}
         <hr />
         <h2 className="fs-6 mt-3">Arbeitsplanung</h2>
-        {(works.length === 0) && (
+        {(isLoading || works.length === 0) && (
           <Alert variant="secondary">Keine aktuellen Schichten gefunden</Alert>
         )}
         <Row className="g-3" xs={1} lg={2}>
@@ -326,7 +348,6 @@ function Employees() {
       if (response.data.employees) setEmployees(response.data.employees)
       else addAlert("Keine Mitarbeiter gefunden", "secondary")
     } catch (error) {
-      console.log(error)
       if (error.response.data.error) addAlert(error.response.data.error)
       if (error.response.status === 403) setToken(undefined)
     }
