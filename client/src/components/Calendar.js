@@ -58,7 +58,7 @@ function Calendar({ works, view, initialDate, ...props }) {
         eventClick={(e) => navigate("./../../works/" + e.event.id)}
         events={works.map((work) => {
           return {
-            id: work.id,
+            id: work._id,
             start: work.start,
             end: work.end,
             title: work.short,

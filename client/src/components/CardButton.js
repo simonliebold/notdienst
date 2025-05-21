@@ -147,12 +147,12 @@ export const AsyncAllocateWorksButton = ({
 
   const allocateWorks = useCallback(async () => {
     setLoading(true)
-    await allocate(schedule?.id)
+    await allocate(schedule?._id)
     await updateResource()
     setLoading(false)
   })
 
-  if (schedule?.works.length !== 0) return
+  if (schedule?.works?.length !== 0) return
 
   if (loading)
     return (

@@ -227,12 +227,6 @@ export const SchedulePage = () => {
       >
         <EditableText value={schedule?.short} label="short" />
         <EditableText value={schedule?.title} label="title" />
-        <EditableText value={schedule?.start} label="start" />
-        <EditableText value={schedule?.end} label="end" />
-        <EditableText value={schedule?.deadline} label="deadline" />
-        {/*  */}
-        <MultiBadge items={schedule?.shifts} resourceName="shift" />
-        <MultiBadge items={schedule?.employees} resourceName="employee" />
         <AsyncAllocateWorksButton schedule={schedule} className="me-3" />
       </ResourcePage>
       <ScheduleCalendar schedule={schedule} />

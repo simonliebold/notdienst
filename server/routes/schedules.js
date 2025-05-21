@@ -16,6 +16,14 @@ module.exports = () => {
   router.get("/:id", roles.requireAdmin, async (req, res, next) => {
     const schedule = await Schedule.aggregate([
       { $match: { _id: new mongoose.Types.ObjectId(req.params.id) } },
+      {
+        $lookup: {
+          from: "works",
+          localField: "_id",
+          foreignField: "scheduleId",
+          as: "works",
+        },
+      },
     ]).catch(next)
     if (!schedule) return next(new Error("Nicht gefunden"))
     return res.send(schedule[0])

@@ -147,9 +147,6 @@ export function SchedulesPage() {
     <ResourcesPage resources={schedules} resourceName="schedule">
       <EditableText label="short" />
       <EditableText label="title" />
-      <EditableText label="start" />
-      <EditableText label="end" />
-      <EditableText label="deadline" />
     </ResourcesPage>
   )
 }
