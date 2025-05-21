@@ -47,7 +47,7 @@ module.exports = (sequelize) => {
         type: Sequelize.INTEGER,
         allowNull: true,
         set(value) {
-          if (value == "") this.setDataValue("maxHours", null)
+          if (value == "" || isNaN(value)) this.setDataValue("maxHours", null)
           else this.setDataValue("maxHours", value)
         },
       },

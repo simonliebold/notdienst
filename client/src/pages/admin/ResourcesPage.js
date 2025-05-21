@@ -13,6 +13,7 @@ import { useNavigate } from "react-router-dom"
 function ResourcesPage({ resourceName, resources, children }) {
   const [showCreateNewPopup, setShowCreateNewPopup] = useState(false)
   const [input, setInput] = useState(null)
+  const [creating, setCreating] = useState(false)
   const navigate = useNavigate()
   const create = useResourceCreate(resourceName + "s")
 
@@ -59,14 +60,15 @@ function ResourcesPage({ resourceName, resources, children }) {
         onConfirm={onCreateConfirm}
         resourceName={resourceName}
         show={showCreateNewPopup}
+        creating={creating}
       >
         {React.Children.map(children, (child) => {
           if (React.isValidElement(child))
             return React.cloneElement(child, {
               onInput,
               className: "mb-3",
-              edit: true,
               value: "",
+              edit: true,
             })
         })}
       </CreateNewPopup>
@@ -92,10 +94,12 @@ export const EmployeesPage = () => {
 export function EmploymentsPage() {
   const [employments] = useResource("employments")
   return (
-    <ResourcesPage
-      resources={employments}
-      resourceName="employment"
-    ></ResourcesPage>
+    <ResourcesPage resources={employments} resourceName="employment">
+      <EditableText label="short" />
+      <EditableText label="title" />
+      <EditableText label="minHours" />
+      <EditableText label="maxHours" />
+    </ResourcesPage>
   )
 }
 

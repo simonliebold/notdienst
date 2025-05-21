@@ -11,6 +11,7 @@ import React from "react"
 import Button from "react-bootstrap/esm/Button"
 import { Link } from "react-router-dom"
 import { title, titles } from "../variables"
+import Spinner from "react-bootstrap/esm/Spinner"
 
 function CardButton({ icon, children, ...props }) {
   return (
@@ -81,14 +82,17 @@ export const CreateNewButton = ({ resourceName, ...props }) => {
     </CardButton>
   )
 }
+// TODO: disabled when creating, 
 export const ConfirmCreateNewButton = ({
   resource,
   resourceName,
+  creating,
   ...props
 }) => {
   return (
-    <CardButton variant="primary" icon={faPlus} {...props}>
-      {title[resourceName] + " erstellen"}
+    <CardButton variant="primary" icon={faPlus} disabled={creating} {...props}>
+      {creating && "Erstellt..."}
+      {!creating && title[resourceName] + " erstellen"}
     </CardButton>
   )
 }

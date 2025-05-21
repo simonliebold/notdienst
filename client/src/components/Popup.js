@@ -89,6 +89,7 @@ export const CreateNewPopup = ({
   resourceName,
   onClose,
   onConfirm,
+  creating,
   children,
   ...props
 }) => {
@@ -105,6 +106,7 @@ export const CreateNewPopup = ({
             onClick={onConfirm}
             resource={resource}
             resourceName={resourceName}
+            creating={creating}
             // disabled={disabled}
           />
         </>
