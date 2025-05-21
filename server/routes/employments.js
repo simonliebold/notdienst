@@ -10,8 +10,10 @@ module.exports = (models) => {
   // Get one
   router.get("/:id", async (req, res) => {
     const employment = await models.Employment.findByPk(req.params.id)
-    if (employment === null) res.status(404).send({ message: "Not found" })
-    else res.send(employment)
+    if (employment === null) return res.status(404).send({ message: "Anstellungsverhältnis nicht gefunden" })
+    
+    const employees = await models.Employee.findAll({where: {employmentId: req.params.id}})
+    return res.send({...employment.dataValues, employees})
   })
 
   // Create one

@@ -31,14 +31,20 @@ const DetailedCard = ({ resource, resourceName, children }) => {
 }
 
 export const EmploymentDetailedCard = ({ employment }) => {
-  // const { } = employment || {}
+
+  const hourString = (hours) => {
+    if (hours) {
+      if (hours === 1) return "1 Stunde"
+      return hours + " Stunden"
+    }
+    return "Kein Wert gesetzt"
+  }
 
   return (
     <DetailedCard resourceName="employment" resource={employment}>
-      Minimum: {employment?.minHours}{" "}
-      {employment?.minHours === null && "Kein Datum gefunden"}
+      Minimum: {hourString(employment?.minHours)}
       <br />
-      Maximum: {employment?.maxHours}
+      Maximum: {hourString(employment?.maxHours)}
     </DetailedCard>
   )
 }
