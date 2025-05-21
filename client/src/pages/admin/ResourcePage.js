@@ -34,16 +34,14 @@ function ResourcePage({ resourceName, setData, children }) {
   const save = useResourceUpdate(resourceName + "s/" + id)
   const navigate = useNavigate()
   const onSaveRequest = useCallback(async () => {
-    ;(async () => {
-      setSaving(true)
-      await save(input)
-      setSaving(false)
-      setLoading(true)
-      await updateResource()
-      setInput({})
-      setEdit(false)
-      setLoading(false)
-    })()
+    setSaving(true)
+    await save(input)
+    setSaving(false)
+    setLoading(true)
+    await updateResource()
+    setInput({})
+    setEdit(false)
+    setLoading(false)
   }, [input, navigate, save, updateResource])
 
   const [edit, setEdit] = useState(false)
@@ -70,7 +68,11 @@ function ResourcePage({ resourceName, setData, children }) {
       >
         {React.Children.map(children, (child) => {
           if (React.isValidElement(child))
-            return React.cloneElement(child, { onInput, className: "mb-3", edit })
+            return React.cloneElement(child, {
+              onInput,
+              className: "mb-3",
+              edit,
+            })
         })}
       </DetailedCard>
     </>

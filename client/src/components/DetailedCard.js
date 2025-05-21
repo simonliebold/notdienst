@@ -41,7 +41,7 @@ const DetailedCard = ({
               className="me-2"
             ></Spinner>
             {saving && "Speichert..."}
-            {loading && "Lädt..."}
+            {loading && "Aktualisiert..."}
           </Placeholder.Button>
         </Card.Footer>
       </Card>
