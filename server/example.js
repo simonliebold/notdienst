@@ -180,4 +180,9 @@ module.exports = async (models) => {
     { type: "Seminar / Ausbildung", date: new Date(), scheduleId: 1, employeeId: 1 },
     { type: "Urlaub", date: new Date(), scheduleId: 1, employeeId: 1 },
   ])
+
+  await models.Mission.bulkCreate([
+    {title: "Arzt aufgenommen", km: 255090, time: new Date(), workId: 1, employeeId: 1},
+    {title: "Arzt abgeliefert", km: 255168, time: new Date(), workId: 1, employeeId: 1}
+  ])
 }

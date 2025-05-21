@@ -4,7 +4,7 @@ import {
   faCalendarDay,
   faCar,
   faClock,
-  faCode,
+  faFileLines,
   faHashtag,
   faRepeat,
   faTable,
@@ -20,6 +20,7 @@ export const icons = {
   job: faCar,
   freetime: faTable,
   rrule: faRepeat,
+  mission: faFileLines,
   default: faHashtag,
 }
 
@@ -32,6 +33,7 @@ export const titles = {
   job: "Jobs",
   freetime: "Dienstplanwünsche",
   rrule: "Wiederholungsmuster",
+  mission: "Einsatz",
   default: "Objekte",
 }
 
@@ -44,6 +46,7 @@ export const title = {
   job: "Job",
   freetime: "Dienstplanwunsch",
   rrule: "Wiederholungsmuster",
+  mission: "Einsätze",
   default: "Objekt",
 }
 

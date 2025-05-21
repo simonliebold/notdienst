@@ -41,6 +41,10 @@ module.exports = (db) => {
   Work.belongsToMany(Employee, { through: "works_employees" })
   Employee.belongsToMany(Work, { through: "works_employees" })
 
+  const Mission = require("./models/Mission")(sequelize)
+  Mission.belongsTo(Work)
+  Mission.belongsTo(Employee)
+
   return {
     Employee,
     Job,
@@ -55,5 +59,6 @@ module.exports = (db) => {
     ScheduleShift,
     ScheduleEmployee,
     WorkEmployee,
+    Mission
   }
 }
