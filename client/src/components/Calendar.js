@@ -32,6 +32,8 @@ const event = (arg) => {
 function Calendar({ works, view, initialDate, ...props }) {
   const navigate = useNavigate()
 
+  const [lastDate, setLastDate] = useState(new Date())
+
   const initialView = useCallback(() => {
     if (window.innerWidth < 992) {
       return view || "listDay"
@@ -47,6 +49,9 @@ function Calendar({ works, view, initialDate, ...props }) {
       <FullCalendar
         //   {...props}
         plugins={[timeGridPlugin, listPlugin]}
+        datesSet={(dateInfo) => {
+          setLastDate(new Date(dateInfo.end))
+        }}
         initialView={initialView()}
         headerToolbar={{
           right: "prev,next",
@@ -112,7 +117,9 @@ export const EmployeeCalendar = ({ employee, ...props }) => {
     <Calendar
       works={employee.works}
       view="listMonth"
-      initialDate={new Date()}
+      initialDate={
+        new Date(employee.works[employee.works.length - 1].start) || new Date()
+      }
       className="my-3"
       {...props}
     />
