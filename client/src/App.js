@@ -48,113 +48,109 @@ function App() {
     </Prot>
   )
 
-  const works = (
-    <Prot>
-      <WorksPage />
-    </Prot>
-  )
+  const resources = {
+    works: (
+      <Prot>
+        <WorksPage />
+      </Prot>
+    ),
+    employees: (
+      <Prot>
+        <EmployeesPage />
+      </Prot>
+    ),
+    employments: (
+      <Prot>
+        <EmploymentsPage />
+      </Prot>
+    ),
+    freetimes: (
+      <Prot>
+        <FreetimesPage />
+      </Prot>
+    ),
+    jobs: (
+      <Prot>
+        <JobsPage />
+      </Prot>
+    ),
+    rrules: (
+      <Prot>
+        <RrulesPage />
+      </Prot>
+    ),
+    schedules: (
+      <Prot>
+        <SchedulesPage />
+      </Prot>
+    ),
+    shifts: (
+      <Prot>
+        <ShiftsPage />
+      </Prot>
+    ),
+    missions: (
+      <Prot>
+        <MissionsPage />
+      </Prot>
+    ),
+  }
 
-  const employees = (
-    <Prot>
-      <EmployeesPage />
-    </Prot>
-  )
+  const resource = {
+    schedule: (
+      <Prot>
+        <SchedulePage />
+      </Prot>
+    ),
 
-  const employments = (
-    <Prot>
-      <EmploymentsPage />
-    </Prot>
-  )
+    freetime: (
+      <Prot>
+        <FreetimePage />
+      </Prot>
+    ),
 
-  const freetimes = (
-    <Prot>
-      <FreetimesPage />
-    </Prot>
-  )
+    work: (
+      <Prot>
+        <WorkPage />
+      </Prot>
+    ),
 
-  const jobs = (
-    <Prot>
-      <JobsPage />
-    </Prot>
-  )
+    shift: (
+      <Prot>
+        <ShiftPage />
+      </Prot>
+    ),
 
-  const rrules = (
-    <Prot>
-      <RrulesPage />
-    </Prot>
-  )
+    rrule: (
+      <Prot>
+        <RrulePage />
+      </Prot>
+    ),
 
-  const schedules = (
-    <Prot>
-      <SchedulesPage />
-    </Prot>
-  )
+    employee: (
+      <Prot>
+        <EmployeePage />
+      </Prot>
+    ),
 
-  const shifts = (
-    <Prot>
-      <ShiftsPage />
-    </Prot>
-  )
+    job: (
+      <Prot>
+        <JobPage />
+      </Prot>
+    ),
 
-  const missions = (
-    <Prot>
-      <MissionsPage />
-    </Prot>
-  )
+    employment: (
+      <Prot>
+        <EmploymentPage />
+      </Prot>
+    ),
 
-  const schedule = (
-    <Prot>
-      <SchedulePage />
-    </Prot>
-  )
-
-  const freetime = (
-    <Prot>
-      <FreetimePage />
-    </Prot>
-  )
-
-  const work = (
-    <Prot>
-      <WorkPage />
-    </Prot>
-  )
-
-  const shift = (
-    <Prot>
-      <ShiftPage />
-    </Prot>
-  )
-
-  const rrule = (
-    <Prot>
-      <RrulePage />
-    </Prot>
-  )
-
-  const employee = (
-    <Prot>
-      <EmployeePage />
-    </Prot>
-  )
-
-  const job = (
-    <Prot>
-      <JobPage />
-    </Prot>
-  )
-
-  const employment = (
-    <Prot>
-      <EmploymentPage />
-    </Prot>
-  )
-
-  const mission = (
-    <Prot>
-      <MissionPage />
-    </Prot>
-  )
+    mission: (
+      <Prot>
+        <MissionPage />
+      </Prot>
+    ),
+  }
 
   return (
     <AuthProvider>
@@ -171,32 +167,32 @@ function App() {
               <Route path="" element={home} />
               <Route path="logout" element={logout} />
 
-              <Route path="schedules" element={schedules} />
-              <Route path="schedules/:id" element={schedule} />
+              <Route path="schedules" element={resources.schedules} />
+              <Route path="schedules/:id" element={resource.schedule} />
 
-              <Route path="freetimes" element={freetimes} />
-              <Route path="freetimes/:id" element={freetime} />
+              <Route path="freetimes" element={resources.freetimes} />
+              <Route path="freetimes/:id" element={resource.freetime} />
 
-              <Route path="works" element={works} />
-              <Route path="works/:id" element={work} />
+              <Route path="works" element={resources.works} />
+              <Route path="works/:id" element={resource.work} />
 
-              <Route path="shifts" element={shifts} />
-              <Route path="shifts/:id" element={shift} />
+              <Route path="shifts" element={resources.shifts} />
+              <Route path="shifts/:id" element={resource.shift} />
 
-              <Route path="rrules" element={rrules} />
-              <Route path="rrules/:id" element={rrule} />
+              <Route path="rrules" element={resources.rrules} />
+              <Route path="rrules/:id" element={resource.rrule} />
 
-              <Route path="employees" element={employees} />
-              <Route path="employees/:id" element={employee} />
+              <Route path="employees" element={resources.employees} />
+              <Route path="employees/:id" element={resource.employee} />
 
-              <Route path="jobs" element={jobs} />
-              <Route path="jobs/:id" element={job} />
+              <Route path="jobs" element={resources.jobs} />
+              <Route path="jobs/:id" element={resource.job} />
 
-              <Route path="employments" element={employments} />
-              <Route path="employments/:id/" element={employment} />
+              <Route path="employments" element={resources.employments} />
+              <Route path="employments/:id/" element={resource.employment} />
 
-              <Route path="missions" element={missions} />
-              <Route path="missions/:id/" element={mission} />
+              <Route path="missions" element={resources.missions} />
+              <Route path="missions/:id/" element={resource.mission} />
             </Routes>
           </div>
         </Container>
