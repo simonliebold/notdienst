@@ -101,7 +101,7 @@ export const EmployeePage = () => {
           edit={edit}
           disabled
         />
-        <CredentialsTokenPopup employee={employee} />
+        {/* <CredentialsTokenPopup employee={employee} /> */}
         {/* <ContainsItems resources={employee?.freetimes} resourceName="freetime" /> */}
       </DetailedCard>
       <EmployeeCalendar employee={employee} />
