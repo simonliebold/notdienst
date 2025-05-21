@@ -19,7 +19,7 @@ const EditableText = ({ value, label, onInput, className, edit }) => {
     return (
       <FloatingLabel label={labels[label]} className={"mb-3 " + className}>
         <Form.Control
-          placeholder=""
+          placeholder={labels[label]}
           value={input}
           onChange={onChange}
         ></Form.Control>
