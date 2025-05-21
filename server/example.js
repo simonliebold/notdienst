@@ -1,5 +1,5 @@
 module.exports = async (models) => {
-  const jobs = [
+  let jobs = [
     { short: "ÄNOD", title: "ÄNoD Fahrer/-in" },
     { short: "EZ", title: "EZ Dispo" },
     { short: "MTD / HNR Fahrer/-in", title: "MTD / HNR Fahrer/-in" },
@@ -9,22 +9,22 @@ module.exports = async (models) => {
     { short: "NFS", title: "Notfallsanitäter" },
   ]
 
-  await models.Job.bulkCreate(jobs)
+  jobs = await models.Job.bulkCreate(jobs)
 
   const employments = [
     {
       title: "Minijob",
-      short: "MINI",
+      short: "MINIJOB",
       maxHours: 40,
     },
     {
       title: "Teilzeit",
-      short: "TEIL",
+      short: "TEILZEIT",
       minHours: 80,
     },
     {
       title: "Vollzeit",
-      short: "VOLL",
+      short: "VOLLZEIT",
       minHours: 160,
       maxHours: 180,
     },
@@ -101,14 +101,14 @@ module.exports = async (models) => {
     })
   )
 
-  // await models.JobEmployee.bulkCreate(
-  //   employees.map((employee) => {
-  //     return {
-  //       jobId: 1,
-  //       employeeId: employee.id,
-  //     }
-  //   })
-  // )
+  await models.JobEmployee.bulkCreate(
+    jobs.map((job) => {
+      return {
+        jobId: job.id,
+        employeeId: 1,
+      }
+    })
+  )
 
   await models.ScheduleEmployee.bulkCreate(
     employees.map((employee) => {
@@ -144,9 +144,4 @@ module.exports = async (models) => {
   //     employeeId: i,
   //   })
   // }
-  // await models.ScheduleEmployee.bulkCreate(
-  //   employees.map((employee) => {
-  //     return { scheduleId: 1, employeeId: employee.id }
-  //   })
-  // )
 }

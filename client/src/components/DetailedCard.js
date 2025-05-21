@@ -31,7 +31,7 @@ const DetailedCard = ({ resource, resourceName, children }) => {
 }
 
 export const EmployeeDetailedCard = ({ employee }) => {
-  const { works, employment } = employee || {}
+  const { employment, works, schedules, jobs, fgvhbj } = employee || {}
 
   return (
     <DetailedCard resourceName="employee" resource={employee}>
@@ -40,7 +40,13 @@ export const EmployeeDetailedCard = ({ employee }) => {
       <hr />
       Dienste:
       <MultiBadge items={works} resourceName="work" />
-      {/* <hr /> */}
+      <hr />
+      Schichtpläne:
+      <MultiBadge items={schedules} resourceName="schedule" />
+      <hr />
+      Jobs:
+      <MultiBadge items={jobs} resourceName="job" />
+      
     </DetailedCard>
   )
 }

@@ -2,8 +2,11 @@ import {
   faBriefcase,
   faCalendar,
   faCalendarDay,
+  faCar,
   faClock,
   faHashtag,
+  faHouseMedical,
+  faKitMedical,
   faUser,
 } from "@fortawesome/free-solid-svg-icons"
 
@@ -13,6 +16,7 @@ export const icons = {
   work: faBriefcase,
   employment: faClock,
   shift: faCalendarDay,
+  job: faCar,
   default: faHashtag,
 }
 
