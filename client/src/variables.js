@@ -43,7 +43,6 @@ export const selectStyles = {
   control: (provided, state) => ({
     ...provided,
     backgroundColor: "transparent",
-    // className: "primary text-primary",
     border: state.isFocused ? "1px solid #11306F" : "1px solid #6C757D",
     "&:hover": {
       border: state.isFocused ? "1px solid #11306F" : "1px solid #6C757D",
@@ -53,14 +52,13 @@ export const selectStyles = {
     ...provided,
     backgroundColor: "transparent",
     color: "black",
-    // color: state.isSelected ? "white" : "black",
     "&:hover": {
-      backgroundColor: "lightgray", // Hintergrundfarbe im Hover-Zustand ändern
-      color: "black", // Textfarbe im Hover-Zustand ändern
+      backgroundColor: "lightgray",
+      color: "black",
     },
     "&:selected": {
-      backgroundColor: "lightgray", // Hintergrundfarbe im Hover-Zustand ändern
-      color: "black", // Textfarbe im Hover-Zustand ändern
+      backgroundColor: "lightgray",
+      color: "black",
     },
   }),
 }
