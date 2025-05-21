@@ -21,7 +21,8 @@ function Breadcrumb({ resourceName, resource }) {
           {titles[resourceName]}
         </BootstrapBreadcrumb.Item>
         <BootstrapBreadcrumb.Item>
-          <Badge resource={resource} resourceName={resourceName} />
+          {resource && resource?.title}
+          {/* <Badge resource={resource} resourceName={resourceName} /> */}
         </BootstrapBreadcrumb.Item>
       </BootstrapBreadcrumb>
       {/* <hr /> */}
