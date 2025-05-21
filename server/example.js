@@ -188,9 +188,9 @@ module.exports = async (models) => {
 
   await models.Mission.bulkCreate([
     {
-      title: "Arzt aufgenommen",
+      type: "Arzt aufgenommen",
       km: 255090,
-      time: new Date(),
+      time: new Date("2024-01-17 20:00:00"),
       workId: 1,
       employeeId: 1,
     },
@@ -198,7 +198,7 @@ module.exports = async (models) => {
       type: "Arzt abgeliefert",
       info: "Übergabe an der Wache an nächsten Fahrer",
       km: 255168,
-      time: new Date(),
+      time: new Date("2024-01-18 08:00:00"),
       workId: 1,
       employeeId: 1,
     },
