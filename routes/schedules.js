@@ -270,6 +270,8 @@ module.exports = (models, sequelize) => {
         if (timeStart[0] > timeEnd[0]) end.setDate(end.getDate() + 1)
         end.setHours(timeEnd[0], timeEnd[1], timeEnd[2])
 
+        const duration = (end.getTime() - start.getTime()) / 3600000
+
         let possibleEmployeeIds = []
         for (const [employeeId, employee] of Object.entries(event.employees)) {
           const isFree = req.employees[employeeId].freetimes.every(
@@ -278,9 +280,8 @@ module.exports = (models, sequelize) => {
               new Date(freetime.start).getTime() >= end.getTime()
           )
           if (isFree) {
-            const possibleHours = (end.getTime() - start.getTime()) / 3600000
+            req.employees[employeeId].possibleHours += duration
             possibleEmployeeIds.push(employeeId)
-            req.employees[employeeId].possibleHours += possibleHours
             // console.log(start, employeeId, possibleHours)
           }
         }
@@ -290,6 +291,7 @@ module.exports = (models, sequelize) => {
         works.push({
           start: start,
           end: end,
+          duration: duration,
           scheduleId: req.schedule.id,
           eventId: eventId,
         })
@@ -314,12 +316,63 @@ module.exports = (models, sequelize) => {
 
   // Order employees by possibleHours
   const orderEmployees = (req, res, next) => {
-    req.employees = Object.values(req.employees)
-    req.employees.sort((a, b) => {
-      if (a.possibleHours < b.possibleHours) return -1
-      else if (a.possibleHours > b.possibleHours) return 1
-      else return 0
-    })
+    // req.employees = Object.values(req.employees)
+    // req.employees.sort((a, b) => {
+    //   if (a.possibleHours < b.possibleHours) return -1
+    //   else if (a.possibleHours > b.possibleHours) return 1
+    //   else return 0
+    // })
+    next()
+  }
+
+  // TODO: check event requiredEmployees
+  // Find employees for work
+  const matchWorkEmployees = async (req, res, next) => {
+    while (req.works.length > 0) {
+      // for (let i = 0; i < 10; i++) console.log("###")
+      let firstIteration = true
+      let bestEmployee
+      let bestEmployeeRatio
+
+      req.works[0].employeeIds.forEach((employeeId) => {
+        const employee = req.employees[employeeId]
+        employee.possibleHours -= req.works[0].duration
+        const employeeRatio = employee.minHours - employee.workHours
+        // (employee.minHours - employee.workHours) / employee.possibleHours
+
+        if (
+          firstIteration ||
+          (employeeRatio > bestEmployeeRatio &&
+            employee.workHours + req.works[0].duration < employee.maxHours)
+        ) {
+          bestEmployee = employee
+          bestEmployeeRatio = employeeRatio
+          firstIteration = false
+        }
+      })
+      try {
+        await models.WorkEmployee.create({
+          workId: req.works[0].id,
+          employeeId: bestEmployee.id,
+        })
+        bestEmployee.workHours += req.works[0].duration
+        req.works.shift()
+      } catch (error) {
+        res.status(400).send({ error: error.message })
+        return
+      }
+    }
+    next()
+  }
+
+  const showDifference = async (req, res, next) => {
+    // for (employeeId in req.employees) {
+    //   console.log(
+    //     req.employees[employeeId].name,
+    //     req.employees[employeeId].workHours - req.employees[employeeId].minHours,
+    //     req.employees[employeeId].maxHours - req.employees[employeeId].workHours
+    //   )
+    // }
     next()
   }
   // TODO: order employees by (minHours - workHours) / possibleHours = (remaining hours / possible hours)
@@ -332,6 +385,8 @@ module.exports = (models, sequelize) => {
     getWorks,
     orderWorks,
     orderEmployees,
+    matchWorkEmployees,
+    showDifference,
     async (req, res) => {
       res.send({
         schedule: req.schedule,

@@ -212,28 +212,30 @@ module.exports = async (models) => {
     },
   ]
   const names = [
-    "Max Müller",
-    "Anna Schmidt",
-    "Michael Wagner",
-    "Laura Fischer",
-    "Markus Becker",
-    "Sarah Hoffmann",
-    "Julia Weber",
-    "Thomas Richter",
-    "Christine Lehmann",
-    "Sabine Keller",
-    "David Braun",
-    "Nicole Huber",
-    "Martin Wolf",
-    "Monika Herrmann",
-    "Peter Jung",
+    ["Max Müller", 1],
+    ["Anna Schmidt", 1],
+    ["Michael Wagner", 3],
+    ["Laura Fischer", 3],
+    ["Markus Becker", 2],
+    ["Sarah Hoffmann", 3],
+    ["Julia Weber", 2],
+    ["Thomas Richter", 2],
+    ["Christine Lehmann", 1],
+    ["Sabine Keller", 1],
+    ["David Braun", 1],
+    ["Nicole Huber", 2],
+    ["Martin Wolf", 2],
+    ["Monika Herrmann", 2],
+    ["Richard Krüger", 2],
+    ["Doris Landwehr", 2],
+    ["Peter Kurz", 2],
   ]
   const generateEmployees = () => {
     let employees = []
     for (let i = 0; i < names.length; i++) {
-      const name = names[i].split(" ")
+      const name = names[i][0].split(" ")
       const kuerzel = name[1].slice(0, 3).toUpperCase()
-      const employmentId = Math.floor(Math.random() * 3) + 1
+      const employmentId = names[i][1]
 
       const employeeData = {
         initials: kuerzel,
@@ -256,18 +258,18 @@ module.exports = async (models) => {
 
   await models.Employment.create({
     title: "Minijob",
-    minHours: 10,
+    minHours: 20,
     maxHours: 40,
   })
   await models.Employment.create({
     title: "Teilzeit",
     minHours: 80,
-    maxHours: 200,
+    maxHours: 100,
   })
   await models.Employment.create({
     title: "Vollzeit",
     minHours: 160,
-    maxHours: 200,
+    maxHours: 170,
   })
   const employees = await generateEmployees()
   for (const employee in employees) {
