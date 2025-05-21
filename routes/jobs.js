@@ -83,11 +83,10 @@ module.exports = (models) => {
 
   // Delete Employees from Job
   router.delete("/:id/employee", async (req, res) => {
-    const employeeIds = req.body.employeeIds.map((val) => {
-      return { employeeId: val }
-    })
-    console.log(employeeIds)
     try {
+      const employeeIds = req.body.employeeIds.map((val) => {
+        return { employeeId: val }
+      })
       const response = await models.JobEmployee.destroy({
         where: {
           [Op.and]: [
@@ -131,11 +130,10 @@ module.exports = (models) => {
 
   // Delete Shifts from Job
   router.delete("/:id/shift", async (req, res) => {
-    const shiftIds = req.body.shiftIds.map((val) => {
-      return { shiftId: val }
-    })
-    console.log(shiftIds)
     try {
+      const shiftIds = req.body.shiftIds.map((val) => {
+        return { shiftId: val }
+      })
       const response = await models.JobShift.destroy({
         where: {
           [Op.and]: [

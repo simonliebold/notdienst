@@ -6,6 +6,8 @@ const express = require("express")
 const app = express()
 app.use(express.json())
 
+// TODO: helmet
+
 // TODO: Add authentification
 
 const routes = require("./routes")(models)
@@ -18,7 +20,13 @@ app.listen(port, async () => {
   console.log("App listening on port " + port)
   try {
     await sequelize.authenticate()
-    console.log("Connection has been established successfully.")
+    console.log(
+      "Connected to database " +
+        process.env.DB_NAME +
+        " (" +
+        process.env.DB_HOST +
+        ") successfully"
+    )
   } catch (error) {
     console.error("Unable to connect to the database:", error)
   }
