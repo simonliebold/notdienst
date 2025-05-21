@@ -2,6 +2,7 @@ import React from "react"
 import Badge from "../../components/Badge"
 import { faHashtag, faUser } from "@fortawesome/free-solid-svg-icons"
 import TitleCard from "../../components/TitleCard"
+import DetailedCard from "../../components/DetailedCard"
 
 function Elements() {
   return (
@@ -12,7 +13,11 @@ function Elements() {
       </Badge>
       <h2>TitleCard</h2>
       <TitleCard
-        icon={faUser}
+        resource={{ id: 256, short: "OKT 2023", title: "Oktober 2023" }}
+        resourceName={"schedule"}
+      />
+      <h2>DetailedCard</h2>
+      <DetailedCard
         resource={{ id: 256, short: "OKT 2023", title: "Oktober 2023" }}
         resourceName={"schedule"}
       />

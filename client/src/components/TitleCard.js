@@ -3,7 +3,7 @@ import Card from "react-bootstrap/Card"
 import { Link } from "react-router-dom"
 import Badge from "./Badge"
 
-function TitleCard({ resource, resourceName, icon }) {
+function TitleCard({ resource, resourceName }) {
   const { id, short, title } = resource || {}
 
   return (
