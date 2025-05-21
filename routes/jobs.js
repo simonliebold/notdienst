@@ -1,3 +1,4 @@
+const { Op } = require("sequelize")
 module.exports = (models) => {
   const router = require("express").Router()
 
@@ -89,10 +90,12 @@ module.exports = (models) => {
   // Add Shift to Job
   router.post("/:id/shift", async (req, res) => {
     try {
-      const response = await models.JobShift.create({
-        jobId: req.params.id,
-        shiftId: req.body.shiftId,
-      })
+      const response = await models.JobShift.bulkCreate(
+        req.body.shiftIds.map((shiftId) => ({
+          jobId: req.params.id,
+          shiftId: shiftId,
+        }))
+      )
       res.send({ response: response })
     } catch (error) {
       res.status(400).send({ error: error })
@@ -101,9 +104,22 @@ module.exports = (models) => {
 
   // Delete Shift from Job
   router.delete("/:id/shift", async (req, res) => {
+    const shiftIds = req.body.shiftIds.map((val) => {
+      return {
+        shiftId: val,
+      }
+    })
+    console.log(shiftIds)
     try {
       const response = await models.JobShift.destroy({
-        where: { jobId: req.params.id, shiftId: req.body.shiftId },
+        where: {
+          [Op.and]: [
+            { jobId: req.params.id },
+            {
+              [Op.or]: [...shiftIds],
+            },
+          ],
+        },
       })
       response > 0
         ? res.status(200).send({ message: "Deleted successfully" })
