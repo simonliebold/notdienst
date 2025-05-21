@@ -30,12 +30,15 @@ function ResourcePage({ resourceName, setData, children }) {
   )
 
   // save data
+  const [saving, setSaving] = useState(false)
   const save = useResourceUpdate(resourceName + "s/" + id)
   const navigate = useNavigate()
   const onSaveRequest = useCallback(async () => {
     ;(async () => {
-      setLoading(true)
+      setSaving(true)
       await save(input)
+      setSaving(false)
+      setLoading(true)
       await updateResource()
       setInput({})
       setEdit(false)
@@ -58,6 +61,7 @@ function ResourcePage({ resourceName, setData, children }) {
         resourceName={resourceName}
         resource={resource}
         loading={loading}
+        saving={saving}
         onSaveRequest={onSaveRequest}
         edit={edit}
         onEditRequest={onEditRequest}

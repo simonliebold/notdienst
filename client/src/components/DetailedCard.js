@@ -16,13 +16,14 @@ const DetailedCard = ({
   children,
   className,
   loading = true,
+  saving = false,
   onSaveRequest,
   edit,
   onEditRequest,
   onCloseRequest,
 }) => {
   const { title } = resource || {}
-  if (loading)
+  if (loading || saving)
     return (
       <Card>
         <Placeholder as={Card.Header} animation="glow">
@@ -41,7 +42,8 @@ const DetailedCard = ({
               size={"sm"}
               className="me-2"
             ></Spinner>
-            Lädt...
+            {saving && "Speichert..."}
+            {loading && "Lädt..."}
           </Placeholder.Button>
         </Card.Footer>
       </Card>
