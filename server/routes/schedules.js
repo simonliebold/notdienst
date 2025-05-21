@@ -137,22 +137,19 @@ const createWorks = async (rrules, schedule) => {
 }
 
 const generateWorks = async (req, res, next) => {
-  const schedule = await getSchedule(req.params.id)
+  try {
+    const schedule = await getSchedule(req.params.id)
 
-  if (schedule.works.length > 0)
-    return res.status(400).send({ error: "Es existieren bereits Dienste" })
+    if (schedule.works.length > 0)
+      return res.status(400).send({ error: "Es existieren bereits Dienste" })
 
-  const rrules = await Rrule.find({})
+    const rrules = await Rrule.find({})
 
-  const works = await createWorks(rrules, schedule)
-
-  // if (!works)
-  //   return res.status(400).send({
-  //     error: "Es existieren bereits Dienste für diesen Schichtplan",
-  //   })
-
-  return res.send({ schedule, rrules, works })
-  next()
+    await createWorks(rrules, schedule)
+    next()
+  } catch (err) {
+    return next(err)
+  }
 }
 
 // Create works
