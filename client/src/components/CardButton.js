@@ -14,7 +14,7 @@ import {
   faX,
 } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import React, { useCallback, useState } from "react"
+import React, { useCallback, useEffect, useState } from "react"
 import Button from "react-bootstrap/esm/Button"
 import { Link } from "react-router-dom"
 import { icons, title, titles } from "../variables"
@@ -31,16 +31,10 @@ function CardButton({ icon, children, ...props }) {
   )
 }
 
-const LoadingButton = ({ children, loading, ...props }) => {
+const LoadingButton = ({ children, ...props }) => {
   return (
-    <Placeholder.Button>
-      <Spinner
-        animation="border"
-        role="status"
-        size={"sm"}
-        className="me-2"
-        {...props}
-      ></Spinner>
+    <Placeholder.Button {...props}>
+      <Spinner animation="border" role="status" size={"sm"} className="me-2" />
       {children}
     </Placeholder.Button>
   )
@@ -79,7 +73,9 @@ export const CardSaveButton = ({ ...props }) => {
   )
 }
 
-export const ConfirmDeleteButton = ({ resource, resourceName, ...props }) => {
+export const ConfirmDeleteButton = ({ deleting, ...props }) => {
+  if (deleting)
+    return <LoadingButton variant="danger">Löscht...</LoadingButton>
   return (
     <CardButton variant="danger" icon={faTrash} {...props}>
       Endgültig löschen

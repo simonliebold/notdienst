@@ -1,8 +1,9 @@
-import React, { useCallback, useState } from "react"
+import React, { useCallback, useEffect, useState } from "react"
 import FormControl from "react-bootstrap/FormControl"
 import Modal from "react-bootstrap/Modal"
 import {
   CancelButton,
+  CardDeleteButton,
   ConfirmCreateNewButton,
   ConfirmDeleteButton,
   CreateNewButton,
@@ -10,17 +11,9 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faPlus, faTrash, faX } from "@fortawesome/free-solid-svg-icons"
 import { title } from "../variables"
+import usePopup, { useDeletePopup } from "../hooks/usePopup"
 
-function Popup({
-  children,
-  title,
-  icon,
-  buttons,
-  show = false,
-  onClose,
-  onRequestShow,
-  ...props
-}) {
+function Popup({ children, title, icon, buttons, show, onClose, ...props }) {
   return (
     <Modal show={show} onHide={onClose} {...props}>
       <Modal.Header closeButton>
@@ -36,39 +29,23 @@ function Popup({
 }
 
 export const ConfirmDeletePopup = ({
-  onConfirm,
-  onClose,
   resource,
-  resourceName,
-  ...props
+  show,
+  close,
+  submit,
+  input,
+  onInput,
+  deleting,
 }) => {
-  const [disabled, setDisabled] = useState(true)
-  const [input, setInput] = useState("")
-
-  const onInput = useCallback(
-    (e) => {
-      const newInput = e.target.value.toUpperCase()
-      setInput(newInput)
-      if (newInput == resource?.short.toUpperCase()) setDisabled(false)
-      else setDisabled(true)
-    },
-    [resource, setDisabled]
-  )
-
   return (
     <Popup
-      {...props}
-      onClose={onClose}
+      show={show}
+      onClose={close}
       title="Endgültig löschen bestätigen"
       buttons={
         <>
-          <CancelButton onClick={onClose} />
-          <ConfirmDeleteButton
-            onClick={onConfirm}
-            resource={resource}
-            resourceName={resourceName}
-            disabled={disabled}
-          />
+          <CancelButton onClick={close} />
+          <ConfirmDeleteButton onClick={submit} deleting={deleting} />
         </>
       }
     >
@@ -83,6 +60,31 @@ export const ConfirmDeletePopup = ({
         onChange={onInput}
       ></FormControl>
     </Popup>
+  )
+}
+
+export const ConfirmDelete = ({ resource, resourceName }) => {
+  const [show, open, close, submit, deleting, input, onInput, disabled] =
+    useDeletePopup(resource, resourceName)
+
+  useEffect(() => {
+    console.log(deleting)
+  }, [deleting])
+
+  return (
+    <>
+      <ConfirmDeletePopup
+        resource={resource}
+        show={show}
+        close={close}
+        submit={submit}
+        disabled={disabled}
+        input={input}
+        onInput={onInput}
+        deleting={deleting}
+      />
+      <CardDeleteButton onClick={open} />
+    </>
   )
 }
 

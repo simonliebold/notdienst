@@ -31,7 +31,7 @@ export const useResourceUpdate = (resourceUrl) => {
   const handleError = useErrorMessage()
   const handleSuccess = useSuccessMessage()
 
-  const [loading, setLoading] = useState(true)
+  const [loading, setLoading] = useState(false)
 
   const update = useCallback(
     async (updatedData) => {
@@ -61,19 +61,22 @@ export const useResourceUpdate = (resourceUrl) => {
 export const useResourceDelete = (resourceUrl) => {
   const handleError = useErrorMessage()
   const handleSuccess = useSuccessMessage()
+  const [loading, setLoading] = useState(false)
 
   const destroy = useCallback(async () => {
+    setLoading(true)
     const response = await axios
       .delete(process.env.REACT_APP_URL + resourceUrl)
       .catch(handleError)
     if (process.env.NODE_ENV === "development")
       console.log("useResourceDelete:", resourceUrl, response?.data?.message)
 
+    setLoading(false)
     // handleSuccess(response?.data?.message)
     return response?.data?.message
   }, [handleError, handleSuccess, resourceUrl])
 
-  return destroy
+  return [destroy, loading]
 }
 
 export const useResourceCreate = (resourceUrl) => {

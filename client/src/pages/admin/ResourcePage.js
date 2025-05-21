@@ -24,88 +24,73 @@ import Calendar, {
   ScheduleCalendar,
 } from "../../components/Calendar"
 import { AsyncAllocateWorksButton } from "../../components/CardButton"
+import useResourcePage from "../../hooks/useResourcePage"
 
-function ResourcePage({ resourceName, setData, buttons, children }) {
-  const navigate = useNavigate()
+function ResourcePage({ resourceName, buttons, children }) {
+  return (
+    <div></div>
+    // <Breadcrumb resourceName={resourceName} resource={resource} />
+    // <ConfirmDeletePopup
+    //   show={showConfirmDeletePopup}
+    //   onConfirm={onDeleteConfirm}
+    //   onClose={onDeleteClose}
+    //   resource={resource}
+    //   resourceName={resourceName}
+    // >
+    //   Bist du sicher, dass du das löschen möchtest?
+    // </ConfirmDeletePopup>
+    // <DetailedCard
+    //   resourceName={resourceName}
+    //   resource={resource}
+    //   loading={loading}
+    //   saving={saving}
+    //   onSaveRequest={onSaveRequest}
+    //   edit={edit}
+    //   onEditRequest={onEditRequest}
+    //   onCloseRequest={onCloseRequest}
+    //   onDeleteRequest={onDeleteRequest}
+    // >
 
-  // fetch data
-  const { id } = useParams()
-  const [resource, updateResource] = useResource(resourceName + "s/" + id)
-  const [loading, setLoading] = useState(true)
-
-  useEffect(() => {
-    setData(resource)
-    if (resource) setLoading(false)
-    else setLoading(true)
-  }, [resource, setData])
-
-  // control input data
-  const [input, setInput] = useState({})
-  const onInput = useCallback(
-    async (label, value) => {
-      if (process.env.NODE_ENV === "development")
-        console.log("INPUT", { ...input, [label]: value })
-      setInput({ ...input, [label]: value })
-    },
-    [input]
+    //   {/* {React.Children.map(children, (child) => {
+    //     if (React.isValidElement(child))
+    //       return React.cloneElement(child, {
+    //         onInput,
+    //         updateResource,
+    //         className: "mb-3",
+    //         edit,
+    //       })
+    //   })} */}
+    // </DetailedCard>
   )
+}
 
-  // save data
-  const [saving, setSaving] = useState(false)
-  const save = useResourceUpdate(resourceName + "s/" + id)
-  const onSaveRequest = useCallback(async () => {
-    setSaving(true)
-    await save(input)
-    setSaving(false)
-    setLoading(true)
-    await updateResource()
-    setInput({})
-    setEdit(false)
-    setLoading(false)
-  }, [input, save, updateResource])
+export const EmployeePage = () => {
+  // const [employee, setEmployee] = useState(null)
+  // const { employee: resource } = useResourcePage("employee", setEmployee)
 
-  const [edit, setEdit] = useState(false)
-  const onEditRequest = useCallback(() => {
-    setEdit(true)
-  }, [setEdit])
+  // return <ResourcePage resourceName="employee" />
 
-  const onCloseRequest = useCallback(() => {
-    setEdit(false)
-  }, [setEdit])
-
-  // popup delete
-  const destroy = useResourceDelete(resourceName + "s/" + id)
-  const [showConfirmDeletePopup, setShowConfirmDeletePopup] = useState(false)
-
-  const onDeleteRequest = useCallback(() => {
-    setShowConfirmDeletePopup(true)
-  }, [setShowConfirmDeletePopup])
-
-  const onDeleteConfirm = useCallback(async () => {
-    await destroy()
-    setShowConfirmDeletePopup(false)
-    navigate("./../")
-  }, [destroy])
-
-  const onDeleteClose = useCallback(() => {
-    setShowConfirmDeletePopup(false)
-  }, [setShowConfirmDeletePopup])
+  const {
+    resource: employee,
+    showConfirmDeletePopup,
+    onDeleteClose,
+    onDeleteRequest,
+    onDeleteConfirm,
+    loading,
+    saving,
+    onSaveRequest,
+    edit,
+    onEditRequest,
+    onCloseRequest,
+    onInput,
+    updateResource,
+  } = useResourcePage({ resourceName: "employee" })
 
   return (
-    <div>
-      <Breadcrumb resourceName={resourceName} resource={resource} />
-      <ConfirmDeletePopup
-        show={showConfirmDeletePopup}
-        onConfirm={onDeleteConfirm}
-        onClose={onDeleteClose}
-        resource={resource}
-        resourceName={resourceName}
-      >
-        Bist du sicher, dass du das löschen möchtest?
-      </ConfirmDeletePopup>
+    <>
       <DetailedCard
-        resourceName={resourceName}
-        resource={resource}
+        resourceName={"employee"}
+        resource={employee}
         loading={loading}
         saving={saving}
         onSaveRequest={onSaveRequest}
@@ -114,41 +99,46 @@ function ResourcePage({ resourceName, setData, buttons, children }) {
         onCloseRequest={onCloseRequest}
         onDeleteRequest={onDeleteRequest}
       >
-        {React.Children.map(children, (child) => {
-          if (React.isValidElement(child))
-            return React.cloneElement(child, {
-              onInput,
-              updateResource,
-              className: "mb-3",
-              edit,
-            })
-        })}
-      </DetailedCard>
-    </div>
-  )
-}
-
-export const EmployeePage = () => {
-  const [employee, setEmployee] = useState(null)
-  return (
-    <>
-      <ResourcePage resourceName="employee" setData={setEmployee}>
-        <EditableText value={employee?.short} label="short" />
-        <EditableText value={employee?.title} label="title" />
+        <EditableText
+          value={employee?.short}
+          label="short"
+          onInput={onInput}
+          updateResource={updateResource}
+          edit={edit}
+        />
+        <EditableText
+          value={employee?.title}
+          label="title"
+          onInput={onInput}
+          updateResource={updateResource}
+          edit={edit}
+        />
 
         <EditableBadge
           resource={employee?.employment}
           resourceName="employment"
+          onInput={onInput}
+          updateResource={updateResource}
+          edit={edit}
         />
-        <MultiBadge items={employee?.jobs} resourceName="job" />
+        <MultiBadge
+          items={employee?.jobs}
+          resourceName="job"
+          onInput={onInput}
+          updateResource={updateResource}
+          edit={edit}
+        />
         <MultiBadge
           items={employee?.freetimes}
           resourceName="freetime"
+          onInput={onInput}
+          updateResource={updateResource}
+          edit={edit}
           disabled
         />
         {/* <ContainsItems resources={employee?.freetimes} resourceName="freetime" /> */}
-      </ResourcePage>
-      <EmployeeCalendar employee={employee} />
+        <EmployeeCalendar employee={employee} />
+      </DetailedCard>
     </>
   )
 }
@@ -281,10 +271,26 @@ export const ExchangePage = () => {
     <ResourcePage resourceName="exchange" setData={setExchange}>
       <EditableText value={exchange?.short} label="short" />
       <EditableText value={exchange?.title} label="title" />
-      <MultiBadge items={exchange?.sender} resourceName="employee" customName="sender" />
-      <EditableBadge resource={exchange?.outgoing} resourceName="work" customName="outgoing" />
-      <MultiBadge items={exchange?.receiver} resourceName="employee" customName="receiver" />
-      <EditableBadge resource={exchange?.incoming} resourceName="work" customName="incoming" />
+      <MultiBadge
+        items={exchange?.sender}
+        resourceName="employee"
+        customName="sender"
+      />
+      <EditableBadge
+        resource={exchange?.outgoing}
+        resourceName="work"
+        customName="outgoing"
+      />
+      <MultiBadge
+        items={exchange?.receiver}
+        resourceName="employee"
+        customName="receiver"
+      />
+      <EditableBadge
+        resource={exchange?.incoming}
+        resourceName="work"
+        customName="incoming"
+      />
     </ResourcePage>
   )
 }

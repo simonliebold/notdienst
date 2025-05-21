@@ -14,6 +14,7 @@ import CardButton, {
 } from "./CardButton"
 import { Link } from "react-router-dom"
 import Button from "react-bootstrap/esm/Button"
+import { ConfirmDelete } from "./Popup"
 
 const DetailedCard = ({
   resource,
@@ -91,10 +92,7 @@ const DetailedCard = ({
           <Card.Footer className="d-flex justify-content-end align-items-center">
             {edit && (
               <>
-                <CardDeleteButton
-                  onClick={onDeleteRequest}
-                  className="me-auto"
-                />
+                <ConfirmDelete resource={resource} resourceName={resourceName} />
                 <CardSaveButton onClick={onSaveRequest} />
               </>
             )}
