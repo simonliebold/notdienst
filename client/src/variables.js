@@ -47,6 +47,11 @@ export const title = {
   default: "Objekt",
 }
 
+export const labels = {
+  short: "Kürzel",
+  title: "Name"
+}
+
 export const localeString = {
   country: "de-DE",
   default: {},

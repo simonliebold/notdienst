@@ -10,7 +10,8 @@ import Spinner from "react-bootstrap/Spinner"
 import Badge, { EditableBadge } from "./Badge"
 import MultiBadge from "./MultiBadge"
 import { CardDeleteButton, CardEditButton, CardSaveButton } from "./CardButton"
-import { localeString } from "../variables"
+import { labels, localeString } from "../variables"
+import EditableText from "./EditableText"
 
 const DetailedCard = ({ resource, resourceName, children, className }) => {
   const { title } = resource || {}
@@ -190,10 +191,18 @@ export const EmploymentDetailedCard = ({ employment }) => {
   )
 }
 export const EmployeeDetailedCard = ({ employee }) => {
-  const { employment, works, schedules, jobs } = employee || {}
+  const { short, title, employment, works, schedules, jobs } = employee || {}
+
+  const onInput = (label, value) => {
+    console.log(label, value);
+  };
 
   return (
     <DetailedCard resourceName="employee" resource={employee}>
+      <EditableText value={short} label="short" onInput={onInput} />
+      <hr />
+      <EditableText value={title} label="title" onInput={onInput} />
+      <hr />
       Anstellungsverhältnis: <br />
       <EditableBadge resource={employment} resourceName="employment" />
       <hr />

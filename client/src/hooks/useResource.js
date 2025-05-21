@@ -9,7 +9,8 @@ const useResource = (resourceUrl) => {
     const response = await axios
       .get(process.env.REACT_APP_URL + resourceUrl)
       .catch(handleError)
-    console.log(resourceUrl + ":", response?.data)
+    if (process.env.NODE_ENV === "development")
+      console.log(resourceUrl + ":", response?.data)
     setResource(response?.data)
   }
 
