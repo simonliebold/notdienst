@@ -21,7 +21,7 @@ module.exports = () => {
   // Create one
   router.post("/", roles.requireAdmin, async (req, res, next) => {
     const { short, title, maxHours, minHours } = req?.body || {}
-    const employee = new Employee({
+    const employee = new Employment({
       short,
       title,
       maxHours,

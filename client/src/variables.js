@@ -4,6 +4,7 @@ import {
   faCalendarDay,
   faCar,
   faClock,
+  faDatabase,
   faFileLines,
   faHashtag,
   faRecycle,
@@ -20,13 +21,14 @@ export const icons = {
   // employment: faClock,
   // shift: faCalendarDay,
   // job: faFileLines,
-  rrule: faRepeat,
-  employment: faHashtag,
-  shift: faHashtag,
-  job: faHashtag,
+  // rrule: faRepeat,
+  // employment: faHashtag,
+  // shift: faHashtag,
+  // job: faHashtag,
   freetime: faTable,
   mission: faCar,
-  default: faHashtag,
+  exchange: faRecycle,
+  default: faDatabase,
 }
 
 export const titles = {
@@ -68,7 +70,7 @@ export const labels = {
   deadline: "Deadline",
   time: "Zeitpunkt",
   km: "Kilometer",
-  info: "Zusätzliche Information"
+  info: "Zusätzliche Information",
 }
 
 export const localeString = {

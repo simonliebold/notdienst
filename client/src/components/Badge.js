@@ -63,16 +63,19 @@ export const EditableBadge = ({
           styles={selectStyles}
           getOptionLabel={(option) => (
             <>
-              <FontAwesomeIcon icon={option.icon} className="me-2" />
+              <FontAwesomeIcon
+                icon={icons[option.resourceName] || icons.default}
+                className="me-2"
+              />
               {option.label}
             </>
           )}
           defaultValue={{
+            resourceName: resourceName,
             label: resource?.short,
             value: resource?._id,
-            icon: icons[resourceName],
           }}
-          onChange={(item) => onInput(resourceName+"Id", item.value)}
+          onChange={(item) => onInput(resourceName + "Id", item.value)}
         />
       </div>
     )

@@ -178,8 +178,8 @@ export const JobPage = () => {
     <ResourcePage resourceName="job" setData={setJob}>
       <EditableText value={job?.short} label="short" />
       <EditableText value={job?.title} label="title" />
-      <MultiBadge items={job?.employees} resourceName="employee" />
-      <MultiBadge items={job?.shifts} resourceName="shift" />
+
+      <MultiBadge items={job?.employees} resourceName="employee" disabled />
     </ResourcePage>
   )
 }

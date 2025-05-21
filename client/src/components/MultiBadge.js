@@ -56,7 +56,10 @@ function MultiBadge({
           isMulti
           getOptionLabel={(option) => (
             <>
-              <FontAwesomeIcon icon={option.icon} className="me-2" />
+              <FontAwesomeIcon
+                icon={icons[option.resourceName] || icons.default}
+                className="me-2"
+              />
               {option.label}
             </>
           )}
@@ -64,12 +67,12 @@ function MultiBadge({
           noOptionsMessage={() => "Keine Optionen"}
           styles={selectStyles}
           options={options?.map((option) => ({
-            icon: icons[resourceName],
+            resourceName: resourceName,
             label: option.short,
             value: option._id,
           }))}
           defaultValue={items?.map((item) => ({
-            icon: icons[resourceName],
+            resourceName: resourceName,
             label: item.short,
             value: item._id,
           }))}
