@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useCallback, useState } from "react"
 import FullCalendar from "@fullcalendar/react"
 import deLocale from "@fullcalendar/core/locales/de"
 import timeGridPlugin from "@fullcalendar/timegrid"
@@ -8,49 +8,48 @@ import MultiBadge from "./MultiBadge"
 import { AsyncAllocateWorksButton } from "./CardButton"
 import { useNavigate } from "react-router-dom"
 
+const event = (arg) => {
+  const props = arg?.event?.extendedProps
+
+  return (
+    <div className="">
+      {props?.work?.title}
+      <br />
+      {props?.work?.employees?.map((employee) => {
+        return (
+          <Badge resource={employee} resourceName="employee" className="me-1" />
+        )
+      })}
+    </div>
+  )
+}
+
 function Calendar({ works, view, ...props }) {
   const navigate = useNavigate()
-
-  const eventContent = (arg) => {
-    // console.log(arg.event._def.extendProps.work)
-
-    const props = arg.event.extendedProps
-
-    return (
-      <div className="">
-        {props.work.title}
-        <br />
-        {props.work?.employees?.map((employee) => {
-          return (
-            <Badge
-              resource={employee}
-              resourceName="employee"
-              className="me-1"
-            />
-          )
-        })}
-      </div>
-    )
-  }
+  const initialView = useCallback(() => {
+    if (window.innerWidth < 992) {
+      return "listDay"
+    } else {
+      return "three"
+    }
+  }, [window.innerWidth])
 
   if (!works) return <MultiBadge resourceName="work" />
   return (
     <FullCalendar
       //   {...props}
       plugins={[timeGridPlugin, listPlugin]}
-      initialView={view ? view : "listWeek"}
+      initialView={initialView()}
       headerToolbar={{
         right: "prev,next",
         // left: "timeGridWeek,timeGridDay,listWeek",
-        //  center: "title",
-        // left: "",
       }}
-      // footerToolbar={
-      //   {
-      //     // right: "today,prev,next",
-      //     // center: "title",
-      //   }
-      // }
+      views={{
+        three: {
+          type: "timeGrid",
+          duration: { days: 3 },
+        },
+      }}
       buttonText={{
         today: "Heute",
         month: "Monat",
@@ -58,7 +57,7 @@ function Calendar({ works, view, ...props }) {
         day: "Tag",
         list: "Liste",
       }}
-      height={"80vh"}
+      height={"auto"}
       allDaySlot={false}
       eventClick={(e) => navigate("./../../works/" + e.event.id)}
       events={works.map((work) => {
@@ -73,7 +72,7 @@ function Calendar({ works, view, ...props }) {
         }
       })}
       locale="de"
-      eventContent={eventContent}
+      eventContent={event}
     />
   )
 }
