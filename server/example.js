@@ -36,17 +36,17 @@ module.exports = async (models) => {
 
   let employees = [
     { short: "BEC", title: "Markus Becker", employmentId: 1 },
-    { short: "KRÄ", title: "Emilia Krämer", employmentId: 3 },
-    { short: "KLU", title: "Antje Kluge", employmentId: 3 },
-    { short: "SCH", title: "Noah Schuster", employmentId: 3 },
-    { short: "KAI", title: "Lina Kaiser", employmentId: 3 },
+    { short: "KRÄ", title: "Emilia Krämer", employmentId: 1 },
+    { short: "KLU", title: "Antje Kluge", employmentId: 2 },
+    { short: "SCH", title: "Noah Schuster", employmentId: 2 },
+    { short: "KAI", title: "Lina Kaiser", employmentId: 2 },
     { short: "ZIM", title: "Adam Zimmermann", employmentId: 3 },
     { short: "SMT", title: "Carla Schmidt", employmentId: 3 },
     { short: "KÄS", title: "Wolfgang Kästner", employmentId: 3 },
     { short: "EGG", title: "Markus Egger", employmentId: 3 },
-    // { short: "BÄR", title: "Sebastian Bär", employmentId: 3 },
-    // { short: "WOL", title: "Jennifer Wolf", employmentId: 3 },
-    // { short: "SER", title: "Caroline Scherer", employmentId: 3 },
+    { short: "BÄR", title: "Sebastian Bär", employmentId: 3 },
+    { short: "WOL", title: "Jennifer Wolf", employmentId: 3 },
+    { short: "SER", title: "Caroline Scherer", employmentId: 3 },
   ]
 
   employees = await models.Employee.bulkCreate(employees)
@@ -154,42 +154,16 @@ module.exports = async (models) => {
     short: "JAN 24",
     start: "2024-01-01",
     end: "2024-01-31",
-    deadline: "2023-12-10 9:00",
+    deadline: "2023-12-11 9:00",
   })
 
-  // let works = [
-  //   {
-  //     start: new Date(2023, 12, 1, 10),
-  //     end: new Date(2023, 12, 1, 15),
-  //     scheduleId: 1,
-  //     rruleId: 1,
-  //   },
-  //   {
-  //     start: new Date(2023, 12, 1, 10),
-  //     end: new Date(2023, 12, 1, 15),
-  //     scheduleId: 1,
-  //     rruleId: 1,
-  //   },
-  //   {
-  //     start: new Date(2023, 12, 1, 10),
-  //     end: new Date(2023, 12, 1, 15),
-  //     scheduleId: 1,
-  //     rruleId: 1,
-  //   },
-  //   {
-  //     start: new Date(2023, 12, 1, 10),
-  //     end: new Date(2023, 12, 1, 15),
-  //     scheduleId: 1,
-  //     rruleId: 1,
-  //   },
-  // ]
-  // works = await models.Work.bulkCreate(works)
-
-  // await models.WorkEmployee.bulkCreate(
-  //   works.map((work) => {
-  //     return { workId: work.id, employeeId: 1 }
-  //   })
-  // )
+  await models.Schedule.create({
+    title: "Februar 2024",
+    short: "Feb 24",
+    start: "2024-02-01",
+    end: "2024-02-29",
+    deadline: "2024-01-11 9:00:00",
+  })
 
   await models.JobEmployee.bulkCreate(
     employees.map((employee) => {
@@ -206,9 +180,21 @@ module.exports = async (models) => {
     })
   )
 
+  await models.ScheduleEmployee.bulkCreate(
+    employees.map((employee) => {
+      return { scheduleId: 2, employeeId: employee.id }
+    })
+  )
+
   await models.ScheduleShift.bulkCreate(
     shifts.map((shift) => {
       return { scheduleId: 1, shiftId: shift.id }
+    })
+  )
+
+  await models.ScheduleShift.bulkCreate(
+    shifts.map((shift) => {
+      return { scheduleId: 2, shiftId: shift.id }
     })
   )
 

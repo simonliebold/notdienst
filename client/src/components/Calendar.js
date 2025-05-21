@@ -39,6 +39,18 @@ function Calendar({ works, view, ...props }) {
     }
   }, [window.innerWidth])
 
+  const initialDate = useCallback(() => {
+    const first = new Date(works[0]?.start).getTime()
+    const last = new Date(works[works.length-1]?.start).getTime()
+    const today = new Date().getTime()
+
+    if(today > last) return last
+    if(today < last && today > first) return today
+    return first
+
+    return 
+  }, [])
+
   if (!works) return <MultiBadge resourceName="work" />
   return (
     <div {...props}>
@@ -48,7 +60,6 @@ function Calendar({ works, view, ...props }) {
         initialView={initialView()}
         headerToolbar={{
           right: "prev,next",
-          // left: "timeGridWeek,timeGridDay,listWeek",
         }}
         views={{
           three: {
@@ -56,14 +67,8 @@ function Calendar({ works, view, ...props }) {
             duration: { days: 3 },
           },
         }}
-        // buttonText={{
-        //   today: "Heute",
-        //   month: "Monat",
-        //   week: "Woche",
-        //   day: "Tag",
-        //   list: "Liste",
-        // }}
         height={"auto"}
+        initialDate={initialDate()}
         allDaySlot={false}
         eventClick={(e) => navigate("./../../works/" + e.event.id)}
         events={works.map((work) => {
