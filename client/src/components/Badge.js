@@ -9,7 +9,7 @@ import useResource from "../hooks/useResource"
 import { icons, selectStyles, title } from "./../variables"
 import FloatingLabel from "react-bootstrap/esm/FloatingLabel"
 
-function Badge({ resource, resourceName, disabled, className }) {
+function Badge({ resource, resourceName, disabled, className, ...props }) {
   const { id, short } = resource || {}
   const { action } = useParams()
 
@@ -21,6 +21,7 @@ function Badge({ resource, resourceName, disabled, className }) {
       to={"/" + resourceName + "/" + id}
       className={className + " text-decoration-none w-auto"}
       bg={disabled || action === "edit" ? "secondary" : "primary"}
+      {...props}
     >
       {resource && <FontAwesomeIcon icon={icon} className="me-2" />}
       {short?.toString().toUpperCase()}
