@@ -6,11 +6,13 @@ import Badge, { EditableBadge } from "./Badge"
 import MultiBadge from "./MultiBadge"
 import { CardDeleteButton, CardEditButton, CardSaveButton } from "./CardButton"
 import { localeString } from "../variables"
-import { useParams } from "react-router-dom"
+import { Link, useNavigate, useParams } from "react-router-dom"
+import CloseButton from "react-bootstrap/CloseButton"
 
 const DetailedCard = ({ resource, resourceName, children, className }) => {
   const { id, short, title } = resource || {}
   const { action } = useParams()
+  const navigate = useNavigate()
   console.log(action)
 
   if (!resource)
@@ -40,16 +42,23 @@ const DetailedCard = ({ resource, resourceName, children, className }) => {
 
   return (
     <Card className={"text-decoration-none " + className}>
-      <Card.Header className="fs-6 m-0">
-        <Badge
-          resourceName={resourceName}
-          resource={resource}
-          className="me-2"
-        />
-        {title}
+      <Card.Header className="fs-6 m-0 d-flex align-items-center justify-content-between">
+        <div>
+          <Badge
+            resourceName={resourceName}
+            resource={resource}
+            className="me-2"
+          />
+          {title}
+        </div>
+        {action === "edit" && (
+          <CloseButton
+            onClick={(e) => navigate("/" + resourceName + "/" + resource.id)}
+          />
+        )}
       </Card.Header>
       <Card.Body>{children}</Card.Body>
-      <Card.Footer className="d-flex justify-content-end">
+      <Card.Footer className="d-flex justify-content-end align-items-center">
         {action === "edit" && (
           <>
             <CardDeleteButton
@@ -61,7 +70,9 @@ const DetailedCard = ({ resource, resourceName, children, className }) => {
           </>
         )}
         {action !== "edit" && (
-          <CardEditButton resource={resource} resourceName={resourceName} />
+          <>
+            <CardEditButton resource={resource} resourceName={resourceName} />
+          </>
         )}
       </Card.Footer>
     </Card>
