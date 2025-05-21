@@ -3,6 +3,7 @@ import Card from "react-bootstrap/Card"
 import { Link } from "react-router-dom"
 import Badge from "./Badge"
 
+// TODO: add loading state
 function TitleCard({ resource, resourceName, className }) {
   const { id, short, title } = resource || {}
 

@@ -13,6 +13,7 @@ const DetailedCard = ({ resource, resourceName, children }) => {
     return (
       <Card>
         <Placeholder as={Card.Header} animation="glow">
+          <Placeholder bg="secondary" xs={2} size="lg" className="me-2" />
           <Placeholder bg="secondary" xs={5} size="lg" />
         </Placeholder>
         <Placeholder as={Card.Body} animation="glow">
