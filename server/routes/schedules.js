@@ -7,6 +7,7 @@ const Rrule = require("../models/Rrule")
 const Work = require("../models/Work")
 const Employee = require("../models/Employee")
 const variables = require("./../variables")
+const { spawn } = require("child_process");
 
 const getSchedule = async (id) => {
   const schedules = await Schedule.aggregate([
@@ -455,16 +456,72 @@ const allocate = async (schedule) => {
   // return employees
 }
 
-// Allocate works
 router.post("/:id/allocate", roles.requireAdmin, async (req, res, next) => {
   try {
-    const schedule = await getSchedule(req.params.id)
-    const works = await createWorks(schedule)
-    await Work.insertMany(works)
-    return res.send(await allocate(schedule))
+    const schedule = await getSchedule(req.params.id);
+    const works = await getWorks(schedule?._id);
+    const employees = await getEmployees(schedule);
+
+    // Prepare data to send to Python
+    const inputData = JSON.stringify({ works, employees });
+
+    // Spawn a Python process
+    const pythonProcess = spawn("python3", ["python/solver.py"]);
+
+    // Send data to Python via stdin
+    pythonProcess.stdin.write(inputData);
+    pythonProcess.stdin.end();
+
+    let pythonOutput = "";
+    let jsonStarted = false;
+
+    // Collect Python's stdout
+    pythonProcess.stdout.on("data", (data) => {
+      const output = data.toString();
+
+      // Check for the marker
+      if (jsonStarted) {
+        pythonOutput += output;
+      } else if (output.includes("START_JSON_OUTPUT")) {
+        jsonStarted = true;
+        pythonOutput += output.split("START_JSON_OUTPUT")[1]; // Start collecting after the marker
+      }
+    });
+
+    // Handle Python process completion
+    pythonProcess.on("close", async (code) => {
+      if (code !== 0) {
+        return next(new Error("Python script failed with code " + code));
+      }
+
+      try {
+        const result = JSON.parse(pythonOutput.trim()); // Parse Python's output
+
+        const bulkUpdateOperations = result.map(({ employeeId, workId }) => ({
+          updateOne: {
+            filter: { _id: workId },
+            update: { $addToSet: { employeeIds: employeeId } },
+          },
+        }))
+      
+        await Work.bulkWrite(bulkUpdateOperations)
+
+        return res.send({
+          message: "Allocation successful",
+          result,
+        });
+      } catch (err) {
+        return next(new Error("Failed to parse Python output: " + err.message));
+      }
+    });
+
+    // Handle Python errors
+    pythonProcess.stderr.on("data", (data) => {
+      console.error("Python error:", data.toString());
+    });
   } catch (err) {
-    return next(err)
+    return next(err);
   }
-})
+});
 
 module.exports = router

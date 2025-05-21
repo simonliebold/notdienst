@@ -157,7 +157,7 @@ export const AsyncAllocateWorksButton = ({
     await allocate(schedule?._id)
     await updateResource()
     setLoading(false)
-  })
+  }, [allocate, schedule, updateResource])
 
   
 
