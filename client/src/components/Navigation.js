@@ -68,7 +68,7 @@ function Navigation() {
         <Container>
           <Nav className="z-1 w-100">
             {routes.map((route) => {
-              return <NavItem route={route} />
+              return <NavItem key={"route-" + route.path} route={route} />
             })}
             <NavItem
               className="ms-auto text-secondary"

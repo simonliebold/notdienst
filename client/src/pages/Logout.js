@@ -15,7 +15,6 @@ function Logout() {
   const handleError = useErrorMessage()
   const handleSuccess = useSuccessMessage()
   useEffect(() => {
-    console.log(refreshToken)
     async function logout() {
       const response = await axios
         .delete(process.env.REACT_APP_AUTH_URL + "logout", {
