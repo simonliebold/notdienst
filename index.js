@@ -1,6 +1,5 @@
-const { Sequelize } = require("sequelize")
-const sequelize = require("./database.js")(Sequelize)
-const models = require("./models.js")(sequelize)
+const db = require("./database.js")
+const models = require("./models.js")(db)
 
 const express = require("express")
 const app = express()
@@ -11,14 +10,14 @@ app.use(helmet())
 
 // TODO: Add authentification
 
-const routes = require("./routes")(models)
+const routes = require("./routes")(models, db.sequelize)
 app.use("/", routes)
 
 const port = process.env.PORT || 3000
 app.listen(port, async () => {
   console.log("App listening on port " + port)
   try {
-    await sequelize.authenticate()
+    await db.sequelize.authenticate()
     console.log(
       "Connected to database " +
         process.env.DB_NAME +

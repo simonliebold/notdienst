@@ -1,4 +1,4 @@
-module.exports = (models) => {
+module.exports = (models, sequelize) => {
   const router = require("express").Router()
 
   const employments = require("./routes/employments")(models)
@@ -16,7 +16,7 @@ module.exports = (models) => {
   const events = require("./routes/events")(models)
   router.use("/events", events)
 
-  const schedules = require("./routes/schedules")(models)
+  const schedules = require("./routes/schedules")(models, sequelize)
   router.use("/schedules", schedules)
 
   const freetimes = require("./routes/freetimes")(models)

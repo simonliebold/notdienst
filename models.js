@@ -1,11 +1,13 @@
-module.exports = (sequelize) => {
+module.exports = (db) => {
+  const sequelize = db.sequelize
+
   const Employee = require("./models/Employee")(sequelize)
   const Job = require("./models/Job")(sequelize)
   const Employment = require("./models/Employment")(sequelize)
   const Shift = require("./models/Shift")(sequelize)
   const Event = require("./models/Event")(sequelize)
   const Work = require("./models/Work")(sequelize)
-  const Schedule = require("./models/Schedule")(sequelize)
+  const Schedule = require("./models/Schedule")(sequelize, db.Sequelize)
   const Freetime = require("./models/Freetime")(sequelize)
 
   Employee.belongsTo(Employment)

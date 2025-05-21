@@ -1,5 +1,4 @@
-const { Op } = require("sequelize")
-module.exports = (models) => {
+module.exports = (models, sequelize) => {
   const router = require("express").Router()
 
   // Get all
@@ -89,10 +88,10 @@ module.exports = (models) => {
       })
       const response = await models.ScheduleEmployee.destroy({
         where: {
-          [Op.and]: [
+          [sequelize.Op.and]: [
             { scheduleId: req.params.id },
             {
-              [Op.or]: [...employeeIds],
+              [sequelize.Op.or]: [...employeeIds],
             },
           ],
         },
@@ -136,10 +135,10 @@ module.exports = (models) => {
       })
       const response = await models.ScheduleShift.destroy({
         where: {
-          [Op.and]: [
+          [sequelize.Op.and]: [
             { scheduleId: req.params.id },
             {
-              [Op.or]: [...shiftIds],
+              [sequelize.Op.or]: [...shiftIds],
             },
           ],
         },
@@ -156,33 +155,73 @@ module.exports = (models) => {
     const schedule = await models.Schedule.findByPk(req.params.id)
     if (schedule === null) res.status(404).send({ message: "Not found" })
     req.schedule = schedule
+
+    next()
+  }
+
+  const getEvents = async (req, res, next) => {
+    const [results, metadata] = await sequelize.query(
+      `SELECT shifts.id "shiftId", events.id "eventId", events.title "eventTitle", events.requiredEmployees "eventRequiredEmployees", events.timeStart "eventTimeStart", events.timeEnd "eventTimeEnd", events.repeatWeekday "eventRepeatWeekday", employees.id "employeeId", employees.initials "employeeInitials", employees.name "employeeName", employments.minHours "employeeMinHours", employments.maxHours "employeeMaxHours"
+      FROM schedules, schedules_shifts, shifts, events, jobs_shifts, jobs, jobs_employees, employees, employments
+      WHERE schedules.id = schedules_shifts.scheduleId
+      AND schedules_shifts.shiftId = shifts.id
+      AND shifts.id = events.shiftId
+      AND jobs_shifts.shiftId = shifts.id
+      AND jobs_shifts.jobId = jobs.id
+      AND jobs_employees.jobId = jobs.id
+      AND jobs_employees.employeeId = employees.id
+      AND employees.id NOT IN (SELECT employeeId FROM schedules_employees WHERE scheduleId = schedules.id)
+      AND employees.employmentId = employments.id;`
+    )
+
+    const events = {}
+    results.forEach((result) => {
+      const {
+        shiftId,
+        eventId,
+        employeeId,
+        eventTitle,
+        eventRequiredEmployees,
+        eventTimeStart,
+        eventTimeEnd,
+        eventRepeatWeekday,
+      } = result
+      if (events[eventId] === undefined)
+        events[eventId] = {
+          title: eventTitle,
+          requiredEmployees: eventRequiredEmployees,
+          timeStart: eventTimeStart,
+          timeEnd: eventTimeEnd,
+          repeatWeekday: eventRepeatWeekday,
+          requiredEmployees: eventRequiredEmployees,
+          shiftId: shiftId,
+          employees: {},
+        }
+      events[eventId]["employees"][employeeId] = {
+        name: result.employeeName,
+        initials: result.employeeInitials,
+        minHours: result.employeeMinHours,
+        maxHours: result.employeeMaxHours,
+      }
+    })
+    req.events = events
     next()
   }
 
   // Get employees
   const getEmployees = async (req, res, next) => {
-    const schedule = await models.Schedule.findByPk(req.params.id, {
-      include: {
-        model: models.Employee,
-        through: { attributes: [] },
-        include: models.Employment,
-      },
-    })
-    if (schedule === null)
-      res.status(404).send({ message: "No employees found" })
-    const employees = schedule.dataValues.employees
-    req.employees = {}
-    employees.forEach((e) => {
-      req.employees[e.id] = {
-        id: e.id,
-        initials: e.initials,
-        minHours: e.employment.minHours,
-        maxHours: e.employment.maxHours,
-        possibleHours: 0,
-        workHours: 0,
-        freetimes: [],
+    const employees = {}
+    for (const [eventId, event] of Object.entries(req.events)) {
+      for (const [employeeId, employee] of Object.entries(event["employees"])) {
+        employees[employeeId] = {
+          ...employee,
+          possibleHours: 0,
+          workHours: 0,
+          freetimes: [],
+        }
       }
-    })
+    }
+    req.employees = employees
 
     next()
   }
@@ -193,67 +232,22 @@ module.exports = (models) => {
       where: { scheduleId: req.params.id },
     })
     freetimes.forEach((freetime) => {
-      req.employees[freetime.employeeId].freetimes.push(freetime)
-    })
-    next()
-  }
-
-  // Get events
-  const getEvents = async (req, res, next) => {
-    const events = await models.Event.findAll({
-      include: [
-        {
-          model: models.Shift,
-          include: [
-            {
-              model: models.Job,
-              through: { attributes: [] },
-              include: {
-                model: models.Employee,
-                through: { attributes: [] },
-              },
-            },
-          ],
-        },
-      ],
-    })
-    if (events === null) res.status(404).send({ message: "No events found" })
-
-    req.events = events.map((event) => event.dataValues)
-    for (const i in req.events) {
-      const employeeIds = {}
-      for (const j in req.events[i].shift.jobs) {
-        for (const k in req.events[i].shift.jobs[j].employees) {
-          const id = req.events[i].shift.jobs[j].employees[k].id
-          employeeIds[id] = id
+      if (req.employees[freetime.employeeId] !== undefined) {
+        if (req.employees[freetime.employeeId]["freetimes"] !== undefined) {
+          req.employees[freetime.employeeId]["freetimes"].push(freetime)
         }
       }
-      req.events[i].employeeIds = Object.keys(employeeIds).map((val) =>
-        Math.floor(val)
-      )
-    }
-    req.events = req.events.map((event) => {
-      return {
-        id: event.id,
-        title: event.title,
-        requiredEmployees: event.requiredEmployees,
-        timeStart: event.timeStart,
-        timeEnd: event.timeEnd,
-        repeatWeekday: event.repeatWeekday,
-        employeeIds: event.employeeIds,
-        shiftId: event.shiftId,
-      }
     })
-
     next()
   }
 
   // Get works
   const getWorks = async (req, res, next) => {
     let works = []
+    let workEmployees = []
     const first = new Date(req.schedule.start)
     const last = new Date(req.schedule.end)
-    req.events.forEach(async (event) => {
+    for (const [eventId, event] of Object.entries(req.events)) {
       const timeStart = event.timeStart.split(":")
       const timeEnd = event.timeEnd.split(":")
       for (let i = new Date(first); i <= last; i.setDate(i.getDate() + 1)) {
@@ -265,30 +259,47 @@ module.exports = (models) => {
         if (timeStart[0] > timeEnd[0]) end.setDate(end.getDate() + 1)
         end.setHours(timeEnd[0], timeEnd[1], timeEnd[2])
 
+        let possibleEmployeeIds = []
+        for (const [employeeId, employee] of Object.entries(event.employees)) {
+          if (
+            req.employees[employeeId].freetimes.every(
+              (freetime) =>
+                new Date(freetime.end).getTime() <= start.getTime() ||
+                new Date(freetime.start).getTime() >= end.getTime()
+            )
+          )
+            possibleEmployeeIds.push(employeeId)
+        }
+
+        workEmployees.push(possibleEmployeeIds)
+
         works.push({
           start: start,
           end: end,
           scheduleId: req.schedule.id,
-          eventId: event.id,
+          eventId: eventId,
         })
       }
-    })
+    }
     req.works = await models.Work.bulkCreate(works)
+    req.works = req.works.map((elem, ind) => {
+      return { ...elem.dataValues, employeeIds: workEmployees[ind] }
+    })
     next()
   }
 
   router.post(
     "/:id/plan",
     getSchedule,
+    getEvents,
     getEmployees,
     getFreetimes,
-    getEvents,
     getWorks,
     async (req, res) => {
       res.send({
         schedule: req.schedule,
         employees: req.employees,
-        // freetimes: req.freetimes,
+        events: req.events,
         events: req.events,
         works: req.works,
       })
