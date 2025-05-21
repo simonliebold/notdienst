@@ -6,7 +6,23 @@ module.exports = (sequelize) => {
     return jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, { expiresIn: "1d" })
   }
 
-  function authenticateToken(req, res, next) {
+  function generateCredentialsToken(user) {
+    return jwt.sign(user, process.env.CREDENTIALS_TOKEN_SECRET, { expiresIn: "1d" })
+  }
+
+  function authenticateCredentialsToken(req, res, next) {
+    const authHeader = req.headers["authorization"]
+    const token = authHeader && authHeader.split(" ")[1]
+    if (token == null) return res.sendStatus(401)
+
+    jwt.verify(token, process.env.CREDENTIALS_TOKEN_SECRET, (err, user) => {
+      if (err) return res.sendStatus(401)
+      req.user = user
+      next()
+    })
+  }
+
+  function authenticateAccessToken(req, res, next) {
     const authHeader = req.headers["authorization"]
     const token = authHeader && authHeader.split(" ")[1]
     if (token == null) return res.sendStatus(401)
@@ -19,13 +35,13 @@ module.exports = (sequelize) => {
   }
 
   // Generate credentials token
-  router.post("/token/:id", authenticateToken, async (req, res) => {
+  router.post("/credentials/:id", authenticateAccessToken, async (req, res) => {
     if (req.user.role < 10) return res.sendStatus(403)
     let user = await sequelize.models.users.findByPk(req.params.id)
     if (user === null) return res.sendStatus(404)
     user = user.dataValues
     delete user.password
-    const token = generateAccessToken(user)
+    const token = generateCredentialsToken(user)
 
     const codeString = "ABCDEFGHIJKLMNPQRSTUVWXYZ123456789"
     let code = ""
@@ -40,7 +56,7 @@ module.exports = (sequelize) => {
   })
 
   // Get credentials token by code
-  router.get("/token/:code", async (req, res) => {
+  router.get("/credentials/:code", async (req, res) => {
     const token = await sequelize.models.credentialsTokens.findOne({
       where: { code: req.params.code },
     })
@@ -50,7 +66,7 @@ module.exports = (sequelize) => {
   })
 
   // Change email / password
-  router.post("/credentials", authenticateToken, async (req, res) => {
+  router.post("/credentials", authenticateCredentialsToken, async (req, res) => {
     try {
       await sequelize.models.users.update(
         {
