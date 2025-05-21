@@ -11,8 +11,7 @@ import Badge from "react-bootstrap/Badge"
 import Col from "react-bootstrap/Col"
 import Row from "react-bootstrap/Row"
 import Modal from "react-bootstrap/Modal"
-import Placeholder from "react-bootstrap/Placeholder"
-import FormLabel from "react-bootstrap/esm/FormLabel"
+import Form from "react-bootstrap/Form"
 
 const EmployeeModal = ({ employeeId }) => {
   const addAlert = useAlertUpdate()
@@ -23,6 +22,8 @@ const EmployeeModal = ({ employeeId }) => {
   const [employee, setEmployee] = useState()
   const [employments, setEmployments] = useState()
   const [defaultEmployment, setDefaultEmployment] = useState()
+  const [jobs, setJobs] = useState()
+  const [defaultJobs, setDefaultJobs] = useState()
 
   const close = () => {
     navigate("/employees")
@@ -30,7 +31,6 @@ const EmployeeModal = ({ employeeId }) => {
   }
 
   const fetchEmployee = async () => {
-    setEmployee()
     try {
       const response = await axios.get(
         "http://localhost:3000/employees/" + employeeId
@@ -42,6 +42,11 @@ const EmployeeModal = ({ employeeId }) => {
         value: response.data.employee.employment.id,
         label: response.data.employee.employment.title,
       })
+      setDefaultJobs(
+        response.data.employee.jobs.map((job) => {
+          return { value: job.id, label: job.title }
+        })
+      )
     } catch (error) {
       if (error.response.data.error) addAlert(error.response.data.error)
     }
@@ -61,11 +66,27 @@ const EmployeeModal = ({ employeeId }) => {
     }
   }
 
-  // console.log(employments)
+  const fetchJobs = async () => {
+    try {
+      const response = await axios.get("http://localhost:3000/jobs/")
+      if (response.data.jobs)
+        setJobs(
+          response.data.jobs.map((job) => {
+            return { value: job.id, label: job.title }
+          })
+        )
+    } catch (error) {
+      if (error.response.data.error) addAlert(error.response.data.error)
+    }
+  }
 
   useEffect(() => {
+    setEmployee()
+    setDefaultEmployment()
+    setDefaultJobs()
     fetchEmployee()
     fetchEmployments()
+    fetchJobs()
     if (employeeId) setShowModal(true)
   }, [employeeId])
 
@@ -78,14 +99,27 @@ const EmployeeModal = ({ employeeId }) => {
         </Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        <FormLabel>Anstellungsverhältnis</FormLabel>
-        <Select
-          defaultValue={defaultEmployment}
-          name="employment"
-          options={employments}
-          className="basic-multi-select"
-          classNamePrefix="select"
-        />
+        <Form.Group className="mb-3">
+          <Form.Label>Anstellungsverhältnis</Form.Label>
+          <Select
+            defaultValue={defaultEmployment}
+            name="employment"
+            options={employments}
+            className="basic-multi-select"
+            classNamePrefix="select"
+          />
+        </Form.Group>
+        <Form.Group>
+          <Form.Label>Jobs</Form.Label>
+          <Select
+            defaultValue={defaultJobs}
+            isMulti
+            name="jobs"
+            options={jobs}
+            className="basic-multi-select"
+            classNamePrefix="select"
+          />
+        </Form.Group>
       </Modal.Body>
     </Modal>
   )

@@ -4,7 +4,7 @@ module.exports = (models) => {
 
   // Get all
   router.get("/", roles.requireAdmin, async (req, res) => {
-    const employees = await models.Employee.findAll({})
+    const employees = await models.Employee.findAll()
     return res.send({ employees: employees })
   })
 
