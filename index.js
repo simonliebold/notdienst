@@ -14,8 +14,6 @@ app.use(helmet())
 const routes = require("./routes")(models)
 app.use("/", routes)
 
-// TODO: error handling middleware
-
 const port = process.env.PORT || 3000
 app.listen(port, async () => {
   console.log("App listening on port " + port)
