@@ -328,6 +328,7 @@ module.exports = (models, sequelize) => {
   // TODO: check event requiredEmployees
   // Find employees for work
   const matchWorkEmployees = async (req, res, next) => {
+    let workEmployees = []
     while (req.works.length > 0) {
       // for (let i = 0; i < 10; i++) console.log("###")
       let firstIteration = true
@@ -351,7 +352,7 @@ module.exports = (models, sequelize) => {
         }
       })
       try {
-        await models.WorkEmployee.create({
+        workEmployees.push({
           workId: req.works[0].id,
           employeeId: bestEmployee.id,
         })
@@ -362,17 +363,18 @@ module.exports = (models, sequelize) => {
         return
       }
     }
+    await models.WorkEmployee.bulkCreate(workEmployees)
     next()
   }
 
   const showDifference = async (req, res, next) => {
-    // for (employeeId in req.employees) {
-    //   console.log(
-    //     req.employees[employeeId].name,
-    //     req.employees[employeeId].workHours - req.employees[employeeId].minHours,
-    //     req.employees[employeeId].maxHours - req.employees[employeeId].workHours
-    //   )
-    // }
+    for (employeeId in req.employees) {
+      console.log(
+        req.employees[employeeId].name,
+        req.employees[employeeId].workHours - req.employees[employeeId].minHours,
+        req.employees[employeeId].maxHours - req.employees[employeeId].workHours
+      )
+    }
     next()
   }
   // TODO: order employees by (minHours - workHours) / possibleHours = (remaining hours / possible hours)
