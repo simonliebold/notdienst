@@ -19,9 +19,9 @@ function CardButtonLink({ to, ...props }) {
 
 export const CardEditButton = ({ ...props }) => {
   return (
-    <CardButtonLink icon={faPen} variant="primary" {...props}>
+    <CardButton icon={faPen} variant="primary" {...props}>
       Bearbeiten
-    </CardButtonLink>
+    </CardButton>
   )
 }
 
@@ -30,7 +30,6 @@ export const CardDeleteButton = ({ className, ...props }) => {
     <CardButtonLink
       variant="link"
       icon={faTrash}
-      // to="./../delete"
       className={"text-decoration-none text-secondary " + className}
       {...props}
     >

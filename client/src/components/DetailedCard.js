@@ -16,12 +16,12 @@ const DetailedCard = ({
   children,
   className,
   loading = true,
-  onSave,
+  onSaveRequest,
+  edit,
+  onEditRequest,
+  onCloseRequest,
 }) => {
   const { title } = resource || {}
-  const { action } = useParams()
-  const navigate = useNavigate()
-
   if (loading)
     return (
       <Card>
@@ -57,25 +57,21 @@ const DetailedCard = ({
             className="me-2"
           />
           {title}
-          {action === "edit" && " bearbeiten "}
+          {edit && " bearbeiten "}
         </div>
-        {action === "edit" && (
-          <CloseButton
-            onClick={(e) => navigate("/" + resourceName + "/" + resource.id)}
-          />
-        )}
+        {edit && <CloseButton onClick={onCloseRequest} />}
       </Card.Header>
       <Card.Body>{children}</Card.Body>
       <Card.Footer className="d-flex justify-content-end align-items-center">
-        {action === "edit" && (
+        {edit && (
           <>
             <CardDeleteButton className="me-auto" />
-            <CardSaveButton onClick={onSave} />
+            <CardSaveButton onClick={onSaveRequest} />
           </>
         )}
-        {action !== "edit" && (
+        {!edit && (
           <>
-            <CardEditButton to="edit" />
+            <CardEditButton onClick={onEditRequest} />
           </>
         )}
       </Card.Footer>

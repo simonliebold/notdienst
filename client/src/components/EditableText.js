@@ -4,8 +4,7 @@ import FloatingLabel from "react-bootstrap/esm/FloatingLabel"
 import { useParams } from "react-router-dom"
 import { labels } from "../variables"
 
-const EditableText = ({ value, label, onInput, disabled, className }) => {
-  const { action } = useParams()
+const EditableText = ({ value, label, onInput, disabled, className, edit }) => {
   const [input, setInput] = useState(value)
 
   const onChange = useCallback((e) => {
@@ -17,7 +16,7 @@ const EditableText = ({ value, label, onInput, disabled, className }) => {
     setInput(value)
   }, [value])
 
-  if (disabled || action !== "edit")
+  if (disabled || !edit)
     return (
       <p className={"mb-0 "+className}>
         {labels[label] + ": "}

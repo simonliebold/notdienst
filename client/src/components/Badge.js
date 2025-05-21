@@ -10,16 +10,15 @@ import { icons, selectStyles, title } from "./../variables"
 
 function Badge({ resource, resourceName, disabled, className, ...props }) {
   const { id, short } = resource || {}
-  const { action } = useParams()
 
   const icon = icons[resourceName] || icons.default
 
   return (
     <BootstrapBadge
-      as={disabled || action === "edit" ? BootstrapBadge : Link}
+      as={disabled ? BootstrapBadge : Link}
       to={"/" + resourceName + "/" + id}
       className={className + " text-decoration-none w-auto"}
-      bg={disabled || action === "edit" ? "secondary" : "primary"}
+      bg={disabled ? "secondary" : "primary"}
       {...props}
     >
       {resource && <FontAwesomeIcon icon={icon} className="me-2" />}
@@ -33,23 +32,22 @@ export const EditableBadge = ({
   resourceName,
   onInput,
   disabled,
+  edit,
 }) => {
-  const { action } = useParams()
-
   const [options, updateOptions] = useResource(resourceName + "s")
 
   useEffect(() => {
     updateOptions()
   }, [resourceName, updateOptions])
 
-  if (action === "edit" && disabled)
+  if (edit && disabled)
     return (
       <p>
         <label className="w-100">{title[resourceName]}:</label>
         <Badge resource={resource} resourceName={resourceName} disabled />
       </p>
     )
-  if (action === "edit")
+  if (edit)
     return (
       <p>
         <label className="w-100">{title[resourceName]}:</label>
