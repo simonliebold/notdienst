@@ -46,7 +46,7 @@ module.exports = (models, sequelize) => {
         end: req.body.end,
         deadline: req.body.deadline,
       })
-      return res.send({ schedule: schedule })
+      return res.send(schedule)
     } catch (error) {
       return res.status(400).send({ error: error.message })
     }

@@ -155,10 +155,13 @@ export function RrulesPage() {
 export function SchedulesPage() {
   const [schedules] = useResource("schedules")
   return (
-    <ResourcesPage
-      resources={schedules}
-      resourceName="schedule"
-    ></ResourcesPage>
+    <ResourcesPage resources={schedules} resourceName="schedule">
+      <EditableText label="short" />
+      <EditableText label="title" />
+      <EditableText label="start" />
+      <EditableText label="end" />
+      <EditableText label="deadline" />
+    </ResourcesPage>
   )
 }
 
