@@ -52,7 +52,8 @@ export const labels = {
   title: "Name",
   minHours: "Minimum",
   maxHours: "Maximum",
-  date: "Datum"
+  date: "Datum",
+  type: "Art"
 }
 
 export const localeString = {
