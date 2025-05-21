@@ -194,7 +194,7 @@ export const EmployeeDetailedCard = ({ employee }) => {
   const { short, title, employment, works, schedules, jobs } = employee || {}
 
   const onInput = (label, value) => {
-    console.log(label, value);
+    console.log("INPUT: ",label, value);
   };
 
   return (
@@ -207,13 +207,13 @@ export const EmployeeDetailedCard = ({ employee }) => {
       <EditableBadge resource={employment} resourceName="employment" onInput={onInput} />
       <hr />
       Dienste:
-      <MultiBadge items={works} resourceName="work" />
+      <MultiBadge items={works} resourceName="work" onInput={onInput} />
       <hr />
       Schichtpläne:
-      <MultiBadge items={schedules} resourceName="schedule" />
+      <MultiBadge items={schedules} resourceName="schedule" onInput={onInput} />
       <hr />
       Jobs:
-      <MultiBadge items={jobs} resourceName="job" />
+      <MultiBadge items={jobs} resourceName="job" onInput={onInput} />
     </DetailedCard>
   )
 }

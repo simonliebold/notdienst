@@ -8,9 +8,18 @@ import useResource from "../hooks/useResource"
 import { icons, selectStyles } from "../variables"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 
-function MultiBadge({ items, resourceName }) {
+function MultiBadge({ items, resourceName, onInput }) {
   const { action } = useParams()
   const options = useResource(resourceName + "s")
+
+  const onChange = (items) => {
+    onInput(
+      resourceName + "Ids",
+      items.map((item) => {
+        return item.value
+      })
+    )
+  }
 
   if (action === "edit") {
     return (
@@ -35,6 +44,7 @@ function MultiBadge({ items, resourceName }) {
           label: item.short,
           value: item.id,
         }))}
+        onChange={onChange}
       />
     )
   }
