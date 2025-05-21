@@ -12,12 +12,12 @@ function AlertBox() {
     setShow(true)
   }, [alert])
 
-  if (alert === undefined || !show) return
+  if (alert === undefined || !show || !alert?.message) return
 
   return (
     <Container
       id="alert-wrapper"
-      className="w-100 position-fixed bottom-0 end-0 start-0"
+      className="w-100 position-fixed mt-5 top-0 end-0 start-0"
       style={{ zIndex: 5000 }}
     >
       <Fade in={show}>
@@ -27,8 +27,7 @@ function AlertBox() {
           className="mt-3"
           onClose={() => setShow(false)}
         >
-          {alert.message && alert.message}
-          {!alert.message && "Es ist ein Fehler aufgetreten"}
+          {alert.message}
         </Alert>
       </Fade>
     </Container>

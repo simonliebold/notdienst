@@ -1,4 +1,4 @@
-import { createContext, useContext, useState } from "react"
+import { createContext, useContext, useEffect, useState } from "react"
 import { useAuthUpdate, useRefreshToken } from "./AuthContext"
 import axios from "axios"
 
@@ -23,7 +23,15 @@ export const AlertProvider = ({ children }) => {
   const refreshToken = useRefreshToken()
   const [alert, setAlert] = useState(undefined)
 
+  useEffect(() => {
+    if(alert === undefined) return
+    setTimeout(() => {
+      setAlert(undefined)
+    }, 3000)
+  }, [alert])
+
   const handleSuccess = (message) => {
+    if(!message) return
     setAlert({ message: message, variant: "success" })
   }
 
