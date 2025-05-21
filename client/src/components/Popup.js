@@ -25,7 +25,7 @@ function Popup({
     <Modal show={show} onHide={onClose} {...props}>
       <Modal.Header closeButton>
         <Modal.Title>
-          <FontAwesomeIcon icon={icon} size="xs" className="me-2" />
+          {icon && <FontAwesomeIcon icon={icon} size="xs" className="me-2" />}
           {title}
         </Modal.Title>
       </Modal.Header>
@@ -121,7 +121,7 @@ export const CreateNewPopup = ({
         show={show}
         buttons={
           <>
-            <CancelButton onClick={onClose} />
+            <CancelButton onClick={close} />
             <ConfirmCreateNewButton
               onClick={onConfirm}
               resource={resource}
