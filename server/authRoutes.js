@@ -1,6 +1,7 @@
 module.exports = (sequelize) => {
   const router = require("express").Router()
   const jwt = require("jsonwebtoken")
+  const bcrypt = require("bcrypt")
 
   function generateAccessToken(user) {
     return jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, { expiresIn: "1d" })
@@ -83,7 +84,7 @@ module.exports = (sequelize) => {
             email: req.body.email,
             password: req.body.password,
           },
-          { where: { id: req.user.id } }
+          { where: { id: req.user.id }, individualHooks: true }
         )
         return res.sendStatus(200)
       } catch (error) {
@@ -117,11 +118,20 @@ module.exports = (sequelize) => {
     res.sendStatus(204)
   })
 
-  // TODO: !! find by email
+  const validPassword = async (password, input) => {
+    return await bcrypt.compare(input, password)
+  }
+
+  // Login by email and password
   router.post("/login", async (req, res) => {
-    let user = await sequelize.models.users.findByPk(req.body.id)
-    if (user === undefined) return res.sendStatus(401)
-    if (user.password !== req.body.password) return res.sendStatus(401)
+    if (req.body.email === undefined || req.body.password === undefined)
+      return res.sendStatus(401)
+    let user = await sequelize.models.users.findOne({
+      where: { email: req.body.email },
+    })
+    if (!user) return res.sendStatus(401)
+    if (!(await validPassword(user.password, req.body.password)))
+      return res.sendStatus(401)
     user = user.dataValues
     delete user.password
     const accessToken = generateAccessToken(user)
@@ -130,6 +140,5 @@ module.exports = (sequelize) => {
     return res.json({ accessToken: accessToken, refreshToken: refreshToken })
   })
 
-  // TODO: password encryption
   return router
 }

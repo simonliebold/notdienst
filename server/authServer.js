@@ -1,6 +1,7 @@
 const express = require("express")
 const app = express()
 const { Sequelize, DataTypes } = require("sequelize")
+const bcrypt = require("bcrypt")
 
 app.use(express.json())
 
@@ -41,7 +42,7 @@ sequelize.define(
   { timestamps: false }
 )
 
-sequelize.define(
+const User = sequelize.define(
   "users",
   {
     id: {
@@ -54,6 +55,10 @@ sequelize.define(
     },
     password: {
       type: DataTypes.STRING,
+      set(value) {
+        const salt = bcrypt.genSaltSync()
+        this.setDataValue("password", bcrypt.hashSync(value, salt))
+      },
     },
     role: {
       type: DataTypes.STRING,
@@ -61,7 +66,9 @@ sequelize.define(
       defaultValue: 1,
     },
   },
-  { timestamps: false }
+  {
+    timestamps: false,
+  }
 )
 
 const routes = require("./authRoutes")(sequelize)
