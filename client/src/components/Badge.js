@@ -66,6 +66,14 @@ export const EditableBadge = ({ resource, resourceName, onInput }) => {
       </p>
     )
 
+  if (!resource)
+    return (
+      <p>
+        <label className="w-100">{title[resourceName]}:</label>
+        <Badge resource={{ short: "Keine Daten" }} disabled />
+      </p>
+    )
+
   return (
     <p>
       <label className="w-100">{title[resourceName]}:</label>
