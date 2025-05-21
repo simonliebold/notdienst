@@ -19,6 +19,9 @@ module.exports = (models) => {
   const schedules = require("./routes/schedules")(models)
   router.use("/schedules", schedules)
 
+  const freetimes = require("./routes/freetimes")(models)
+  router.use("/freetimes", freetimes)
+
   // TODO: create routes for all models
 
   return router

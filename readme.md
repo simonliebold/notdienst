@@ -216,6 +216,40 @@ content-type: application/json
 <pre>DELETE /events/:id</pre>
 
 ## Freetimes
+### Get all freetimes
+<pre>GET /freetimes</pre>
+
+### Get one freetime
+<pre>GET /freetimes/:id</pre>
+
+### Create one freetime
+<pre>
+POST /freetimes
+
+content-type: application/json
+{
+    start: Timestamp,
+    end: Timestamp,
+    scheduleId: int,
+    employeeId: int
+}
+</pre>
+
+### Update one freetime
+<pre>
+PUT /freetimes/:id
+
+content-type: application/json
+{
+    start?: Timestamp,
+    end?: Timestamp,
+    scheduleId?: int,
+    employeeId?: int
+}
+</pre>
+
+### Delete one freetime
+<pre>DELETE /freetimes/:id</pre>
 
 ## Schedules
 ### Get all schedules
