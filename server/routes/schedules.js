@@ -23,33 +23,92 @@ const getSchedule = async (id) => {
   return schedules[0]
 }
 
+const getEmployees = async (schedule) => {
+  const employees = await Employee.aggregate([
+    {
+      $lookup: {
+        from: "freetimes",
+        let: { employeeId: "$_id" },
+        pipeline: [
+          {
+            $project: {
+              start: "$start",
+              end: "$end",
+            },
+          },
+          {
+            $match: {
+              $expr: {
+                $and: [
+                  { $lt: ["$start", schedule.end] },
+                  { $gt: ["$end", schedule.start] },
+                ],
+              },
+            },
+          },
+        ],
+        as: "freetimes",
+      },
+    },
+    {
+      $lookup: {
+        from: "employments",
+        localField: "employmentId",
+        foreignField: "_id",
+        as: "employment",
+      },
+    },
+    { $unwind: "$employment" },
+    {
+      $project: {
+        freetimes: "$freetimes",
+        jobIds: "$jobIds",
+        minHours: "$employment.minHours",
+        maxHours: "$employment.maxHours",
+      },
+    },
+    {
+      $addFields: {
+        availableTime: 0,
+        workTime: 0,
+      },
+    },
+  ])
+
+  return employees
+}
+
 const getWorks = async (scheduleId) => {
   const works = await Work.aggregate([
     { $match: { scheduleId: new mongoose.Types.ObjectId(scheduleId) } },
-    // {
-    //   $lookup: {
-    //     from: "shifts",
-    //     localField: "shiftId",
-    //     foreignField: "_id",
-    //     as: "shift",
-    //   },
-    // },
-    // { $unwind: { path: "$shift", preserveNullAndEmptyArrays: true } },
-    // { $unwind: "$shift" },
+    {
+      $lookup: {
+        from: "shifts",
+        localField: "shiftId",
+        foreignField: "_id",
+        as: "shift",
+      },
+    },
+    { $unwind: "$shift" },
+    {
+      $lookup: {
+        from: "jobs",
+        localField: "shift.jobIds",
+        foreignField: "_id",
+        as: "jobs",
+      },
+    },
+    {
+      $project: {
+        start: 1,
+        end: 1,
+        jobs: "$jobs",
+        jobIds: "$shift.jobIds",
+      },
+    },
   ])
 
-  // if (works.length === 0) return null
-
-  // const newWorks = {}
-  // works.forEach((work) => {
-  //   newWorks[work.id] = {
-  //     id: work._id,
-  //     start: new Date(work.start),
-  //     end: new Date(work.end),
-  //     jobs: work.rrule.shift.jobs,
-  //     jobIds: work.rrule.shift.jobs.map((job) => job.id),
-  //   }
-  // })
+  if (works.length === 0) return null
 
   return works
 }
@@ -186,60 +245,6 @@ router.post("/:id/create", roles.requireAdmin, async (req, res, next) => {
 })
 
 // Get employees
-const getEmployees = async (schedule) => {
-  const employees = await Employee.aggregate([
-    {
-      $lookup: {
-        from: "freetimes",
-        let: { employeeId: "$_id" },
-        pipeline: [
-          {
-            $project: {
-              start: "$start",
-              end: "$end",
-            },
-          },
-          {
-            $match: {
-              $expr: {
-                $and: [
-                  { $lt: ["$start", schedule.end] },
-                  { $gt: ["$end", schedule.start] },
-                ],
-              },
-            },
-          },
-        ],
-        as: "freetimes",
-      },
-    },
-    {
-      $lookup: {
-        from: "employments",
-        localField: "employmentId",
-        foreignField: "_id",
-        as: "employment",
-      },
-    },
-    { $unwind: "$employment" },
-    {
-      $project: {
-        freetimes: "$freetimes",
-        jobIds: "$jobIds",
-        minHours: "$employment.minHours",
-        maxHours: "$employment.maxHours",
-      },
-    },
-    {
-      $addFields: {
-        availableTime: 0,
-        workTime: 0,
-      },
-    },
-  ])
-
-  return employees
-}
 
 // Add employee ids to works
 const getSortedWorks = async (works, employees) => {
@@ -365,9 +370,8 @@ const allocate = async (scheduleId) => {
   const schedule = await getSchedule(scheduleId)
   const works = await getWorks(schedule?._id)
   const employees = await getEmployees(schedule)
-  return { works, employees }
-  // const employees = await getEmployees(schedule)
   // const sortedWorks = await getSortedWorks(works, employees)
+  return { works, employees }
   // await allocateWorks(sortedWorks, employees)
   // return employees
 }
