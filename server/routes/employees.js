@@ -4,7 +4,7 @@ module.exports = (models) => {
 
   // Get all
   router.get("/", roles.requireAdmin, async (req, res) => {
-    const employees = await models.Employee.findAll()
+    const employees = await models.Employee.findAll({})
     return res.send({ employees: employees })
   })
 
@@ -17,7 +17,10 @@ module.exports = (models) => {
 
   // Get one
   router.get("/:id", roles.requireAdmin, async (req, res) => {
-    const employee = await models.Employee.findByPk(req.params.id)
+    const employee = await models.Employee.findByPk(req.params.id, {
+      include: [models.Employment, models.Job, models.Schedule, models.Work],
+    })
+
     if (employee === null) return res.sendStatus(404)
     return res.send({ employee: employee })
   })

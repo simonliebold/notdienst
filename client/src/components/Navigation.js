@@ -3,13 +3,25 @@ import { useAuth } from "../contexts/AuthContext"
 
 import Navbar from "react-bootstrap/Navbar"
 import Nav from "react-bootstrap/Nav"
-import NavDropdown from "react-bootstrap/NavDropdown"
 import Container from "react-bootstrap/Container"
 import { Link, useLocation } from "react-router-dom"
 
-function Navigation({ routes }) {
+function Navigation() {
   const token = useAuth()
   const location = useLocation()
+
+  const routes = [
+    { name: "Home", path: "/" },
+    {
+      name: "Employees",
+      path: "/employees",
+    },
+    { name: "Login", path: "/login" },
+    {
+      name: "Credentials",
+      path: "/credentials",
+    },
+  ]
 
   if (token)
     return (
@@ -17,8 +29,7 @@ function Navigation({ routes }) {
         <Container>
           <Nav className="z-1">
             {routes.map((route) => {
-                if(!route.protected) return null
-                return (
+              return (
                 <Nav.Link
                   as={Link}
                   href="#"

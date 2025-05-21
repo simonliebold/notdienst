@@ -3,22 +3,22 @@ module.exports = (models) => {
 
   // Get all
   router.get("/", async (req, res) => {
-    const response = await models.Employment.findAll()
-    res.send({ response: response })
+    const employments = await models.Employment.findAll()
+    res.send({ employments: employments })
   })
 
   // Get one
   router.get("/:id", async (req, res) => {
-    const response = await models.Employment.findByPk(req.params.id)
-    if (response === null) res.status(404).send({ message: "Not found" })
-    else res.send({ response: response })
+    const employment = await models.Employment.findByPk(req.params.id)
+    if (employment === null) res.status(404).send({ message: "Not found" })
+    else res.send({ employment: employment })
   })
 
   // Create one
   router.post("/", async (req, res) => {
     try {
-      const response = await models.Employment.create({ ...req.body })
-      res.send({ response: response })
+      const employment = await models.Employment.create({ ...req.body })
+      res.send({ employment: employment })
     } catch (error) {
       res.status(400).send({ error: error })
     }
@@ -27,17 +27,17 @@ module.exports = (models) => {
   // Update one
   router.put("/:id", async (req, res) => {
     try {
-      const response = await models.Employment.update(
+      const employment = await models.Employment.update(
         { ...req.body },
         {
           where: { id: req.params.id },
         }
       )
-      response[0] > 0
+      employment[0] > 0
         ? res
             .status(200)
-            .send({ message: "Updated successfully", rows: response[0] })
-        : res.status(404).send({ message: "Not found", rows: response[0] })
+            .send({ message: "Updated successfully", rows: employment[0] })
+        : res.status(404).send({ message: "Not found", rows: employment[0] })
     } catch (error) {
       res.status(400).send({ error: error })
     }
@@ -46,10 +46,10 @@ module.exports = (models) => {
   // Delete one
   router.delete("/:id", async (req, res) => {
     try {
-      const response = await models.Employment.destroy({
+      const employment = await models.Employment.destroy({
         where: { id: req.params.id },
       })
-      response > 0
+      employment > 0
         ? res.status(200).send({ message: "Deleted successfully" })
         : res.status(404).send({ message: "Not found" })
     } catch (error) {
