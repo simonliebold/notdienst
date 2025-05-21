@@ -10,7 +10,7 @@ app.use(helmet())
 
 // TODO: add jwt authentification
 
-const routes = require("./routes")(models, db.sequelize)
+const routes = require("./routes.js")(models, db.sequelize)
 app.use("/", routes)
 
 const port = process.env.PORT || 3000
@@ -28,6 +28,7 @@ app.listen(port, async () => {
   } catch (error) {
     console.error("Unable to connect to the database:", error)
   }
-  await db.sequelize.sync({ force: true })
-  require("./example")(models)
+  await db.sequelize.sync()
+  // await db.sequelize.sync({ force: true })
+  // require("./example.js")(models)
 })
