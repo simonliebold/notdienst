@@ -78,6 +78,11 @@ function Navigation() {
       path: "/shifts",
     },
     {
+      name: "Rrules",
+      icon: icons.rrule,
+      path: "/rrules",
+    },
+    {
       name: "Mitarbeiter",
       icon: icons.employee,
       path: "/employees",
@@ -93,11 +98,6 @@ function Navigation() {
       path: "/employments",
     },
     {
-      name: "Rrules",
-      icon: icons.rrule,
-      path: "/rrules",
-    },
-    {
       name: "Elemente",
       icon: faCube,
       path: "/elements",
@@ -108,7 +108,7 @@ function Navigation() {
 
   if (token)
     return (
-      <Navbar className="border-bottom start-0 end-0" expand="lg">
+      <Navbar className="border-bottom start-0 end-0" expand="xs">
         <Container>
           <Navbar.Toggle />
           <Navbar.Offcanvas ref={offCanvasRef}>
