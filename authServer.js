@@ -67,5 +67,6 @@ app.listen(PORT, async () => {
   }
   // await db.sequelize.sync()
   await sequelize.sync({ force: true })
-  await sequelize.models.users.create({id: 1, email: "simon@bitel.net", password: "123"})
+  await sequelize.models.users.create({id: 1, email: "simon@bitel.net", password: "lieb"})
+  await sequelize.models.users.create({id: 2, email: "rerucha", password: "rer", role: 10})
 })

@@ -8,6 +8,8 @@ app.use(express.json())
 const helmet = require("helmet")
 app.use(helmet())
 
+const jwt = require("jsonwebtoken")
+
 // TODO: add rate limit https://express-rate-limit.mintlify.app/quickstart/usage
 
 // JWT Authentification
@@ -17,7 +19,7 @@ function authenticateToken(req, res, next) {
   if (token == null) return res.sendStatus(401)
 
   jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
-    if (err) return res.sendStatus(403)
+    if (err) return res.sendStatus(401)
     req.user = user
     next()
   })
