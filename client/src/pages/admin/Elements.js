@@ -9,10 +9,7 @@ function Elements() {
   return (
     <>
       <h2>Badge</h2>
-      <Badge
-        resource={{ id: 201, short: 201 }}
-        className=""
-      />
+      <Badge resource={{ id: 201, short: 201 }} className="" />
       <h2>TitleCard</h2>
       <TitleCard
         resource={{ id: 256, short: "OKT 23", title: "Oktober 2023" }}
@@ -32,7 +29,17 @@ function Elements() {
             { id: 5, short: "MÜL" },
           ]}
           resourceName="employee"
-          />
+        />
+        <hr />
+        <MultiBadge
+          items={[
+            { id: 1, short: "HOF" },
+            { id: 2, short: "EXE" },
+            { id: 3, short: "HIA" },
+            { id: 4, short: "LOA" },
+          ]}
+          resourceName="employee"
+        />
       </DetailedCard>
     </>
   )

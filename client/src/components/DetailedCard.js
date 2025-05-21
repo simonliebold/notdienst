@@ -1,5 +1,6 @@
 import React from "react"
 import Card from "react-bootstrap/Card"
+import ListGroup from "react-bootstrap/ListGroup"
 import Badge from "./Badge"
 import { Link } from "react-router-dom"
 import MultiBadge from "./MultiBadge"
@@ -16,11 +17,7 @@ const DetailedCard = ({ resource, resourceName, children }) => {
         />
         {title}
       </Card.Header>
-      <Card.Body>
-        <div className="d-flex align-items-center">
-          {children}
-        </div>
-      </Card.Body>
+      <Card.Body>{children}</Card.Body>
       <Card.Footer></Card.Footer>
     </Card>
   )

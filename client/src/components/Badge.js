@@ -3,6 +3,7 @@ import BootstrapBadge from "react-bootstrap/Badge"
 import { icons } from "./../variables"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { Link } from "react-router-dom"
+import { faX } from "@fortawesome/free-solid-svg-icons"
 
 function Badge(props) {
   const { resource, resourceName, className } = props || {}
@@ -19,7 +20,7 @@ function Badge(props) {
       className={className + " text-decoration-none"}
       bg={resourceName ? "primary" : "secondary"}
     >
-      {/* <FontAwesomeIcon icon={faX} className="me-2" /> */}
+      {/* <FontAwesomeIcon icon={faX} className="me-3" /> */}
       <FontAwesomeIcon icon={icon} className="me-2" />
       {short.toString().toUpperCase()}
     </BootstrapBadge>

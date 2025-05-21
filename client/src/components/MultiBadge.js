@@ -10,7 +10,7 @@ function MultiBadge({ items, resourceName }) {
           <Badge
             key={short + "-" + "badge"}
             resource={item}
-            resourceName="employee"
+            resourceName={resourceName}
             className="me-1"
           />
         )
