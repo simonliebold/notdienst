@@ -106,10 +106,13 @@ export function EmploymentsPage() {
 export const FreetimesPage = () => {
   const [freetimes] = useResource("freetimes")
   return (
-    <ResourcesPage
-      resources={freetimes}
-      resourceName="freetime"
-    ></ResourcesPage>
+    <ResourcesPage resources={freetimes} resourceName="freetime">
+      <EditableText label="date" />
+      <EditableText label="type" />
+      <hr />
+      <EditableBadge resourceName="employee" />
+      <EditableBadge resourceName="schedule" />
+    </ResourcesPage>
   )
 }
 

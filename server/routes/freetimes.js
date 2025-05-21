@@ -20,36 +20,16 @@ module.exports = (models) => {
   })
 
   // Create one
-  // TODO: add freetime to multiple schedules
+  // TODO: check if freetime is in schedule bounds
   router.post("/", async (req, res) => {
     try {
-      const params = ["start", "end", "scheduleId"]
-      const found = params.every((param) => req.body[param] !== undefined)
-      if (!found) throw new Error("Params missing")
-
-      const start = new Date(req.body.start)
-      const end = new Date(req.body.end)
-      if (isNaN(start.valueOf()) || isNaN(end.valueOf()))
-        throw new Error("Date invalid")
-
-      if (start >= end) throw new Error("Start must be before end")
-
-      const schedule = await models.Schedule.findByPk(req.body.scheduleId)
-      if (schedule === null) throw new Error("Schedule not found")
-
-      const employee = await models.Employee.findByPk(req.body.employeeId)
-      if (employee === null) throw new Error("Employee not found")
-
-      if (start < schedule.start || end > schedule.end)
-        throw new Error("Freetime must be during schedule time")
-
-      const response = await models.Freetime.create({
-        start: start,
-        end: end,
-        scheduleId: schedule.id,
-        employeeId: req.user.id,
+      const freetime = await models.Freetime.create({
+        type: req?.body?.type,
+        date: req?.body?.date,
+        scheduleId: req?.body?.scheduleId,
+        employeeId: req?.body?.employeeId,
       })
-      return res.send({ response: response })
+      return res.send(freetime)
     } catch (error) {
       return res.status(400).send({ error: error.message })
     }
