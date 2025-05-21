@@ -29,6 +29,7 @@ import Shift from "./pages/admin/Shift"
 import Rrule from "./pages/admin/Rrule"
 import Employee from "./pages/admin/Employee"
 import Job from "./pages/admin/Job"
+import Employment from "./pages/admin/Employment"
 
 function App() {
   const home = (
@@ -139,6 +140,12 @@ function App() {
     </Prot>
   )
 
+  const employment = (
+    <Prot>
+      <Employment />
+    </Prot>
+  )
+
   return (
     <AuthProvider>
       <AlertProvider>
@@ -154,7 +161,6 @@ function App() {
               <Route path="" element={home} />
               <Route path="elements" element={elements} />
               <Route path="logout" element={logout} />
-              <Route path="employments" element={employments} />
 
               <Route path="schedules" element={schedules} />
               <Route path="schedule/:scheduleId" element={schedule} />
@@ -176,6 +182,9 @@ function App() {
               
               <Route path="jobs" element={jobs} />
               <Route path="job/:jobId" element={job} />
+              
+              <Route path="employments" element={employments} />
+              <Route path="employment/:employmentId" element={employment} />
             </Routes>
           </div>
         </Container>
