@@ -13,26 +13,15 @@ function MultiBadge({ items, resourceName }) {
   const options = useResource(resourceName + "s")
 
   if (action === "edit") {
-    const customStyles = {
-      option: (provided, state) => ({
-        ...provided,
-        display: "flex",
-        alignItems: "center",
-      }),
-    }
-
-    const getOptionLabel = (option) => (
-      <div>
-        <FontAwesomeIcon icon={option.icon} />
-        <span style={{ marginLeft: "8px" }}>{option.label}</span>
-      </div>
-    )
-
     return (
       <Select
         isMulti
-        styles={customStyles}
-        getOptionLabel={getOptionLabel}
+        getOptionLabel={(option) => (
+          <>
+            <FontAwesomeIcon icon={option.icon} className="me-2" />
+            {option.label}
+          </>
+        )}
         options={options?.map((option) => ({
           icon: icons[resourceName],
           label: option.short,
