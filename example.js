@@ -14,7 +14,7 @@ module.exports = (models) => {
   models.Employee.create({
     initials: "RER",
     name: "Tom Rerucha",
-    employmentId: 2,
+    employmentId: 3,
   })
   models.Employee.create({
     initials: "LIEB",
@@ -24,7 +24,7 @@ module.exports = (models) => {
   models.Employee.create({
     initials: "PAP",
     name: "Niklas Pape",
-    employmentId: 3,
+    employmentId: 2,
   })
 
   models.Shift.create({ title: "A1" })
@@ -72,14 +72,13 @@ module.exports = (models) => {
     repeatWeekday: 7,
     shiftId: 1,
   })
-
   models.Event.create({
     title: "A2 spät Mittwoch",
     dateStart: "2023-11-1",
     timeStart: "13:00",
     duration: 6,
     repeatWeekday: 2,
-    shiftId: 1,
+    shiftId: 2,
   })
   models.Event.create({
     title: "A2 spät Freitag",
@@ -87,7 +86,7 @@ module.exports = (models) => {
     timeStart: "13:00",
     duration: 6,
     repeatWeekday: 4,
-    shiftId: 1,
+    shiftId: 2,
   })
   models.Event.create({
     title: "A2 früh Samstag",
@@ -95,7 +94,7 @@ module.exports = (models) => {
     timeStart: "8:00",
     duration: 11,
     repeatWeekday: 5,
-    shiftId: 1,
+    shiftId: 2,
   })
   models.Event.create({
     title: "A2 früh Sonntag",
@@ -103,7 +102,7 @@ module.exports = (models) => {
     timeStart: "8:00",
     duration: 11,
     repeatWeekday: 6,
-    shiftId: 1,
+    shiftId: 2,
   })
   models.Event.create({
     title: "A2 früh Feiertag",
@@ -111,6 +110,13 @@ module.exports = (models) => {
     timeStart: "8:00",
     duration: 11,
     repeatWeekday: 7,
-    shiftId: 1,
+    shiftId: 2,
+  })
+
+  models.Schedule.create({
+    title: "November ÄNoD",
+    start: "2023-11-01",
+    end: "2023-11-30",
+    deadline: "2023-10-29",
   })
 }
