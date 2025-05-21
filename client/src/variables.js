@@ -7,8 +7,6 @@ import {
   faClock,
   faCode,
   faHashtag,
-  faHouseMedical,
-  faKitMedical,
   faUser,
 } from "@fortawesome/free-solid-svg-icons"
 
@@ -22,6 +20,18 @@ export const icons = {
   freetime: faCalendarXmark,
   rrule: faCode,
   default: faHashtag,
+}
+
+export const titles= {
+  employee: "Mitarbeiter",
+  schedule: "Dienstpläne",
+  work: "Dienste",
+  employment: "Anstellungsverhältnisse",
+  shift: "Schichten",
+  job: "Jobs",
+  freetime: "Dienstplanwünsche",
+  rrule: "Rrules",
+  default: "Objekte",
 }
 
 export const localeString = {

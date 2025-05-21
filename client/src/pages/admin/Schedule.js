@@ -2,22 +2,17 @@ import React from "react"
 
 import { Link, useParams } from "react-router-dom"
 
-import Breadcrumb from "react-bootstrap/Breadcrumb"
 
 import useResource from "../../hooks/useResource"
 import { ScheduleDetailedCard } from "../../components/DetailedCard"
+import Breadcrumb from "../../components/Breadcrumb"
 
 function Schedule() {
   const { scheduleId } = useParams()
   const schedule = useResource("schedules/" + scheduleId)
   return (
     <>
-      <Breadcrumb className="mt-3">
-        <Breadcrumb.Item as={Link} to="/schedules/" href="/schedules/">
-          Dienstpläne
-        </Breadcrumb.Item>
-        <Breadcrumb.Item active>{schedule?.short}</Breadcrumb.Item>
-      </Breadcrumb>
+      <Breadcrumb resourceName="schedule" resource={schedule} />
       <ScheduleDetailedCard schedule={schedule} className="mt-3" />
     </>
   )

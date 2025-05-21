@@ -6,18 +6,17 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { Link } from "react-router-dom"
 import { faSpinner, faX } from "@fortawesome/free-solid-svg-icons"
 
-function Badge({ resource, resourceName, className }) {
-
+function Badge({ resource, resourceName, disabled, className }) {
   const { id, short } = resource || {}
 
   const icon = icons[resourceName] || icons.default
 
   return (
     <BootstrapBadge
-      as={resourceName ? Link : BootstrapBadge}
+      as={disabled ? BootstrapBadge : Link}
       to={"/" + resourceName + "/" + id}
       className={className + " text-decoration-none w-auto"}
-      bg={resourceName ? "primary" : "secondary"}
+      bg={disabled ? "secondary" : "primary"}
     >
       {/* <FontAwesomeIcon icon={faX} className="me-3" /> */}
       {resource && <FontAwesomeIcon icon={icon} className="me-2" />}

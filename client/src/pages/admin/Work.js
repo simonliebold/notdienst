@@ -1,23 +1,17 @@
 import React from "react"
 
-import { Link, useParams } from "react-router-dom"
-
-import Breadcrumb from "react-bootstrap/Breadcrumb"
+import { useParams } from "react-router-dom"
 
 import useResource from "../../hooks/useResource"
 import { WorkDetailedCard } from "../../components/DetailedCard"
+import Breadcrumb from "../../components/Breadcrumb"
 
 function Work() {
   const { workId } = useParams()
   const work = useResource("works/" + workId)
   return (
     <>
-      <Breadcrumb className="mt-3">
-        <Breadcrumb.Item as={Link} to="/works/" href="/works/">
-          Dienste
-        </Breadcrumb.Item>
-        <Breadcrumb.Item active>{work?.short}</Breadcrumb.Item>
-      </Breadcrumb>
+      <Breadcrumb resourceName="work" resource={work} />
       <WorkDetailedCard work={work} className="mt-3" />
     </>
   )

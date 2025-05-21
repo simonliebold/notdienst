@@ -73,9 +73,9 @@ export const WorkDetailedCard = ({ work }) => {
       <hr />
       Schicht: <br />
       <Badge resource={rrule?.shift} resourceName="shift" />
-      {/* <hr />
-      Wiederholung: <br />
-      <Badge resource={rrule} resourceName="rrule" /> */}
+      <hr />
+      Rrule: <br />
+      <Badge resource={rrule} resourceName="rrule" />
     </DetailedCard>
   )
 }
