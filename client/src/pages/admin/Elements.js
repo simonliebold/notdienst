@@ -4,6 +4,7 @@ import { faHashtag, faUser } from "@fortawesome/free-solid-svg-icons"
 import TitleCard from "../../components/TitleCard"
 import DetailedCard, {
   EmployeeDetailedCard,
+  EmploymentDetailedCard,
   ScheduleDetailedCard,
 } from "../../components/DetailedCard"
 import MultiBadge from "../../components/MultiBadge"
@@ -12,6 +13,7 @@ import useResource from "../../hooks/useResource"
 function Elements() {
   const employee = useResource(process.env.REACT_APP_URL + "employees/1")
   const schedule = useResource(process.env.REACT_APP_URL + "schedules/1")
+  const employment = useResource(process.env.REACT_APP_URL + "employments/1")
   return (
     <>
       <h2>Badge</h2>
@@ -23,10 +25,11 @@ function Elements() {
         resourceName={"schedule"}
       />
       <hr />
+      <h2>EmploymentDetailedCard</h2>
+      <EmploymentDetailedCard employment={employment} />
+      <hr />
       <h2>EmployeeDetailedCard</h2>
-      <EmployeeDetailedCard
-        employee={employee}
-      />
+      <EmployeeDetailedCard employee={employee} />
       <hr />
       <h2>ScheduleDetailedCard</h2>
       <ScheduleDetailedCard schedule={schedule} />{" "}

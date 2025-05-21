@@ -30,6 +30,18 @@ const DetailedCard = ({ resource, resourceName, children }) => {
   )
 }
 
+export const EmploymentDetailedCard = ({ employment }) => {
+  // const { } = employment || {}
+
+  return (
+    <DetailedCard resourceName="employment" resource={employment}>
+      Minimum: {employment?.minHours}{" "}
+      {employment?.minHours === null && "Kein Datum gefunden"}
+      <br />
+      Maximum: {employment?.maxHours}
+    </DetailedCard>
+  )
+}
 export const EmployeeDetailedCard = ({ employee }) => {
   const { employment, works, schedules, jobs, fgvhbj } = employee || {}
 
@@ -46,7 +58,6 @@ export const EmployeeDetailedCard = ({ employee }) => {
       <hr />
       Jobs:
       <MultiBadge items={jobs} resourceName="job" />
-      
     </DetailedCard>
   )
 }

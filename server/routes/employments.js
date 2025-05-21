@@ -11,7 +11,7 @@ module.exports = (models) => {
   router.get("/:id", async (req, res) => {
     const employment = await models.Employment.findByPk(req.params.id)
     if (employment === null) res.status(404).send({ message: "Not found" })
-    else res.send({ employment: employment })
+    else res.send(employment)
   })
 
   // Create one
