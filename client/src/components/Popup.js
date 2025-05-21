@@ -1,12 +1,15 @@
 import React, { useCallback, useState } from "react"
 import FormControl from "react-bootstrap/FormControl"
 import Modal from "react-bootstrap/Modal"
-import { CancelButton, ConfirmCreateNewButton, ConfirmDeleteButton } from "./CardButton"
+import {
+  CancelButton,
+  ConfirmCreateNewButton,
+  ConfirmDeleteButton,
+  CreateNewButton,
+} from "./CardButton"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faPlus, faTrash, faX } from "@fortawesome/free-solid-svg-icons"
 import { title } from "../variables"
-import EditableText from "./EditableText"
-import MultiBadge from "./MultiBadge"
 
 function Popup({
   children,
@@ -93,27 +96,45 @@ export const CreateNewPopup = ({
   children,
   ...props
 }) => {
+  const [show, setShow] = useState(false)
+
+  const close = useCallback(() => {
+    setShow(false)
+  }, [show, setShow])
+
+  const open = useCallback(() => {
+    setShow(true)
+  }, [show, setShow])
+
   return (
-    <Popup
-      {...props}
-      icon={faPlus}
-      title={title[resourceName] + " erstellen"}
-      onClose={onClose}
-      buttons={
-        <>
-          <CancelButton onClick={onClose} />
-          <ConfirmCreateNewButton
-            onClick={onConfirm}
-            resource={resource}
-            resourceName={resourceName}
-            creating={creating}
-            // disabled={disabled}
-          />
-        </>
-      }
-    >
-      {children}
-    </Popup>
+    <>
+      <CreateNewButton
+        onClick={open}
+        resourceName={resourceName}
+        className="mt-2"
+      />
+      <Popup
+        {...props}
+        icon={faPlus}
+        title={title[resourceName] + " erstellen"}
+        onClose={close}
+        show={show}
+        buttons={
+          <>
+            <CancelButton onClick={onClose} />
+            <ConfirmCreateNewButton
+              onClick={onConfirm}
+              resource={resource}
+              resourceName={resourceName}
+              creating={creating}
+              // disabled={disabled}
+            />
+          </>
+        }
+      >
+        {children}
+      </Popup>
+    </>
   )
 }
 

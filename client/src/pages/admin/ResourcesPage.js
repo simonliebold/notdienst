@@ -11,7 +11,6 @@ import MultiBadge from "../../components/MultiBadge"
 import { useNavigate } from "react-router-dom"
 
 function ResourcesPage({ resourceName, resources, children }) {
-  const [showCreateNewPopup, setShowCreateNewPopup] = useState(false)
   const [input, setInput] = useState(null)
   const [creating, setCreating] = useState(false)
   const navigate = useNavigate()
@@ -26,15 +25,11 @@ function ResourcesPage({ resourceName, resources, children }) {
     [input]
   )
 
-  const onCloseRequest = useCallback(() => {
-    setShowCreateNewPopup(false)
-  }, [setShowCreateNewPopup])
-
   const onCreateConfirm = useCallback(async () => {
+    setCreating(true)
     const created = await create(input)
-    setShowCreateNewPopup(false)
     navigate("./" + created?.id)
-  }, [create, setShowCreateNewPopup, input])
+  }, [create, input])
 
   return (
     <>
@@ -50,16 +45,10 @@ function ResourcesPage({ resourceName, resources, children }) {
           )
         })}
       </CardList>
-      <CreateNewButton
-        onClick={(e) => setShowCreateNewPopup(!showCreateNewPopup)}
-        resourceName={resourceName}
-        className="mt-2"
-      />
+      
       <CreateNewPopup
-        onClose={onCloseRequest}
         onConfirm={onCreateConfirm}
         resourceName={resourceName}
-        show={showCreateNewPopup}
         creating={creating}
       >
         {React.Children.map(children, (child) => {
