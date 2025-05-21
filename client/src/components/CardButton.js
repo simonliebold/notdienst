@@ -134,6 +134,8 @@ export const AsyncGenerateWorksButton = ({
     await updateResource()
   }, [generate])
 
+  if (schedule?.works?.length !== 0) return
+
   return (
     <CardButton {...props} icon={faCalendarPlus} onClick={generateWorks}>
       {titles.work + " generieren"}
@@ -157,7 +159,7 @@ export const AsyncAllocateWorksButton = ({
     setLoading(false)
   })
 
-  if (schedule?.works?.length !== 0) return
+  
 
   if (loading)
     return (
