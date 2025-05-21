@@ -33,13 +33,15 @@ module.exports = (models) => {
 
   // Get one
   router.get("/:id", roles.requireAdmin, async (req, res) => {
-    try {
-      const work = await models.Work.findByPk(req.params.id)
-      if (work === null) return res.sendStatus(404)
-      return res.send({ work: work })
-    } catch (error) {
-      return res.status(400).send({ error: error.message })
-    }
+    const work = await models.Work.findByPk(req.params.id, {
+      include: [
+        { model: models.Rrule, include: models.Shift },
+        models.Schedule,
+        models.Employee,
+      ],
+    })
+    if (!work) return res.status(404).send({ error: "Dienst nicht gefunden" })
+    return res.send(work)
   })
 
   // Create one
@@ -93,6 +95,6 @@ module.exports = (models) => {
       return res.status(400).send({ error: error.message })
     }
   })
-  
+
   return router
 }

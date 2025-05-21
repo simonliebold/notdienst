@@ -31,6 +31,32 @@ const DetailedCard = ({ resource, resourceName, children }) => {
   )
 }
 
+export const WorkDetailedCard = ({ work }) => {
+  const { title, start, end, rrule, schedule, employees } = work || {}
+
+  const startString = new Date(start).toLocaleString(localeString.country)
+  const endString = new Date(end).toLocaleString(localeString.country)
+
+  return (
+    <DetailedCard resource={work} resourceName="work">
+      Start: {startString} <br />
+      Ende: {endString}
+      <hr />
+      Mitarbeiter:
+      <MultiBadge items={employees} resourceName="employee" />
+      <hr />
+      Dienstplan: <br />
+      <Badge resource={schedule} resourceName="schedule" />
+      <hr />
+      Schicht: <br />
+      <Badge resource={rrule?.shift} resourceName="shift" />
+      <hr />
+      Wiederholung: <br />
+      <Badge resource={rrule} resourceName="rrule" />
+    </DetailedCard>
+  )
+}
+
 export const ShiftDetailedCard = ({ shift }) => {
   const { schedules, jobs, rrules } = shift || {}
 
@@ -63,8 +89,6 @@ export const RruleDetailedCard = ({ rrule }) => {
 
 export const JobDetailedCard = ({ job }) => {
   const { employees, shifts } = job || {}
-
-  console.log("shifts", shifts)
 
   return (
     <DetailedCard resourceName="job" resource={job}>

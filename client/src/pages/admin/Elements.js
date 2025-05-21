@@ -10,6 +10,7 @@ import DetailedCard, {
   RruleDetailedCard,
   ScheduleDetailedCard,
   ShiftDetailedCard,
+  WorkDetailedCard,
 } from "../../components/DetailedCard"
 import MultiBadge from "../../components/MultiBadge"
 import useResource from "../../hooks/useResource"
@@ -22,6 +23,7 @@ function Elements() {
   const job = useResource("jobs/1")
   const rrule = useResource("rrules/1")
   const shift = useResource("shifts/1")
+  const work = useResource("works/1")
   return (
     <>
       <h2>Badge</h2>
@@ -32,6 +34,9 @@ function Elements() {
         resource={{ id: 256, short: "OKT 23", title: "Oktober 2023" }}
         resourceName={"schedule"}
       />
+      <hr />
+      <h2>WorkDetailedCard</h2>
+      <WorkDetailedCard work={work} />
       <hr />
       <h2>ShiftDetailedCard</h2>
       <ShiftDetailedCard shift={shift} />

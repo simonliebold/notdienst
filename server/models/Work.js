@@ -20,7 +20,7 @@ module.exports = (sequelize) => {
       title: {
         type: Sequelize.VIRTUAL,
         get() {
-          return "RRULE-"+this.rruleId
+          return "Dienst"
         },
       },
       start: {
