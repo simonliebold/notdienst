@@ -157,21 +157,6 @@ export const JobDetailedCard = ({ job }) => {
   )
 }
 
-export const FreetimeDetailedCard = ({ freetime }) => {
-  const { date, schedule, employee } = freetime || {}
-
-  return (
-    <DetailedCard resourceName="freetime" resource={freetime}>
-      Datum: {new Date(date).toLocaleDateString(localeString.country)} <br />
-      <hr />
-      Mitarbeiter: <br />
-      <EditableBadge resource={employee} resourceName="employee" />
-      <hr />
-      Schichtplan: <br />
-      <EditableBadge resource={schedule} resourceName="schedule" />
-    </DetailedCard>
-  )
-}
 export const ScheduleDetailedCard = ({ schedule, className }) => {
   const { employees, shifts, works } = schedule || {}
 

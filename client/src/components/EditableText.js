@@ -4,6 +4,7 @@ import FloatingLabel from "react-bootstrap/esm/FloatingLabel"
 import { useParams } from "react-router-dom"
 import { labels } from "../variables"
 
+// TODO: make it be controllable
 const EditableText = ({ value, label, onInput, className }) => {
   const { action } = useParams()
   const [input, setInput] = useState(value)

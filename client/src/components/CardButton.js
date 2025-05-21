@@ -30,7 +30,7 @@ export const CardDeleteButton = ({ className, ...props }) => {
     <CardButtonLink
       variant="link"
       icon={faTrash}
-      to="delete"
+      // to="./../delete"
       className={"text-decoration-none text-secondary " + className}
       {...props}
     >

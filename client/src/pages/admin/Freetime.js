@@ -1,21 +1,21 @@
-import React from "react"
+import React, { useState } from "react"
+import EditableText from "../../components/EditableText"
+import { EditableBadge } from "../../components/Badge"
+import MultiBadge from "../../components/MultiBadge"
+import Resource from "./ResourcePage"
+import { localeString } from "../../variables"
 
-import { Link, useParams } from "react-router-dom"
-
-
-import useResource from "../../hooks/useResource"
-import { FreetimeDetailedCard } from "../../components/DetailedCard"
-import Breadcrumb from "../../components/Breadcrumb"
-
+// TODO: create EditableDateInput
+// new Date(freetime?.date).toLocaleDateString(localeString.country)
 function Freetime() {
-  const { freetimeId } = useParams()
-  const freetime = useResource("freetimes/" + freetimeId)
+  const [freetime, setFreetime] = useState(null)
   return (
-    <>
-      <Breadcrumb resourceName="freetime" resource={freetime} />
-      <FreetimeDetailedCard freetime={freetime} className="mt-3" />
-    </>
+    <Resource resourceName="freetime" setData={setFreetime}>
+      <EditableText value={freetime?.date} label="date" />
+      <hr />
+      <EditableBadge resource={freetime?.employee} resourceName="employee" />
+      <EditableBadge resource={freetime?.schedule} resourceName="schedule" />
+    </Resource>
   )
 }
-
 export default Freetime

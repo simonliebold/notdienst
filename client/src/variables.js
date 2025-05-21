@@ -51,7 +51,8 @@ export const labels = {
   short: "Kürzel",
   title: "Name",
   minHours: "Minimum",
-  maxHours: "Maximum"
+  maxHours: "Maximum",
+  date: "Datum"
 }
 
 export const localeString = {
