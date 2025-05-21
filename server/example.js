@@ -80,7 +80,7 @@ module.exports = async (models) => {
     },
     {
       short: "A1 Nacht Mo, Di, Do",
-      content: "FREQ=WEEKLY;INTERVAL=1;BYDAY=MO,TU,TH,",
+      content: "FREQ=WEEKLY;INTERVAL=1;BYDAY=MO,TU,TH",
       start: "18:00",
       end: "8:00",
       shiftId: 1,
@@ -212,7 +212,7 @@ module.exports = async (models) => {
     { type: "Nicht Tag", date: new Date(), scheduleId: 1, employeeId: 1 },
     { type: "Nicht Nacht", date: new Date(), scheduleId: 1, employeeId: 1 },
     {
-      type: "Seminar / Ausbildung",
+      type: "Seminar",
       date: new Date(),
       scheduleId: 1,
       employeeId: 1,

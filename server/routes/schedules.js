@@ -198,6 +198,7 @@ module.exports = (models, sequelize) => {
 
     let works = []
 
+    // TODO: fix daylight saving error
     req.rrules.forEach((rrule) => {
       let ruleStart = new Date(req.schedule.start.getTime())
       ruleStart.setHours(...rrule.start.split(":"))

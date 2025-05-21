@@ -19,11 +19,20 @@ module.exports = (sequelize) => {
       title: {
         type: Sequelize.VIRTUAL,
         get() {
-          return this.type + " am " + new Date(this.date).toLocaleDateString("de-DE")
+          return (
+            this.type + " am " + new Date(this.date).toLocaleDateString("de-DE")
+          )
         },
       },
       type: {
-        type: Sequelize.STRING,
+        type: Sequelize.ENUM(
+          "Wunschfrei",
+          "Nicht Tag",
+          "Nicht Nacht",
+          "Urlaub",
+          "Seminar",
+          "Ausbildung"
+        ),
         allowNull: false,
         defaultValue: "Wunschfrei",
       },
