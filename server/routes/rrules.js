@@ -19,5 +19,30 @@ module.exports = (models) => {
     return res.send(rrule)
   })
 
+  // Update one
+  router.put("/:id", async (req, res) => {
+    try {
+      const rrule = await models.Rrule.findByPk(req.params.id)
+
+      if (!rrule) return res.status(400).send({ error: "Rrule nicht gefunden" })
+
+      await models.Rrule.update(
+        {
+          short: req.body.short,
+          title: req.body.title,
+          content: req.body.content,
+          shiftId: req.body.shiftId
+        },
+        {
+          where: { id: req.params.id },
+        }
+      )
+
+      return res.status(200).send({ message: "Änderungen gespeichert" })
+    } catch (error) {
+      res.status(400).send({ error: error })
+    }
+  })
+
   return router
 }

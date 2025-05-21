@@ -130,33 +130,6 @@ export const ShiftDetailedCard = ({ shift }) => {
   )
 }
 
-export const RruleDetailedCard = ({ rrule }) => {
-  const { title, content, shift } = rrule || {}
-
-  return (
-    <DetailedCard resourceName="rrule" resource={rrule}>
-      Inhalt: <code>{content}</code>
-      <hr />
-      Schicht: <br />
-      <EditableBadge resource={shift} resourceName="shift" />
-    </DetailedCard>
-  )
-}
-
-export const JobDetailedCard = ({ job }) => {
-  const { employees, shifts } = job || {}
-
-  return (
-    <DetailedCard resourceName="job" resource={job}>
-      Mitarbeiter:
-      <MultiBadge resourceName="employee" items={employees} />
-      <hr />
-      Schichten:
-      <MultiBadge resourceName="shift" items={shifts} />
-    </DetailedCard>
-  )
-}
-
 export const ScheduleDetailedCard = ({ schedule, className }) => {
   const { employees, shifts, works } = schedule || {}
 

@@ -53,7 +53,8 @@ export const labels = {
   minHours: "Minimum",
   maxHours: "Maximum",
   date: "Datum",
-  type: "Art"
+  type: "Art",
+  content: "Inhalt"
 }
 
 export const localeString = {

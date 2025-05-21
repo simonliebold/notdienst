@@ -1,23 +1,20 @@
-import React from "react"
-
-import { Link, useParams } from "react-router-dom"
-
-
-import useResource from "../../hooks/useResource"
-import {
-  RruleDetailedCard,
-  ShiftDetailedCard,
-} from "../../components/DetailedCard"
-import Breadcrumb from "../../components/Breadcrumb"
+import React, { useState } from "react"
+import EditableText from "../../components/EditableText"
+import { EditableBadge } from "../../components/Badge"
+import MultiBadge from "../../components/MultiBadge"
+import ResourcePage from "./ResourcePage"
 
 function Rrule() {
-  const { rruleId } = useParams()
-  const rrule = useResource("rrules/" + rruleId)
+  const [rrule, setRrule] = useState(null)
+
   return (
-    <>
-      <Breadcrumb resourceName="rrule" resource={rrule} />
-      <RruleDetailedCard rrule={rrule} className="mt-3" />
-    </>
+    <ResourcePage resourceName="rrule" setData={setRrule}>
+      <EditableText value={rrule?.short} label="short" />
+      <EditableText value={rrule?.title} label="title" />
+      <EditableText value={rrule?.content} label="content" />
+      <hr />
+      <EditableBadge resource={rrule?.shift} resourceName="shift" />
+    </ResourcePage>
   )
 }
 
