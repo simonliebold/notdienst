@@ -17,10 +17,22 @@ module.exports = (sequelize) => {
         set(value) {
           this.setDataValue("initials", value.toUpperCase())
         },
+        validate: {
+          notEmpty: {
+            args: true,
+            msg: "Das Kürzel darf nicht leer sein",
+          },
+        },
       },
       name: {
         type: Sequelize.STRING,
         allowNull: false,
+        validate: {
+          notEmpty: {
+            args: true,
+            msg: "Der Name darf nicht leer sein",
+          },
+        },
       },
       employmentId: {
         type: Sequelize.INTEGER,

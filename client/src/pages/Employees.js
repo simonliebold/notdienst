@@ -1,5 +1,5 @@
 import axios from "axios"
-import React, { useCallback, useEffect, useState } from "react"
+import React, { useCallback, useEffect, useRef, useState } from "react"
 import { Link, useNavigate, useParams } from "react-router-dom"
 
 import { useErrorMessage, useSuccessMessage } from "../contexts/AlertContext"
@@ -103,7 +103,8 @@ const EmployeeModal = ({ allEmployments, allJobs }) => {
     const response = await axios
       .get(process.env.REACT_APP_URL + "employees/" + employeeInitials)
       .catch(handleError)
-    if (!response?.data?.employee) return
+
+    if (!response?.data?.employee) return close()
 
     setEmployee(response.data.employee)
     setWorks(response.data.employee.works)
@@ -111,6 +112,7 @@ const EmployeeModal = ({ allEmployments, allJobs }) => {
     setInitials(response.data.employee.initials)
     setEmploymentId(response.data.employee.employmentId)
     setJobs(response.data.employee.jobs.map((job) => job.id))
+
     setIsButtonLoading(false)
     setIsLoading(false)
   }, [employeeInitials, handleError])
@@ -497,19 +499,69 @@ const EmployeeCard = ({ employee }) => {
   )
 }
 
+const CreateEmployee = ({ showCreateModal, setShowCreateModal }) => {
+  const handleSuccess = useSuccessMessage()
+  const handleError = useErrorMessage()
+
+  const initials = useRef(null)
+  const name = useRef(null)
+
+  const createNewEmployee = useCallback(async () => {
+    const response = await axios
+      .post(process.env.REACT_APP_URL + "employees", {
+        initials: initials.current.value,
+        name: name.current.value,
+      })
+      .catch(handleError)
+    if (!response?.data?.message) return
+    handleSuccess(response.data.message)
+    setShowCreateModal(false)
+  }, [handleError, handleSuccess])
+
+  return (
+    <Modal
+      show={showCreateModal}
+      onHide={(e) => setShowCreateModal(false)}
+      backdrop="static"
+      keyboard={false}
+      fullscreen={"md-down"}
+    >
+      <Modal.Header closeButton>
+        <Modal.Title>Neuen Mitarbeiter anlegen</Modal.Title>
+      </Modal.Header>
+      <Modal.Body>
+        <Row>
+          <Col xs={3}>
+            <h2 className="fs-6">Kürzel</h2>
+            <Form.Control ref={initials} />
+          </Col>
+          <Col>
+            <h2 className="fs-6">Name</h2>
+            <Form.Control ref={name} />
+          </Col>
+        </Row>
+      </Modal.Body>
+      <Modal.Footer>
+        <Button onClick={createNewEmployee}>
+          <FontAwesomeIcon className="me-2" icon={faPlus} />
+          Neuen Mitarbeiter anlegen
+        </Button>
+      </Modal.Footer>
+    </Modal>
+  )
+}
+
 function Employees() {
   const { employeeInitials } = useParams()
 
   const handleError = useErrorMessage()
-  const handleSuccess = useSuccessMessage()
 
   const [employees, setEmployees] = useState([])
 
-  const [newName, setNewName] = useState()
-  const [newInitials, setNewInitials] = useState()
-
   const [allEmployments, setAllEmployments] = useState()
   const [allJobs, setAllJobs] = useState()
+
+  const [showCreateModal, setShowCreateModal] = useState(false)
 
   const fetchEmployees = useCallback(async () => {
     const response = await axios
@@ -543,18 +595,6 @@ function Employees() {
     )
   }, [handleError])
 
-  const createNewEmployee = useCallback(async () => {
-    const response = await axios
-      .post(process.env.REACT_APP_URL + "employees", {
-        name: newName,
-        initials: newInitials,
-      })
-      .catch(handleError)
-    if (!response?.data?.message) return
-    handleSuccess(response.data.message)
-    fetchEmployees()
-  }, [newName, newInitials, handleError, handleSuccess, fetchEmployees])
-
   useEffect(() => {
     if (employeeInitials) return
     fetchEmployees()
@@ -566,28 +606,21 @@ function Employees() {
   }, [fetchAllEmployments, fetchAllJobs])
 
   return (
-    <Row xs={1} md={2} lg={3} xl={4} className="g-4 mt-0">
+    <Row xs={1} md={2} lg={3} xl={4} className="g-4 mt-0 align-items-stretch">
       {employees.map((employee, i) => {
         return <EmployeeCard key={"employee-" + i} employee={employee} />
       })}
-      <Col className="mb-3">
-        <Card bg="primary" text="light" className="opacity-75">
-          <Card.Body>
-            <h2 className="fs-6">Kürzel</h2>
-            <Form.Control
-              onChange={(e) => setNewInitials(e.target.value)}
-            ></Form.Control>
-            <h2 className="fs-6 my-3">Name</h2>
-            <Form.Control
-              onChange={(e) => setNewName(e.target.value)}
-            ></Form.Control>
-            <Button onClick={createNewEmployee}>
-              <FontAwesomeIcon className="me-2" icon={faPlus} />
-              Neuen Mitarbeiter anlegen
-            </Button>
-          </Card.Body>
-        </Card>
+      <Col>
+        <Button onClick={(e) => setShowCreateModal(true)}>
+          <FontAwesomeIcon className="me-2" icon={faPlus} />
+          Neuen Mitarbeiter anlegen
+        </Button>
+        <CreateEmployee
+          showCreateModal={showCreateModal}
+          setShowCreateModal={setShowCreateModal}
+        />
       </Col>
+
       <EmployeeModal allEmployments={allEmployments} allJobs={allJobs} />
     </Row>
   )
