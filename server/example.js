@@ -208,16 +208,36 @@ module.exports = async (models) => {
   )
 
   await models.Freetime.bulkCreate([
-    { type: "Wunschfrei", date: new Date(), scheduleId: 1, employeeId: 1 },
-    { type: "Nicht Tag", date: new Date(), scheduleId: 1, employeeId: 1 },
-    { type: "Nicht Nacht", date: new Date(), scheduleId: 1, employeeId: 1 },
     {
-      type: "Seminar",
-      date: new Date(),
-      scheduleId: 1,
+      type: "Wunschfrei",
+      start: new Date(2024, 1, 1),
+      end: new Date(2024, 1, 1),
       employeeId: 1,
     },
-    { type: "Urlaub", date: new Date(), scheduleId: 1, employeeId: 1 },
+    {
+      type: "Nicht Tag",
+      start: new Date(2024, 1, 2),
+      end: new Date(2024, 1, 2),
+      employeeId: 2,
+    },
+    {
+      type: "Nicht Nacht",
+      start: new Date(2024, 1, 3),
+      end: new Date(2024, 1, 3),
+      employeeId: 3,
+    },
+    // {
+    //   type: "Seminar",
+    //   start: new Date(),
+    //   end: new Date(),
+    //   employeeId: 1,
+    // },
+    // {
+    //   type: "Urlaub",
+    //   start: new Date(),
+    //   end: new Date(),
+    //   employeeId: 1,
+    // },
   ])
 
   await models.Mission.bulkCreate([

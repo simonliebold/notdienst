@@ -14,7 +14,6 @@ module.exports = (db) => {
 
   Work.belongsTo(Schedule)
 
-  Freetime.belongsTo(Schedule)
   Freetime.belongsTo(Employee)
 
   Rrule.belongsTo(Shift)

@@ -5,7 +5,7 @@ module.exports = (models) => {
   // Get all
   router.get("/", roles.requireAdmin, async (req, res) => {
     const freetimes = await models.Freetime.findAll({
-      include: [models.Schedule, models.Employee],
+      include: [models.Employee],
     })
     return res.send(freetimes)
   })
@@ -13,7 +13,7 @@ module.exports = (models) => {
   // Get one
   router.get("/:id", roles.requireAdmin, async (req, res) => {
     const freetime = await models.Freetime.findByPk(req.params.id, {
-      include: [models.Schedule, models.Employee],
+      include: [models.Employee],
     })
     if (freetime === null) return res.sendStatus(404)
     return res.send(freetime)
@@ -25,8 +25,8 @@ module.exports = (models) => {
     try {
       const freetime = await models.Freetime.create({
         type: req?.body?.type,
-        date: req?.body?.date,
-        scheduleId: req?.body?.scheduleId,
+        start: req?.body?.start,
+        end: req?.body?.end,
         employeeId: req?.body?.employeeId,
       })
       return res.send(freetime)
@@ -36,7 +36,6 @@ module.exports = (models) => {
   })
 
   // Update one
-  // TODO: Add error handling
   router.put("/:id", roles.requireAdmin, async (req, res) => {
     try {
       const response = await models.Freetime.update(
@@ -53,18 +52,6 @@ module.exports = (models) => {
   })
 
   // Delete one
-  // TODO: enable deletion by admin
-  // router.delete("/:id", async (req, res) => {
-  //   try {
-  //     const response = await models.Freetime.destroy({
-  //       where: { id: req.params.id, employeeId: req.user.id },
-  //     })
-  //     if (response === 0) return res.sendStatus(404)
-  //     return res.status(200).send({ message: "Deleted successfully" })
-  //   } catch (error) {
-  //     res.status(400).send({ errors: error.message })
-  //   }
-  // })
   router.delete("/:id", roles.requireAdmin, async (req, res) => {
     try {
       const freetime = await models.Freetime.destroy({

@@ -251,6 +251,10 @@ module.exports = (models, sequelize) => {
   const getWorks = async (req, res, next) => {
     const works = await models.Work.findAll({
       where: { scheduleId: req.schedule.id },
+      include: {
+        model: models.Rrule,
+        include: { model: models.Shift, include: models.Job },
+      },
     })
 
     if (works.length === 0)
@@ -258,7 +262,18 @@ module.exports = (models, sequelize) => {
         .status(400)
         .send({ error: "Es wurden noch keine Dienste generiert." })
 
-    req.works = works
+    req.works = {}
+    works.forEach((work) => {
+      req.works[work.id] = {
+        // ...work.dataValues,
+        id: work.id,
+        start: new Date(work.start),
+        end: new Date(work.end),
+        jobs: work.rrule.shift.jobs,
+        jobIds: work.rrule.shift.jobs.map((job) => job.id),
+      }
+    })
+
     next()
   }
 
@@ -276,7 +291,8 @@ module.exports = (models, sequelize) => {
 
     employees.forEach((employee) => {
       req.employees[employee.id] = {
-        ...employee.dataValues,
+        // ...employee.dataValues,
+        id: employee.id,
         freetimes: [],
         minHours: employee.employment.minHours,
         maxHours: employee.employment.maxHours,
@@ -305,32 +321,23 @@ module.exports = (models, sequelize) => {
 
   // Add employee ids to works
   const checkAvailability = async (req, res, next) => {
-    const works = await models.Work.findAll({
-      where: { scheduleId: req.params.id },
-    })
-    if (works === undefined) return res.sendStatus(404)
-
     let workEmployees = []
-    for (const workInd in works) {
-      const work = works[workInd].dataValues
-      const event = req.events[work.eventId]
-      const start = new Date(work.start)
-      const end = new Date(work.end)
-      const duration = work.duration
+    Object.values(req.works).forEach((work) => {
       work.employeeIds = []
-      for (const [employeeId, employee] of Object.entries(event.employees)) {
-        const isFree = req.employees[employeeId].freetimes.every(
+      Object.values(req.employees).forEach((employee) => {
+        const isFree = req.employees[employee.id].freetimes.every(
           (freetime) =>
-            new Date(freetime.end).getTime() <= start.getTime() ||
-            new Date(freetime.start).getTime() >= end.getTime()
-        )
+          new Date(freetime.end).getTime() <= work.start.getTime() ||
+          new Date(freetime.start).getTime() >= work.end.getTime()
+          )
+          console.log(work.id, employee.id, isFree)
         if (isFree) {
-          req.employees[employeeId].possibleHours += duration
-          work.employeeIds.push(employeeId)
+          // req.employees[employee.id].possibleHours += duration
+          work.employeeIds.push(employee.id)
         }
-      }
+      })
       workEmployees.push(work)
-    }
+    })
 
     req.works = workEmployees
     next()
@@ -397,11 +404,11 @@ module.exports = (models, sequelize) => {
     getSchedule,
     getWorks,
     getEmployees,
-    // checkAvailability,
+    checkAvailability,
     // orderWorks,
     // allocateWorks,
     async (req, res) => {
-      return res.send(req.employees)
+      return res.send(req.works)
     }
   )
 

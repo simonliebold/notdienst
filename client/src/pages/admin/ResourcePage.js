@@ -154,7 +154,8 @@ export const FreetimePage = () => {
   const [freetime, setFreetime] = useState(null)
   return (
     <ResourcePage resourceName="freetime" setData={setFreetime}>
-      <EditableText value={freetime?.date} label="date" />
+      <EditableText value={freetime?.start} label="start" />
+      <EditableText value={freetime?.end} label="end" />
       <EditableText value={freetime?.type} label="type" />
       <hr />
       <EditableBadge resource={freetime?.employee} resourceName="employee" />

@@ -20,7 +20,7 @@ module.exports = (sequelize) => {
         type: Sequelize.VIRTUAL,
         get() {
           return (
-            this.type + " am " + new Date(this.date).toLocaleDateString("de-DE")
+            this.type + " am " + new Date(this.start).toLocaleDateString("de-DE")
           )
         },
       },
@@ -36,17 +36,13 @@ module.exports = (sequelize) => {
         allowNull: false,
         defaultValue: "Wunschfrei",
       },
-      date: {
-        type: Sequelize.DATEONLY,
+      start: {
+        type: Sequelize.DATE,
         allowNull: false,
       },
-      scheduleId: {
-        type: Sequelize.INTEGER,
+      end: {
+        type: Sequelize.DATE,
         allowNull: false,
-        references: {
-          model: sequelize.models.Schedule,
-          key: "id",
-        },
       },
       employeeId: {
         type: Sequelize.INTEGER,
