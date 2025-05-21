@@ -1,5 +1,5 @@
 import axios from "axios"
-import React, { useEffect, useState } from "react"
+import React, { useCallback, useEffect, useState } from "react"
 import { Link, useNavigate, useParams } from "react-router-dom"
 
 import { useErrorMessage, useSuccessMessage } from "../contexts/AlertContext"
@@ -30,16 +30,16 @@ import {
   faUser,
 } from "@fortawesome/free-solid-svg-icons"
 
-const dateOptions = {
-  weekday: "long",
-  year: "numeric",
-  month: "numeric",
-  day: "numeric",
-  hour: "numeric",
-  minute: "numeric",
-}
-
 const WorkCard = ({ work }) => {
+  const dateOptions = {
+    weekday: "long",
+    year: "numeric",
+    month: "numeric",
+    day: "numeric",
+    hour: "numeric",
+    minute: "numeric",
+  }
+
   return (
     <Col>
       <Card>
@@ -65,26 +65,20 @@ const WorkCard = ({ work }) => {
   )
 }
 
-const EmployeeModal = () => {
+const EmployeeModal = ({ allEmployments, allJobs }) => {
   const { employeeInitials } = useParams()
-
+  const navigate = useNavigate()
   const handleError = useErrorMessage()
   const handleSuccess = useSuccessMessage()
-
-  const navigate = useNavigate()
 
   const [showModal, setShowModal] = useState(false)
 
   const [employee, setEmployee] = useState()
-  const [works, setWorks] = useState()
-
-  const [allEmployments, setAllEmployments] = useState()
-  const [allJobs, setAllJobs] = useState()
-
   const [name, setName] = useState()
   const [initials, setInitials] = useState()
   const [employmentId, setEmploymentId] = useState()
   const [jobs, setJobs] = useState()
+  const [works, setWorks] = useState()
 
   const [isButtonDisabled, setIsButtonDisabled] = useState(true)
   const [isButtonLoading, setIsButtonLoading] = useState(false)
@@ -94,17 +88,15 @@ const EmployeeModal = () => {
   const [token, setToken] = useState(false)
   const [isTokenLoading, setIsTokenLoading] = useState(false)
 
-  const close = () => {
+  const close = useCallback(() => {
     navigate("/employees")
     setShowModal(false)
-  }
+  }, [navigate])
 
-  const fetchEmployee = async () => {
+  const fetchEmployee = useCallback(async () => {
     setIsLoading(true)
     setShowModal(true)
     setToken()
-    fetchAllEmployments()
-    fetchAllJobs()
     setShowDeleteModal()
     setShowTokenModal()
 
@@ -121,94 +113,80 @@ const EmployeeModal = () => {
     setJobs(response.data.employee.jobs.map((job) => job.id))
     setIsButtonLoading(false)
     setIsLoading(false)
-  }
+  }, [employeeInitials, handleError])
 
-  const fetchAllEmployments = async () => {
-    const response = await axios
-      .get("http://localhost:3000/employments/")
-      .catch(handleError)
-    if (!response?.data?.employments) return
+  const handleFormSubmit = useCallback(
+    async (e) => {
+      e.preventDefault()
+      setIsButtonLoading(true)
+      const response = await axios
+        .put("http://localhost:3000/employees/" + employeeInitials, {
+          name: name,
+          initials: initials,
+          employmentId: employmentId,
+          jobs: jobs,
+        })
+        .catch(handleError)
+      if (!response?.data?.message) return
+      setIsButtonLoading(false)
+      handleSuccess(response.data.message)
+      close()
+    },
+    [
+      close,
+      employeeInitials,
+      employmentId,
+      handleError,
+      handleSuccess,
+      initials,
+      jobs,
+      name,
+    ]
+  )
 
-    setAllEmployments(
-      response.data.employments.map((employment) => {
-        return { value: employment.id, label: employment.title }
-      })
-    )
-  }
-
-  const fetchAllJobs = async () => {
-    const response = await axios
-      .get("http://localhost:3000/jobs/")
-      .catch(handleError)
-    if (!response?.data?.jobs) return
-    setAllJobs(
-      response.data.jobs.map((job) => {
-        return { value: job.id, label: job.title }
-      })
-    )
-  }
-
-  const handleFormSubmit = async (e) => {
-    e.preventDefault()
-    setIsButtonLoading(true)
-    const response = await axios
-      .put("http://localhost:3000/employees/" + employeeInitials, {
-        name: name,
-        initials: initials,
-        employmentId: employmentId,
-        jobs: jobs,
-      })
-      .catch(handleError)
-    if (!response?.data?.message) return
-    setIsButtonLoading(false)
-    handleSuccess(response.data.message)
-    close()
-  }
-
-  const createToken = async () => {
+  const createToken = useCallback(async () => {
     setIsTokenLoading(true)
     const response = await axios
       .post("http://localhost:4000/credentials/generate/" + employee.id)
       .catch(handleError)
-    if (!(response?.data?.code && response?.data?.expiresAt)) return
+    if (!response?.data?.code && !response?.data?.expiresAt) return
     setToken({
       code: response.data.code,
       expiresAt: response.data.expiresAt,
     })
     setIsTokenLoading(false)
     setShowTokenModal(true)
-  }
+  }, [employee, handleError])
 
-  const deleteEmployee = async () => {
+  const deleteEmployee = useCallback(async () => {
     const response = await axios
       .delete("http://localhost:3000/employees/" + employee.id)
       .catch(handleError)
-    close()
     if (!response?.data?.message) return
     handleSuccess(response.data.message)
-  }
+    close()
+  }, [close, employee, handleError, handleSuccess])
 
   useEffect(() => {
     if (!employeeInitials) return
     fetchEmployee()
-  }, [employeeInitials])
+  }, [employeeInitials, fetchEmployee])
 
   useEffect(() => {
     if (!employee) return
-    const newName = employee.name !== name
-    const newInitials = employee.initials !== initials
-    const newEmploymentId = employee.employmentId !== employmentId
-    const newJobs =
+    const oldName = employee.name === name
+    const oldInitials = employee.initials === initials
+    const oldEmploymentId = employee.employmentId === employmentId
+    const oldJobs =
       employee.jobs
         .map((job) => job.id)
         .sort()
-        .toString() !== jobs.sort().toString()
+        .toString() === jobs.sort().toString()
 
-    setIsButtonDisabled(!(newName || newInitials || newEmploymentId || newJobs))
-  }, [name, initials, employmentId, jobs])
+    setIsButtonDisabled(oldName && oldInitials && oldEmploymentId && oldJobs)
+  }, [name, initials, employmentId, jobs, employee])
 
   const [showDeleteModal, setShowDeleteModal] = useState(false)
-
   const DeleteModal = () => {
     const [confirm, setConfirm] = useState("")
     return (
@@ -509,34 +487,69 @@ function Employees() {
   const { employeeInitials } = useParams()
 
   const handleError = useErrorMessage()
+  const handleSuccess = useSuccessMessage()
 
   const [employees, setEmployees] = useState([])
 
   const [newName, setNewName] = useState()
   const [newInitials, setNewInitials] = useState()
 
-  const fetchEmployees = async () => {
+  const [allEmployments, setAllEmployments] = useState()
+  const [allJobs, setAllJobs] = useState()
+
+  const fetchEmployees = useCallback(async () => {
     const response = await axios
       .get("http://localhost:3000/employees/")
       .catch(handleError)
     if (response?.data?.employees) setEmployees(response.data.employees)
-  }
+  }, [handleError])
 
-  const createNewEmployee = async () => {
+  const fetchAllEmployments = useCallback(async () => {
+    const response = await axios
+      .get("http://localhost:3000/employments/")
+      .catch(handleError)
+    if (!response?.data?.employments) return
+
+    setAllEmployments(
+      response.data.employments.map((employment) => {
+        return { value: employment.id, label: employment.title }
+      })
+    )
+  }, [handleError])
+
+  const fetchAllJobs = useCallback(async () => {
+    const response = await axios
+      .get("http://localhost:3000/jobs/")
+      .catch(handleError)
+    if (!response?.data?.jobs) return
+    setAllJobs(
+      response.data.jobs.map((job) => {
+        return { value: job.id, label: job.title }
+      })
+    )
+  }, [handleError])
+
+  const createNewEmployee = useCallback(async () => {
     const response = await axios
       .post("http://localhost:3000/employees", {
         name: newName,
         initials: newInitials,
       })
       .catch(handleError)
-    if (!response.data?.message) return
-    handleError(response.data.message)
+    if (!response?.data?.message) return
+    handleSuccess(response.data.message)
     fetchEmployees()
-  }
+  }, [newName, newInitials, handleError, handleSuccess, fetchEmployees])
 
   useEffect(() => {
+    if (employeeInitials) return
     fetchEmployees()
-  }, [employeeInitials])
+  }, [employeeInitials, fetchEmployees])
+
+  useEffect(() => {
+    fetchAllEmployments()
+    fetchAllJobs()
+  }, [fetchAllEmployments, fetchAllJobs])
 
   return (
     <Row xs={1} md={2} lg={3} xl={4} className="g-4 mt-0">
@@ -561,7 +574,7 @@ function Employees() {
           </Card.Body>
         </Card>
       </Col>
-      <EmployeeModal />
+      <EmployeeModal allEmployments={allEmployments} allJobs={allJobs} />
     </Row>
   )
 }
