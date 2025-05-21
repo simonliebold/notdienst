@@ -5,30 +5,37 @@ import { useErrorMessage, useSuccessMessage } from "./../contexts/AlertContext"
 const useResource = (resourceUrl) => {
   const handleError = useErrorMessage()
   const [data, setData] = useState(null)
+  const [loading, setLoading] = useState(true)
 
   const update = useCallback(async () => {
+    setLoading(true)
     const response = await axios
       .get(process.env.REACT_APP_URL + resourceUrl)
       .catch(handleError)
+
     if (process.env.NODE_ENV === "development")
       console.log("useResource", resourceUrl + ":", response)
 
     setData(response?.data)
+    setLoading(false)
   }, [resourceUrl])
 
   useEffect(() => {
     update()
   }, [resourceUrl, update])
 
-  return [data, update]
+  return [data, update, loading]
 }
 
 export const useResourceUpdate = (resourceUrl) => {
   const handleError = useErrorMessage()
   const handleSuccess = useSuccessMessage()
 
+  const [loading, setLoading] = useState(true)
+
   const update = useCallback(
     async (updatedData) => {
+      setLoading(true)
       const response = await axios
         .put(process.env.REACT_APP_URL + resourceUrl, updatedData)
         .catch(handleError)
@@ -42,12 +49,13 @@ export const useResourceUpdate = (resourceUrl) => {
         )
 
       handleSuccess(response?.data?.message)
+      setLoading(false)
       return response?.data?.message
     },
     [handleError, handleSuccess, resourceUrl]
   )
 
-  return update
+  return [update, loading]
 }
 
 export const useResourceDelete = (resourceUrl) => {
