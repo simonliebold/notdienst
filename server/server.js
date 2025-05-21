@@ -19,7 +19,7 @@ app.use(cors())
 function authenticateToken(req, res, next) {
   const authHeader = req.headers["authorization"]
   const token = authHeader && authHeader.split(" ")[1]
-  if (token == null) return res.status(401).send({ error: "Bitte logge dich erneut ein." })
+  if (token == null) return res.status(401).send({ error: "Bitte logge dich erneut ein" })
 
   jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
     if (err)
@@ -31,7 +31,6 @@ function authenticateToken(req, res, next) {
 
 const routes = require("./routes.js")(models, db.sequelize)
 app.use("/", authenticateToken, routes)
-// app.use("/", routes)
 
 const port = process.env.PORT || 3000
 app.listen(port, async () => {
@@ -48,7 +47,7 @@ app.listen(port, async () => {
   } catch (error) {
     console.error("Unable to connect to the database:", error)
   }
-  // await db.sequelize.sync()
-  await db.sequelize.sync({ force: true })
-  require("./example.js")(models)
+  await db.sequelize.sync()
+  // await db.sequelize.sync({ force: true })
+  // require("./example.js")(models)
 })

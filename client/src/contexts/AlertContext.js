@@ -1,5 +1,6 @@
 import { createContext, useContext, useState } from "react"
 import { useAuthUpdate } from "./AuthContext"
+import { useNavigate } from "react-router-dom"
 
 const AlertContext = createContext()
 const ErrorMessageContext = createContext()
@@ -19,6 +20,7 @@ export const useSuccessMessage = () => {
 
 export const AlertProvider = ({ children }) => {
   const setToken = useAuthUpdate()
+  const navigate = useNavigate()
   const [alert, setAlert] = useState(undefined)
 
   const handleSuccess = (message) => {
@@ -26,7 +28,7 @@ export const AlertProvider = ({ children }) => {
   }
 
   const handleError = (error) => {
-    if (error.response?.status === 401) {
+    if (error.response?.status === 401 || error.response?.status === 403) {
       setAlert({
         message: error.response?.data?.error,
         variant: "danger",

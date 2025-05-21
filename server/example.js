@@ -1,40 +1,40 @@
 module.exports = async (models) => {
-  const names = [
-    ["Simon Liebold", 1],
-    ["Tom Rerucha", 1],
-    ["Michael Wagner", 3],
-    ["Laura Fischer", 3],
-    ["Markus Becker", 2],
-    ["Sarah Hoffmann", 3],
-    ["Julia Weber", 2],
-    ["Thomas Richter", 2],
-    ["Christine Lehmann", 1],
-    ["Sabine Keller", 1],
-    ["David Braun", 1],
-    ["Nicole Huber", 2],
-    ["Martin Wolf", 2],
-    ["Monika Herrmann", 2],
-    ["Richard Krüger", 1],
-    ["Doris Landwehr", 1],
-    ["Peter Kurz", 1],
-  ]
-  const generateEmployees = () => {
-    let employees = []
-    for (let i = 0; i < names.length; i++) {
-      const name = names[i][0].split(" ")
-      const kuerzel = name[1].slice(0, 3).toUpperCase()
-      const employmentId = names[i][1]
+  // const names = [
+  //   ["Simon Liebold", 1],
+  //   ["Tom Rerucha", 1],
+  //   ["Michael Wagner", 3],
+  //   ["Laura Fischer", 3],
+  //   ["Markus Becker", 2],
+  //   ["Sarah Hoffmann", 3],
+  //   ["Julia Weber", 2],
+  //   ["Thomas Richter", 2],
+  //   ["Christine Lehmann", 1],
+  //   ["Sabine Keller", 1],
+  //   ["David Braun", 1],
+  //   ["Nicole Huber", 2],
+  //   ["Martin Wolf", 2],
+  //   ["Monika Herrmann", 2],
+  //   ["Richard Krüger", 1],
+  //   ["Doris Landwehr", 1],
+  //   ["Peter Kurz", 1],
+  // ]
+  // const generateEmployees = () => {
+  //   let employees = []
+  //   for (let i = 0; i < names.length; i++) {
+  //     const name = names[i][0].split(" ")
+  //     const kuerzel = name[1].slice(0, 3).toUpperCase()
+  //     const employmentId = names[i][1]
 
-      const employeeData = {
-        initials: kuerzel,
-        name: `${name[0]} ${name[1]}`,
-        employmentId: employmentId,
-      }
-      employees.push(employeeData)
-    }
+  //     const employeeData = {
+  //       initials: kuerzel,
+  //       name: `${name[0]} ${name[1]}`,
+  //       employmentId: employmentId,
+  //     }
+  //     employees.push(employeeData)
+  //   }
 
-    return employees
-  }
+  //   return employees
+  // }
 
   const jobs = [
     { title: "ÄNoD Fahrer/-in" },
@@ -66,8 +66,8 @@ module.exports = async (models) => {
 
   await models.Employment.bulkCreate(employments)
 
-  let employees = await generateEmployees()
-  employees = await models.Employee.bulkCreate(employees)
+  // let employees = await generateEmployees()
+  // employees = await models.Employee.bulkCreate(employees)
 
   let shifts = [
     { title: "A1 früh" },
@@ -306,14 +306,14 @@ module.exports = async (models) => {
     deadline: "2023-10-29",
   })
 
-  await models.JobEmployee.bulkCreate(
-    employees.map((employee) => {
-      return {
-        jobId: 1,
-        employeeId: employee.id,
-      }
-    })
-  )
+  // await models.JobEmployee.bulkCreate(
+  //   employees.map((employee) => {
+  //     return {
+  //       jobId: 1,
+  //       employeeId: employee.id,
+  //     }
+  //   })
+  // )
 
   await models.ScheduleShift.bulkCreate(
     shifts.map((shift) => {
@@ -342,9 +342,9 @@ module.exports = async (models) => {
   //     employeeId: i,
   //   })
   // }
-  await models.ScheduleEmployee.bulkCreate(
-    employees.map((employee) => {
-      return { scheduleId: 1, employeeId: employee.id }
-    })
-  )
+  // await models.ScheduleEmployee.bulkCreate(
+  //   employees.map((employee) => {
+  //     return { scheduleId: 1, employeeId: employee.id }
+  //   })
+  // )
 }

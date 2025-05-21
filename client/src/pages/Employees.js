@@ -269,6 +269,7 @@ const EmployeeModal = ({ allEmployments, allJobs }) => {
               <Col sm="8">
                 Name: {employee.name}
                 <br />
+                {/* TODO: convert string to variable */}
                 <a href={"http://localhost:3001/credentials/" + token.code}>
                   {"http://localhost:3001/credentials/" + token.code}
                 </a>
