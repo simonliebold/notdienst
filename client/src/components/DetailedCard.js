@@ -91,7 +91,7 @@ const DetailedCard = ({
               onClick={async (e) => {
                 setLoading(true)
                 await update(data)
-                await refresh()
+                refresh()
                 setLoading(false)
               }}
             />
