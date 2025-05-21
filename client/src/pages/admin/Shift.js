@@ -1,20 +1,20 @@
-import React from "react"
-
-import { Link, useParams } from "react-router-dom"
-
-import useResource from "../../hooks/useResource"
-import { ShiftDetailedCard } from "../../components/DetailedCard"
-import Breadcrumb from "../../components/Breadcrumb"
+import React, { useState } from "react"
+import EditableText from "../../components/EditableText"
+import MultiBadge from "../../components/MultiBadge"
+import Resource from "./ResourcePage"
 
 function Shift() {
-  const { shiftId } = useParams()
-  const shift = useResource("shifts/" + shiftId)
+  const [shift, setShift] = useState(null)
+
   return (
-    <>
-      <Breadcrumb resourceName="shift" resource={shift} />
-      <ShiftDetailedCard shift={shift} className="mt-3" />
-    </>
+    <Resource resourceName="shift" setData={setShift}>
+      <EditableText value={shift?.short} label="short" />
+      <EditableText value={shift?.title} label="title" />
+      <hr />
+      <MultiBadge items={shift?.rrules} resourceName="rrule" disabled />
+      <MultiBadge items={shift?.schedules} resourceName="schedule" />
+      <MultiBadge items={shift?.jobs} resourceName="job" />
+    </Resource>
   )
 }
-
 export default Shift

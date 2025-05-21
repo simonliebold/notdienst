@@ -36,17 +36,36 @@ module.exports = (models) => {
   // Update one
   router.put("/:id", async (req, res) => {
     try {
-      const response = await models.Shift.update(
-        { ...req.body },
+      const shift = await models.Shift.findByPk(req.params.id)
+      await models.Shift.update(
+        { short: req.body.short, title: req.body.title },
         {
-          where: { id: req.params.id },
+          where: { id: shift.id },
         }
       )
-      response[0] > 0
-        ? res
-            .status(200)
-            .send({ message: "Updated successfully", rows: response[0] })
-        : res.status(404).send({ message: "Not found", rows: response[0] })
+
+      if (req.body.jobIds) {
+        await models.JobShift.destroy({
+          where: { shiftId: shift.id },
+        })
+        await models.JobShift.bulkCreate(
+          req.body.jobIds.map((jobId) => {
+            return { jobId: jobId, shiftId: shift.id }
+          })
+        )
+      }
+
+      if (req.body.scheduleIds) {
+        await models.ScheduleShift.destroy({
+          where: { shiftId: shift.id },
+        })
+        await models.ScheduleShift.bulkCreate(
+          req.body.scheduleIds.map((scheduleId) => {
+            return { scheduleId: scheduleId, shiftId: shift.id }
+          })
+        )
+      }
+      return res.status(200).send({ message: "Änderungen gespeichert" })
     } catch (error) {
       res.status(400).send({ error: error })
     }
