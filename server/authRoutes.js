@@ -36,7 +36,7 @@ module.exports = (sequelize) => {
 
   // Generate credentials token
   router.post("/credentials/:id", authenticateAccessToken, async (req, res) => {
-    if (req.user.role < 10) return res.sendStatus(403)
+    if (req.user.role < 10 && req.user.id !== Math.floor(req.params.id)) return res.sendStatus(403)
     let user = await sequelize.models.users.findByPk(req.params.id)
     if (user === null) return res.sendStatus(404)
     user = user.dataValues
