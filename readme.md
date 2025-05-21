@@ -55,10 +55,9 @@ content-type: application/json
 </pre>
 
 ### Update one employee
-<pre>PUT /employees/:id</pre>
-
-#### Body
 <pre>
+PUT /employees/:id
+
 content-type: application/json
 {
     initials?: String,
@@ -151,6 +150,38 @@ content-type: application/json
 ## Works
 
 ## Events
+### Get all events
+<pre>GET /events</pre>
+
+### Get one event
+<pre>GET /events/:id</pre>
+
+### Create one event
+<pre>
+POST /events
+
+content-type: application/json
+{
+    initials: String,
+    name: String,
+    employmentId: int
+}
+</pre>
+
+### Update one event
+<pre>
+PUT /events/:id
+
+content-type: application/json
+{
+    initials?: String,
+    name?: String,
+    employmentId?: int
+}
+</pre>
+
+### Delete one event
+<pre>DELETE /events/:id</pre>
 
 ## Freetimes
 
