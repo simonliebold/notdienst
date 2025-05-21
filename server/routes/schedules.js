@@ -131,8 +131,63 @@ router.get("/", roles.requireAdmin, async (req, res, next) => {
 // Get one
 router.get("/:id", roles.requireAdmin, async (req, res, next) => {
   try {
-    const schedule = await getSchedule(req.params.id)
-    return res.send(schedule)
+    const schedule = await Schedule.aggregate([
+      {
+        $match: {
+          _id: new mongoose.Types.ObjectId(req.params.id),
+        },
+      },
+      {
+        $lookup: {
+          from: "works",
+          localField: "_id",
+          foreignField: "scheduleId",
+          as: "works",
+        },
+      },
+      {
+        $unwind: {
+          path: "$works",
+          preserveNullAndEmptyArrays: true,
+        },
+      },
+      {
+        $lookup: {
+          from: "employees",
+          localField: "works.employeeIds",
+          foreignField: "_id",
+          as: "works.employees",
+        },
+      },
+      {
+        $group: {
+          _id: "$_id",
+          short: {
+            $first: "$short",
+          },
+          title: {
+            $first: "$title",
+          },
+          start: {
+            $first: "$start",
+          },
+          end: {
+            $first: "$end",
+          },
+          works: {
+            $push: {
+              $cond: {
+                if: { $gt: [{ $ifNull: ["$works._id", null] }, null] },
+                then: "$works",
+                else: "$$REMOVE",
+              },
+            },
+          },
+        },
+      },
+    ])
+
+    return res.send(schedule[0])
   } catch (err) {
     return next(err)
   }
