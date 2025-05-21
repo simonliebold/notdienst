@@ -243,6 +243,15 @@ module.exports = (models, sequelize) => {
 
   // Get works
   const getWorks = async (req, res, next) => {
+    const { count, rows } = await models.Work.findAndCountAll({
+      where: { scheduleId: req.schedule.id },
+    })
+    try {
+      if (count > 0) throw new Error("Delete works before creating new")
+    } catch (error) {
+      res.send({ error: error.message })
+      return
+    }
     let works = []
     let workEmployees = []
     const first = new Date(req.schedule.start)
@@ -287,6 +296,8 @@ module.exports = (models, sequelize) => {
     })
     next()
   }
+
+  // TODO: insertion sort for works
 
   router.post(
     "/:id/plan",

@@ -310,9 +310,9 @@ module.exports = async (models) => {
     deadline: "2023-09-29",
   })
 
-  for (let i = 1; i <= names.length; i++) {
-    await models.ScheduleEmployee.create({ scheduleId: 1, employeeId: i })
-  }
+  // for (let i = 1; i <= names.length; i++) {
+  //   await models.ScheduleEmployee.create({ scheduleId: 1, employeeId: i })
+  // }
 
   for (let i = 1; i <= 10; i++) {
     await models.ScheduleShift.create({ scheduleId: 1, shiftId: i })
@@ -320,7 +320,7 @@ module.exports = async (models) => {
 
   await models.Freetime.create({
     start: "2023-10-01T08:00:00.000Z",
-    end: "2023-11-01T19:00:00.000Z",
+    end: "2023-10-01T19:00:00.000Z",
     scheduleId: 1,
     employeeId: 2,
   })
