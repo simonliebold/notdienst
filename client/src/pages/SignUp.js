@@ -7,13 +7,12 @@ import Container from "react-bootstrap/Container"
 import Alert from "react-bootstrap/Alert"
 import Form from "react-bootstrap/Form"
 import Row from "react-bootstrap/Row"
-import Col from "react-bootstrap/Col"
+import FloatingLabel from "react-bootstrap/FloatingLabel"
 
 function EditCredentials({
   result,
   setLoggedIn,
   oldEmail,
-  error,
   setError,
   setSuccess,
 }) {
@@ -21,8 +20,18 @@ function EditCredentials({
   const [password, setPassword] = useState("")
   const [passwordRepeat, setPasswordRepeat] = useState("")
 
+  const [validated, setValidated] = useState(false)
+
+  const [loading, setLoading] = useState(false)
+
+  const [isPassInvalid, setIsPassInvalid] = useState(false)
+  const [isPassRepeatInvalid, setIsPassRepeatInvalid] = useState(false)
+  const [isEmailInvalid, setIsEmailInvalid] = useState(false)
+
   const handleOnSubmit = async (e) => {
     e.preventDefault()
+    setLoading(true)
+
     try {
       if (password !== passwordRepeat)
         return setError("Die eingegebenen Passwörter stimmen nicht überein.")
@@ -36,75 +45,115 @@ function EditCredentials({
         "http://localhost:4000/credentials/change/" + result,
         req
       )
-      console.log(res)
       if (res.status === 200) {
         setLoggedIn(false)
-        setSuccess(res.data.message)
+        // TODO: add redirect
       }
     } catch (error) {
       setError(error.response.data.error)
       if (error.response.status === 404) setLoggedIn(false)
     }
+    setLoading(false)
   }
 
   useEffect(() => {
     setError("")
-  }, [password, passwordRepeat])
+
+    if (
+      password.length > 0 &&
+      !password.match(/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/)
+    )
+      setIsPassInvalid(true)
+    else setIsPassInvalid(false)
+    if (passwordRepeat !== password) setIsPassRepeatInvalid(true)
+    else setIsPassRepeatInvalid(false)
+
+    if (
+      email.length === 0 ||
+      !email
+        .toLowerCase()
+        .match(
+          /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/
+        )
+    )
+      setIsEmailInvalid(true)
+    else setIsEmailInvalid(false)
+  }, [password, passwordRepeat, email])
 
   return (
     <>
-      <Col>
-        <div className="center d-flex flex-column justify-content-center">
-          <h1 className="my-2">Account-Daten ändern</h1>
-          <p className="text-secondary mb-4">
-            Gib bitte die Daten ein, die geändert werden sollen.
-          </p>
-          {error.length > 0 && <Alert variant="danger">{error}</Alert>}
-          <Form onSubmit={handleOnSubmit}>
-            <Form.Group className="mb-3" controlId="email">
-              <Form.Label>E-Mail-Adresse</Form.Label>
-              <Form.Control
-                type="email"
-                placeholder="E-Mail-Adresse"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-              />
-            </Form.Group>
-            <Form.Group className="mb-3" controlId="password">
-              <Form.Label>Neues Passwort</Form.Label>
-              <Form.Control
-                type="password"
-                placeholder="Passwort"
-                onChange={(e) => setPassword(e.target.value)}
-              />
-            </Form.Group>
-            <Form.Group className="mb-3" controlId="password-repeat">
-              <Form.Label>Neues Passwort wiederholen</Form.Label>
-              <Form.Control
-                type="password"
-                placeholder="Passwort wiederholen"
-                onChange={(e) => setPasswordRepeat(e.target.value)}
-              />
-            </Form.Group>
-            <Button type="submit">Daten ändern</Button>
-          </Form>
-        </div>
-      </Col>
-      <Col></Col>
+      <h1 className="mb-2">Account-Daten ändern</h1>
+      <p className="text-secondary mb-4">
+        Gib bitte die Daten ein, die geändert werden sollen.
+      </p>
+      <Form noValidate validated={validated} onSubmit={handleOnSubmit}>
+        <Form.Group className="mb-3" controlId="email">
+          <FloatingLabel
+            controlId="email"
+            label="E-Mail-Adresse"
+            className="mb-3"
+          >
+            <Form.Control
+              type="email"
+              placeholder="E-Mail-Adresse"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              isInvalid={isEmailInvalid}
+            />
+            <Form.Control.Feedback type="invalid">
+              Bitte verwende eine korrekte E-Mail-Adresse
+            </Form.Control.Feedback>
+          </FloatingLabel>
+        </Form.Group>
+        <Form.Group className="mb-3" controlId="password">
+          <FloatingLabel controlId="password" label="Passwort" className="mb-3">
+            <Form.Control
+              type="password"
+              placeholder="Passwort"
+              onChange={(e) => setPassword(e.target.value)}
+              isInvalid={isPassInvalid}
+            />
+            <Form.Control.Feedback type="invalid">
+              Das Passwort muss mindestens 8 Zeichen lang sein und einen
+              Buchstaben und eine Nummer enthalten
+            </Form.Control.Feedback>
+          </FloatingLabel>
+        </Form.Group>
+        <Form.Group className="" controlId="passwordRepeat">
+          <FloatingLabel
+            controlId="passwordRepeat"
+            label="Passwort wiederholen"
+            className="mb-4"
+          >
+            <Form.Control
+              type="password"
+              placeholder="Passwort wiederholen"
+              onChange={(e) => {
+                setPasswordRepeat(e.target.value)
+              }}
+              isInvalid={isPassRepeatInvalid}
+            />
+            <Form.Control.Feedback type="invalid">
+              Die beiden Passwörter müssen übereinstimmen
+            </Form.Control.Feedback>
+          </FloatingLabel>
+        </Form.Group>
+        <Button
+          size="lg"
+          type="submit"
+          disabled={
+            loading || isEmailInvalid || isPassInvalid || isPassRepeatInvalid
+          }
+        >
+          {loading && <>Lädt...</>}
+          {!loading && <>Daten ändern</>}
+        </Button>
+      </Form>
     </>
   )
 }
 
-function InputCode({
-  result,
-  setResult,
-  setLoggedIn,
-  setOldEmail,
-  error,
-  setError,
-  success,
-}) {
+function InputCode({ result, setResult, setLoggedIn, setOldEmail, setError }) {
   const handleOnChange = (res) => setResult(res)
 
   const [loading, setLoading] = useState(false)
@@ -134,36 +183,27 @@ function InputCode({
 
   return (
     <>
-      <Col>
-        <div className="center d-flex flex-column justify-content-center">
-          <h1 className="mb-2">Code eingeben</h1>
-          <p className="text-secondary mb-4">
-            Um die Account-Daten zu ändern, gib bitte den sechsstelligen Code
-            ein.
-          </p>
-          <form onSubmit={handleOnSubmit}>
-            {error.length > 0 && <Alert variant="danger">{error}</Alert>}
-            {success.length > 0 && <Alert variant="success">{success}</Alert>}
-            <AuthCode
-              inputClassName="signupinput"
-              onChange={handleOnChange}
-              ref={AuthInputRef}
-            />
-            {result.length === 6 && (
-              <Button
-                className="mt-3"
-                size="lg"
-                type="submit"
-                disabled={loading}
-              >
-                {loading && <>Lädt...</>}
-                {!loading && <>Bestätigen</>}
-              </Button>
-            )}
-          </form>
-        </div>
-      </Col>
-      <Col></Col>
+      <h1 className="mb-2">Code eingeben</h1>
+      <p className="text-secondary mb-4">
+        Um die Account-Daten zu ändern, gib bitte den sechsstelligen Code ein.
+      </p>
+      <form onSubmit={handleOnSubmit}>
+        <AuthCode
+          inputClassName="signupinput"
+          onChange={handleOnChange}
+          ref={AuthInputRef}
+          isInvalid={true}
+        />
+        <Button
+          className="mt-4"
+          size="lg"
+          type="submit"
+          disabled={loading || result.length !== 6}
+        >
+          {loading && <>Lädt...</>}
+          {!loading && <>Bestätigen</>}
+        </Button>
+      </form>
     </>
   )
 }
@@ -178,27 +218,36 @@ function SignUp() {
   return (
     <Container>
       <Row className="row-cols-1 row-cols-lg-2">
-        {loggedIn && (
-          <EditCredentials
-            result={result}
-            setLoggedIn={setLoggedIn}
-            oldEmail={oldEmail}
-            error={error}
-            setError={setError}
-            setSuccess={setSuccess}
-          />
-        )}
-        {!loggedIn && (
-          <InputCode
-            result={result}
-            setResult={setResult}
-            setLoggedIn={setLoggedIn}
-            setOldEmail={setOldEmail}
-            error={error}
-            setError={setError}
-            success={success}
-          />
-        )}
+        <div className="center d-flex flex-column justify-content-center">
+          {loggedIn && (
+            <EditCredentials
+              result={result}
+              oldEmail={oldEmail}
+              setLoggedIn={setLoggedIn}
+              setError={setError}
+              setSuccess={setSuccess}
+            />
+          )}
+          {!loggedIn && (
+            <InputCode
+              result={result}
+              setResult={setResult}
+              setLoggedIn={setLoggedIn}
+              setOldEmail={setOldEmail}
+              setError={setError}
+            />
+          )}
+          {error.length > 0 && (
+            <Alert className="mt-4" variant="danger">
+              {error}
+            </Alert>
+          )}
+          {success.length > 0 && (
+            <Alert className="mt-4" variant="success">
+              {success}
+            </Alert>
+          )}
+        </div>
       </Row>
     </Container>
   )

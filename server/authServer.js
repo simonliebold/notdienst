@@ -63,6 +63,8 @@ const User = sequelize.define(
     password: {
       type: DataTypes.STRING,
       set(value) {
+        if (!value.match(/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/))
+          throw new Error("Das Passwort muss mindestens 8 Zeichen lang sein und einen Buchstaben und eine Nummer enthalten")
         const salt = bcrypt.genSaltSync()
         this.setDataValue("password", bcrypt.hashSync(value, salt))
       },
@@ -109,12 +111,12 @@ app.listen(PORT, async () => {
   await sequelize.models.users.create({
     id: 1,
     email: "lieb@lie-bold.de",
-    password: "lieb",
+    password: "liebold1",
   })
   await sequelize.models.users.create({
     id: 2,
     email: "rer@lie-bold.de",
-    password: "rer",
+    password: "rerucha2",
     role: 10,
   })
 })
