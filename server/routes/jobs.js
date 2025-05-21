@@ -1,3 +1,4 @@
+const { default: mongoose } = require("mongoose")
 const Job = require("../schemas/Job")
 
 module.exports = () => {
@@ -13,11 +14,19 @@ module.exports = () => {
 
   // Get one
   router.get("/:id", roles.requireAdmin, async (req, res, next) => {
-    const job = await Job.findById(req.params.id)
-      .populate("employees")
-      .catch(next)
+    const job = await Job.aggregate([
+      { $match: { _id: new mongoose.Types.ObjectId(req.params.id) } },
+      {
+        $lookup: {
+          from: "employees",
+          localField: "_id",
+          foreignField: "jobIds",
+          as: "employees",
+        },
+      },
+    ]).catch(next)
     if (!job) return next(new Error("Nicht gefunden"))
-    return res.send(job)
+    return res.send(job[0])
   })
 
   // Create one
