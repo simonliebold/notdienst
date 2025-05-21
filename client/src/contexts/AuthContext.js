@@ -20,7 +20,7 @@ export const useRefreshTokenUpdate = () => {
 }
 
 export const AuthProvider = ({ children }) => {
-  const [token, setToken] = useState(localStorage.getItem("token"))
+  const [token, setToken] = useState(localStorage.getItem("accessToken"))
   const [refreshToken, setRefreshToken] = useState(
     localStorage.getItem("refreshToken")
   )
