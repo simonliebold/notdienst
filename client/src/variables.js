@@ -2,11 +2,12 @@ import {
   faBriefcase,
   faCalendar,
   faCalendarDay,
-  faCalendarXmark,
   faCar,
   faClock,
   faCode,
   faHashtag,
+  faRepeat,
+  faTable,
   faUser,
 } from "@fortawesome/free-solid-svg-icons"
 
@@ -17,8 +18,8 @@ export const icons = {
   employment: faClock,
   shift: faCalendarDay,
   job: faCar,
-  freetime: faCalendarXmark,
-  rrule: faCode,
+  freetime: faTable,
+  rrule: faRepeat,
   default: faHashtag,
 }
 
@@ -30,8 +31,20 @@ export const titles = {
   shift: "Schichten",
   job: "Jobs",
   freetime: "Dienstplanwünsche",
-  rrule: "Rrules",
+  rrule: "Wiederholungsmuster",
   default: "Objekte",
+}
+
+export const title = {
+  employee: "Mitarbeiter",
+  schedule: "Dienstplan",
+  work: "Dienst",
+  employment: "Anstellungsverhältnis",
+  shift: "Schicht",
+  job: "Job",
+  freetime: "Dienstplanwunsch",
+  rrule: "Wiederholungsmuster",
+  default: "Objekt",
 }
 
 export const localeString = {
@@ -43,9 +56,9 @@ export const selectStyles = {
   control: (provided, state) => ({
     ...provided,
     backgroundColor: "transparent",
-    border: state.isFocused ? "1px solid #11306F" : "1px solid #6C757D",
+    border: state.isFocused ? "1px solid #11306f" : "1px solid #11306f",
     "&:hover": {
-      border: state.isFocused ? "1px solid #11306F" : "1px solid #6C757D",
+      border: state.isFocused ? "1px solid #11306f" : "1px solid #11306f",
     },
   }),
   option: (provided, state) => ({

@@ -3,12 +3,14 @@ import useResource from "../../hooks/useResource"
 import { EmployeeDetailedCard, EmploymentDetailedCard, FreetimeDetailedCard, WorkDetailedCard } from "../../components/DetailedCard"
 import TitleCard from "../../components/TitleCard"
 import CardList from "../../components/CardList"
+import Breadcrumb from "../../components/Breadcrumb"
 
 function Freetimes() {
   const freetimes = useResource("freetimes")
 
   return (
     <>
+    <Breadcrumb resourceName="freetime" />
       <CardList className="mt-2">
         {freetimes?.map((freetime) => {
             // return <FreetimeDetailedCard key={"freetime-" + freetime.id} freetime={freetime} />

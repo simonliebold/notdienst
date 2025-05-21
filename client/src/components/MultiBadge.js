@@ -22,8 +22,8 @@ function MultiBadge({ items, resourceName }) {
             {option.label}
           </>
         )}
-        placeholder="Keine Daten gefunden"
-        noOptionsMessage={() => "Keine weiteren Optionen verfügbar"}
+        placeholder="Keine Daten"
+        noOptionsMessage={() => "Keine Optionen"}
         styles={selectStyles}
         options={options?.map((option) => ({
           icon: icons[resourceName],
@@ -41,7 +41,7 @@ function MultiBadge({ items, resourceName }) {
   if (items?.length === 0)
     return (
       <div>
-        <Badge resource={{ short: "Keine Daten gefunden" }} disabled />
+        <Badge resource={{ short: "Keine Daten" }} disabled />
       </div>
     )
   return (

@@ -3,12 +3,14 @@ import useResource from "../../hooks/useResource"
 import { RruleDetailedCard, ScheduleDetailedCard } from "../../components/DetailedCard"
 import TitleCard from "../../components/TitleCard"
 import CardList from "../../components/CardList"
+import Breadcrumb from "../../components/Breadcrumb"
 
 function Schedules() {
   const schedules = useResource("schedules")
 
   return (
     <>
+    <Breadcrumb resourceName="schedule" />
       <CardList className="mt-2">
         {schedules?.map((schedule) => {
           // return <ScheduleDetailedCard key={"schedule-" + schedule.id} schedule={schedule} />

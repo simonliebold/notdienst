@@ -39,8 +39,8 @@ export const EditableBadge = ({ resource, resourceName }) => {
           label: option.short,
           value: option.id,
         }))}
-        placeholder="Keine Daten gefunden"
-        noOptionsMessage={() => "Keine weiteren Optionen verfügbar"}
+        placeholder="Keine Daten"
+        noOptionsMessage={() => "Keine Optionen"}
         styles={selectStyles}
         getOptionLabel={(option) => (
           <>

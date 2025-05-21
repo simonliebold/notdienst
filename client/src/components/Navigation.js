@@ -13,7 +13,7 @@ import {
   faRightFromBracket,
   faUser,
 } from "@fortawesome/free-solid-svg-icons"
-import { icons } from "../variables"
+import { icons, titles } from "../variables"
 
 import Offcanvas from "react-bootstrap/Offcanvas"
 
@@ -58,42 +58,42 @@ function Navigation() {
       path: "/",
     },
     {
-      name: "Dienstpläne",
+      name: titles.schedule,
       icon: icons.schedule,
       path: "/schedules",
     },
     {
-      name: "Dienstplanwünsche",
+      name: titles.freetime,
       icon: icons.freetime,
-      path: "/freetimes",
+      // path: "/freetimes",
     },
     {
-      name: "Dienste",
+      name: titles.work,
       icon: icons.work,
       path: "/works",
     },
     {
-      name: "Schichten",
+      name: titles.shift,
       icon: icons.shift,
       path: "/shifts",
     },
     {
-      name: "Rrules",
+      name: titles.rrule,
       icon: icons.rrule,
       path: "/rrules",
     },
     {
-      name: "Mitarbeiter",
+      name: titles.employee,
       icon: icons.employee,
       path: "/employees",
     },
     {
-      name: "Jobs",
+      name: titles.job,
       icon: icons.job,
       path: "/jobs",
     },
     {
-      name: "Anstellungsverhältnisse",
+      name: titles.employment,
       icon: icons.employment,
       path: "/employments",
     },

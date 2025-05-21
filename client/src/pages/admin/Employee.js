@@ -5,6 +5,7 @@ import { useParams } from "react-router-dom"
 import useResource from "../../hooks/useResource"
 import { EmployeeDetailedCard } from "../../components/DetailedCard"
 import Breadcrumb from "../../components/Breadcrumb"
+import { titles } from "../../variables"
 
 function Employee() {
   const { employeeId } = useParams()

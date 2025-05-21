@@ -97,13 +97,13 @@ export const WorkDetailedCard = ({ work }) => {
       <MultiBadge items={employees} resourceName="employee" />
       <hr />
       Dienstplan: <br />
-      <EditableBadge resource={schedule} resourceName="schedule" />
+      <Badge resource={schedule} resourceName="schedule" />
       <hr />
       Schicht: <br />
-      <EditableBadge resource={rrule?.shift} resourceName="shift" />
+      <Badge resource={rrule?.shift} resourceName="shift" />
       <hr />
       Rrule: <br />
-      <EditableBadge resource={rrule} resourceName="rrule" />
+      <Badge resource={rrule} resourceName="rrule" />
     </DetailedCard>
   )
 }
