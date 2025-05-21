@@ -1,7 +1,6 @@
-.env
-/node_modules
+**.env
 **.rest
-db-model/ÄNoD OWL November 2023.pdf
-db-model/algo.js
+**/node_modules
+**/db-model
 launch.json
 .DS_STORE

@@ -93,7 +93,6 @@ module.exports = (models) => {
       return res.status(400).send({ error: error.message })
     }
   })
-
-  // TODO: ! add / remove employee from work
+  
   return router
 }

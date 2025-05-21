@@ -2,28 +2,28 @@ module.exports = (models, sequelize) => {
   const router = require("express").Router()
   const roles = require("./roles.js")
 
-  const employments = require("./routes/employments")(models)
+  const employments = require("./routes/employments.js")(models)
   router.use("/employments", roles.requireAdmin, employments)
 
-  const jobs = require("./routes/jobs")(models)
+  const jobs = require("./routes/jobs.js")(models)
   router.use("/jobs", roles.requireAdmin, jobs)
   
-  const shifts = require("./routes/shifts")(models)
+  const shifts = require("./routes/shifts.js")(models)
   router.use("/shifts", roles.requireAdmin, shifts)
   
-  const events = require("./routes/events")(models)
+  const events = require("./routes/events.js")(models)
   router.use("/events", roles.requireAdmin, events)
   
-  const employees = require("./routes/employees")(models)
+  const employees = require("./routes/employees.js")(models)
   router.use("/employees", employees)
   
-  const schedules = require("./routes/schedules")(models, sequelize)
+  const schedules = require("./routes/schedules.js")(models, sequelize)
   router.use("/schedules", schedules)
 
-  const freetimes = require("./routes/freetimes")(models)
+  const freetimes = require("./routes/freetimes.js")(models)
   router.use("/freetimes", freetimes)
   
-  const works = require("./routes/works")(models)
+  const works = require("./routes/works.js")(models)
   router.use("/works", works)
 
   return router
