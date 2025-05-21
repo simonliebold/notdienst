@@ -84,6 +84,7 @@ const EmployeeModal = () => {
   const fetchEmployee = async () => {
     fetchAllEmployments()
     fetchAllJobs()
+
     try {
       const response = await axios.get(
         "http://192.168.178.44:3000/employees/" + employeeInitials
@@ -97,10 +98,11 @@ const EmployeeModal = () => {
       setEmploymentId(response.data.employee.employmentId)
       setJobs(response.data.employee.jobs.map((job) => job.id))
       setShowModal(true)
+      setIsLoading(false)
     } catch (error) {
       if (error.response.data.error) {
         addAlert(error.response.data.error)
-        navigate("/employees")
+        close()
       }
     }
   }
@@ -147,15 +149,11 @@ const EmployeeModal = () => {
           jobs: jobs,
         }
       )
-      if (employeeInitials !== initials)
-        navigate("/employees/" + initials.toLowerCase())
       if (response.data.message) addAlert(response.data.message, "success")
+      close()
     } catch (error) {
       if (error.response.data.error) addAlert(error.response.data.error)
-    } finally {
-      setIsLoading(false)
-      setIsDisabled(true)
-    }
+    } 
   }
 
   useEffect(() => {
@@ -283,6 +281,7 @@ const EmployeeCard = ({ employee }) => {
 }
 
 function Employees() {
+  const { employeeInitials } = useParams()
   const addAlert = useAlertUpdate()
 
   const [employees, setEmployees] = useState([])
@@ -299,7 +298,7 @@ function Employees() {
 
   useEffect(() => {
     fetchEmployees()
-  }, [])
+  }, [employeeInitials])
 
   return (
     <Row xs={1} md={2} lg={3} xl={4} className="g-4 mt-0">
