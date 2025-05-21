@@ -47,8 +47,9 @@ const DetailedCard = ({ resource, resourceName, children, className }) => {
             resourceName={resourceName}
             resource={resource}
             className="me-2"
-          />
+            />
           {title}
+            {action === "edit" && " bearbeiten "}
         </div>
         {action === "edit" && (
           <CloseButton
