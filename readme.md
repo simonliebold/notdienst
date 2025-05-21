@@ -1,47 +1,95 @@
 ## Employments
 ### Get all employments
-<pre>GET /employments</pre>
+<code>GET /employments</code>
 
 ### Get one employment
-<pre>GET /employments/:id</pre>
+<code>GET /employments/:id</code>
 
 ### Create one employment
-<pre>POST /employments</pre>
+<code>POST /employments</code>
+#### Body
+<pre>
+{
+    title: String
+    minHours: int
+    maxHours: int
+}
+</pre>
+
 
 ### Update one employment
-<pre>PUT /employments/:id</pre>
+<code>PUT /employments/:id</code>
+
+#### Body
+<pre>
+{
+    title?: String
+    minHours?: int
+    maxHours?: int
+}
+</pre>
 
 ### Delete one employment
-<pre>DELETE /employments/:id</pre>
+<code>DELETE /employments/:id</code>
 
 ## Employees
 ### Get all employees
-<pre>GET /employees</pre>
+<code>GET /employees</code>
 
 ### Get one employee
-<pre>GET /employees/:id</pre>
+<code>GET /employees/:id</code>
 
 ### Create one employee
-<pre>POST /employees</pre>
+<code>POST /employees</code>
+
+#### Body
+<pre>
+{
+    initials: String
+    name: String
+}
+</pre>
 
 ### Update one employee
-<pre>PUT /employees/:id</pre>
+<code>PUT /employees/:id</code>
+
+#### Body
+<pre>
+{
+    initials?: String
+    name?: String
+}
+</pre>
 
 ### Delete one employee
-<pre>DELETE /employees/:id</pre>
+<code>DELETE /employees/:id</code>
 
 ## Jobs
 ### Get all jobs
-<pre>GET /jobs</pre>
+<code>GET /jobs</code>
 
 ### Get one job
-<pre>GET /jobs/:id</pre>
+<code>GET /jobs/:id</code>
 
 ### Create one job
-<pre>POST /jobs</pre>
+<code>POST /jobs</code>
+
+#### Body
+<pre>
+{
+    title: String
+}
+</pre>
 
 ### Update one job
-<pre>PUT /jobs/:id</pre>
+<code>PUT /jobs/:id</code>
+
+#### Body
+<pre>
+{
+    title?: String
+}
+</pre>
 
 ### Delete one job
-<pre>DELETE /jobs/:id</pre>
+<code>DELETE /jobs/:id</code>
