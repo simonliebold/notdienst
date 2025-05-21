@@ -2,9 +2,6 @@ const db = require("./database.js")
 const models = require("./models.js")(db)
 
 const mongoose = require("mongoose")
-const Employee = require("./schemas/Employee.js")
-const Employment = require("./schemas/Employment.js")
-const Job = require("./schemas/Job.js")
 
 const express = require("express")
 const app = express()
@@ -52,20 +49,11 @@ const port = process.env.PORT || 3000
 app.listen(port, async () => {
   console.log("App listening on port " + port)
   try {
-    // await db.sequelize.authenticate()
-    // console.log(
-    //   "Connected to database " +
-    //     process.env.DB_NAME +
-    //     " (" +
-    //     process.env.DB_HOST +
-    //     ") successfully"
-    // )
-
     await mongoose.connect(process.env.MONGO_CONN)
     console.log("Connected to db")
     
-    await loadTestData()
-    console.log("Test data loaded")
+    // await loadTestData()
+    // console.log("Test data loaded")
 
   } catch (error) {
     console.error("Unable to connect to the database:", error)
