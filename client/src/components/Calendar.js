@@ -17,7 +17,12 @@ const event = (arg) => {
       <br />
       {props?.work?.employees?.map((employee) => {
         return (
-          <Badge resource={employee} resourceName="employee" className="me-1" />
+          <Badge
+            key={"event-" + arg.id + "-employee-" + employee.id}
+            resource={employee}
+            resourceName="employee"
+            className="me-1"
+          />
         )
       })}
     </div>
@@ -30,7 +35,7 @@ function Calendar({ works, view, ...props }) {
     if (window.innerWidth < 992) {
       return "listDay"
     } else {
-      return "three"
+      return "timeGridWeek"
     }
   }, [window.innerWidth])
 
@@ -50,13 +55,13 @@ function Calendar({ works, view, ...props }) {
           duration: { days: 3 },
         },
       }}
-      buttonText={{
-        today: "Heute",
-        month: "Monat",
-        week: "Woche",
-        day: "Tag",
-        list: "Liste",
-      }}
+      // buttonText={{
+      //   today: "Heute",
+      //   month: "Monat",
+      //   week: "Woche",
+      //   day: "Tag",
+      //   list: "Liste",
+      // }}
       height={"auto"}
       allDaySlot={false}
       eventClick={(e) => navigate("./../../works/" + e.event.id)}
@@ -65,7 +70,7 @@ function Calendar({ works, view, ...props }) {
           id: work.id,
           start: work.start,
           end: work.end,
-          title: work.title,
+          title: work.short,
           // color: "#fff",
           work: work,
           // abcd: "rcftvgzh"
