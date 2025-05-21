@@ -431,12 +431,14 @@ module.exports = (models, sequelize) => {
           bestEmployeeRemainingHours = employeeRemainingHours
         }
       })
-      if (!bestEmployee)
+      if (!bestEmployee) {
+        await models.Work.destroy({ where: { scheduleId: req.schedule.id } })
         return res.status(400).send({
           error:
             "Es stehen zu wenig Mitarbeiter für die Anzahl an Diensten zur Verfügung.",
           protocol: protocol,
         })
+      }
       workEmployees.push({
         workId: work.id,
         employeeId: bestEmployee.id,
