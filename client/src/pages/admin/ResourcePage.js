@@ -558,34 +558,40 @@ export const ExchangePage = () => {
         onInput={onInput}
         edit={edit}
       />
-      <MultiBadge
-        items={exchange?.sender}
-        resourceName="employee"
-        customName="sender"
-        onInput={onInput}
-        edit={edit}
-      />
-      <EditableBadge
-        resource={exchange?.outgoing}
-        resourceName="work"
-        customName="outgoing"
-        onInput={onInput}
-        edit={edit}
-      />
-      <MultiBadge
-        items={exchange?.receiver}
-        resourceName="employee"
-        customName="receiver"
-        onInput={onInput}
-        edit={edit}
-      />
-      <EditableBadge
-        resource={exchange?.incoming}
-        resourceName="work"
-        customName="incoming"
-        onInput={onInput}
-        edit={edit}
-      />
+      <hr />
+      <div className="row row-cols-sm-2">
+        <MultiBadge
+          items={exchange?.sender}
+          resourceName="employee"
+          customName="sender"
+          onInput={onInput}
+          edit={edit}
+        />
+        <MultiBadge
+          items={exchange?.receiver}
+          resourceName="employee"
+          customName="receiver"
+          onInput={onInput}
+          edit={edit}
+        />
+      </div>
+
+      <div className="row row-cols-sm-2">
+        <EditableBadge
+          resource={exchange?.outgoing}
+          resourceName="work"
+          customName="outgoing"
+          onInput={onInput}
+          edit={edit}
+        />
+        <EditableBadge
+          resource={exchange?.incoming}
+          resourceName="work"
+          customName="incoming"
+          onInput={onInput}
+          edit={edit}
+        />
+      </div>
     </DetailedCard>
   )
 }

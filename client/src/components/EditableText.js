@@ -17,7 +17,7 @@ const EditableText = ({ value, label, onInput, className, edit }) => {
 
   if (!edit)
     return (
-      <p className={"mb-0 "+className}>
+      <p className={"mb-3 "+className}>
         {labels[label] + ": "}
         {value !== null && value}
         {value === null && "Kein Wert gesetzt"}
@@ -25,7 +25,7 @@ const EditableText = ({ value, label, onInput, className, edit }) => {
     )
   else
     return (
-      <FloatingLabel label={labels[label]} className={className}>
+      <FloatingLabel label={labels[label]} className={"mb-3 "+className}>
         <Form.Control
           placeholder=""
           value={input}

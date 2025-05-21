@@ -38,7 +38,7 @@ function MultiBadge({
 
   if (disabled && edit)
     return (
-      <div className={className}>
+      <div className={"mb-3 " + className}>
         <label className="w-100">{titles[name]}:</label>
         {items?.map((item) => {
           const { short, _id } = item || {}
@@ -57,7 +57,7 @@ function MultiBadge({
 
   if (edit) {
     return (
-      <div className={className}>
+      <div className={"mb-3 " + className}>
         <label className="w-100">{titles[name]}:</label>
         <Select
           isMulti
@@ -90,13 +90,13 @@ function MultiBadge({
   }
   if (!items || items?.length === 0)
     return (
-      <div className={className}>
+      <div className={"mb-3 " + className}>
         <label className="w-100">{titles[name]}:</label>
         <Badge resource={{ short: "Keine Daten" }} disabled />
       </div>
     )
   return (
-    <div className={className}>
+    <div className={"mb-3 " + className}>
       <label className="w-100">{titles[name]}:</label>
       {items?.map((item) => {
         const { short, _id } = item || {}

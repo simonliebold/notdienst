@@ -49,14 +49,14 @@ export const EditableBadge = ({
 
   if (edit && disabled)
     return (
-      <p>
+      <p className={"mb-3 "+className}>
         <label className="w-100">{title[name]}:</label>
         <Badge className="" resource={resource} resourceName={resourceName} disabled />
       </p>
     )
   if (edit)
     return (
-      <div className={className}>
+      <div className={"mb-3 "+className}>
         <label className="w-100">{title[name]}:</label>
         <Select
           options={options?.map((option) => ({
@@ -88,14 +88,14 @@ export const EditableBadge = ({
 
   if (!resource)
     return (
-      <p className="mb-0">
+      <p className={"mb-3 "+className}>
         <label className="w-100">{title[name]}:</label>
         <Badge className="" resource={{ short: "Keine Daten" }} disabled />
       </p>
     )
 
   return (
-    <p className="mb-0">
+    <p className={"mb-3 "+className}>
       <label className="w-100">{title[name]}:</label>
       <Badge className="" resource={resource} resourceName={resourceName} />
     </p>
