@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from "react"
 import axios from "axios"
-import { useNavigate } from "react-router-dom"
+import { useNavigate, useParams } from "react-router-dom"
 
 import AuthCode from "react-auth-code-input"
 import Button from "react-bootstrap/Button"
@@ -97,7 +97,11 @@ function EditCredentials({ result, setLoggedIn, oldEmail }) {
           </FloatingLabel>
         </Form.Group>
         <Form.Group className="mb-3" controlId="password">
-          <FloatingLabel controlId="password" label="Neues Passwort" className="mb-3">
+          <FloatingLabel
+            controlId="password"
+            label="Neues Passwort"
+            className="mb-3"
+          >
             <Form.Control
               type="password"
               placeholder="Neues Passwort"
@@ -145,16 +149,25 @@ function EditCredentials({ result, setLoggedIn, oldEmail }) {
 }
 
 function InputCode({ result, setResult, setLoggedIn, setOldEmail }) {
-  const handleOnChange = (res) => setResult(res)
-
+  
   const [loading, setLoading] = useState(false)
-
+  
   const AuthInputRef = useRef(null)
   const addAlert = useAlertUpdate()
+  
+  useEffect(() => {
+    if (result) checkCode()
+  }, [])
+
+  const handleOnChange = (res) => setResult(res)
 
   const handleOnSubmit = async (e) => {
-    setLoading(true)
     e.preventDefault()
+    checkCode()
+  }
+  
+  const checkCode = async () => {
+    setLoading(true)
     try {
       const code = await axios.get(
         "http://localhost:4000/credentials/check/" + result
@@ -199,8 +212,9 @@ function InputCode({ result, setResult, setLoggedIn, setOldEmail }) {
   )
 }
 
-function SignUp() {
-  const [result, setResult] = useState("")
+function Credentials() {
+  const { code } = useParams()
+  const [result, setResult] = useState(code || "")
   const [loggedIn, setLoggedIn] = useState(false)
   const [oldEmail, setOldEmail] = useState("")
 
@@ -228,4 +242,4 @@ function SignUp() {
   )
 }
 
-export default SignUp
+export default Credentials

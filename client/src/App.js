@@ -22,7 +22,10 @@ function App() {
             <AlertBox />
             <Routes>
               <Route path="login" element={<Login />} />
-              <Route path="credentials" element={<Credentials />} />
+              <Route path="credentials">
+                <Route path="" element={<Credentials />} />
+                <Route path=":code" element={<Credentials />} />
+              </Route>
               <Route
                 path=""
                 element={
