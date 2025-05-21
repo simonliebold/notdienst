@@ -62,25 +62,21 @@ const ScheduleModal = () => {
     deadline.current.value = datetimeLocal
   }, [scheduleId, handleError])
 
-  const handleFormSubmit = useCallback(
-    async (e) => {
-      e.preventDefault()
-      const res = await axios
-        .put(process.env.REACT_APP_URL + "schedules/" + scheduleId, {
-          title: title.current.value,
-          start: start.current.value,
-          end: end.current.value,
-          deadline: deadline.current.value,
-        })
-        .catch(handleError)
-      if (res?.data?.message) {
-        handleSuccess(res.data.message)
-        navigate("/schedules")
-      }
-      console.log(res)
-    },
-    [title, start, end, deadline, handleError, scheduleId]
-  )
+  const handleFormSubmit = useCallback(async () => {
+    // e.preventDefault()
+    const res = await axios
+      .put(process.env.REACT_APP_URL + "schedules/" + scheduleId, {
+        title: title.current.value,
+        start: start.current.value,
+        end: end.current.value,
+        deadline: deadline.current.value,
+      })
+      .catch(handleError)
+    if (res?.data?.message) {
+      handleSuccess(res.data.message)
+      navigate("/schedules")
+    }
+  }, [title, start, end, deadline, handleError, scheduleId])
 
   useEffect(() => {
     if (scheduleId) {
@@ -125,6 +121,8 @@ const ScheduleModal = () => {
             <h2 className="fs-6">Abgabefrist</h2>
             <Form.Control required type="datetime-local" ref={deadline} />
           </Col>
+        </Row>
+        <Row xs={1} className="g-4 mt-0  align-items-stretch">
           <Col>
             <h2 className="fs-6">Schichten</h2>
             <MultiSelect
@@ -146,7 +144,9 @@ const ScheduleModal = () => {
         </Row>
       </Modal.Body>
       <Modal.Footer>
-        {/* <Button type="submit" onSubmit={handleFormSubmit}>Speichern</Button> */}
+        <Button type="submit" onClick={handleFormSubmit}>
+          Speichern
+        </Button>
       </Modal.Footer>
     </Modal>
   )

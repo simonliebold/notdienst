@@ -567,7 +567,7 @@ function Employees() {
     const response = await axios
       .get(process.env.REACT_APP_URL + "employees/")
       .catch(handleError)
-    if (response?.data?.employees) setEmployees(response.data.employees)
+    if (response?.data?.values) setEmployees(response.data.values)
   }, [handleError])
 
   const fetchAllEmployments = useCallback(async () => {
