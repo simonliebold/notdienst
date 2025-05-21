@@ -3,9 +3,15 @@ import React, { useCallback, useEffect, useState } from "react"
 import { useNavigate, useParams } from "react-router-dom"
 import DetailedCard from "../../components/DetailedCard"
 
-import useResource, { useResourceDelete, useResourceUpdate } from "../../hooks/useResource"
+import useResource, {
+  useResourceDelete,
+  useResourceUpdate,
+} from "../../hooks/useResource"
 import Breadcrumb from "../../components/Breadcrumb"
-import Popup, { ConfirmDeletePopup } from "../../components/Popup"
+import { ConfirmDeletePopup } from "../../components/Popup"
+import EditableText from "../../components/EditableText"
+import { EditableBadge } from "../../components/Badge"
+import MultiBadge from "../../components/MultiBadge"
 
 function ResourcePage({ resourceName, setData, children }) {
   const navigate = useNavigate()
@@ -108,4 +114,145 @@ function ResourcePage({ resourceName, setData, children }) {
     </>
   )
 }
-export default ResourcePage
+
+export const EmployeePage = () => {
+  const [employee, setEmployee] = useState(null)
+  return (
+    <ResourcePage resourceName="employee" setData={setEmployee}>
+      <EditableText value={employee?.short} label="short" />
+      <EditableText value={employee?.title} label="title" />
+      <hr />
+      <EditableBadge
+        resource={employee?.employment}
+        resourceName="employment"
+      />
+      <MultiBadge items={employee?.works} resourceName="work" />
+      <MultiBadge items={employee?.schedules} resourceName="schedule" />
+      <MultiBadge items={employee?.jobs} resourceName="job" />
+    </ResourcePage>
+  )
+}
+
+export const EmploymentPage = () => {
+  const [employment, setEmployment] = useState(null)
+  return (
+    <ResourcePage resourceName="employment" setData={setEmployment}>
+      <EditableText value={employment?.short} label="short" />
+      <EditableText value={employment?.title} label="title" />
+      <EditableText value={employment?.minHours || ""} label="minHours" />
+      <EditableText value={employment?.maxHours || ""} label="maxHours" />
+      <hr />
+      <MultiBadge items={employment?.employees} resourceName="employee" />
+    </ResourcePage>
+  )
+}
+export const FreetimePage = () => {
+  const [freetime, setFreetime] = useState(null)
+  return (
+    <ResourcePage resourceName="freetime" setData={setFreetime}>
+      <EditableText value={freetime?.date} label="date" />
+      <EditableText value={freetime?.type} label="type" />
+      <hr />
+      <EditableBadge resource={freetime?.employee} resourceName="employee" />
+      <EditableBadge resource={freetime?.schedule} resourceName="schedule" />
+    </ResourcePage>
+  )
+}
+
+export const JobPage = () => {
+  const [job, setJob] = useState(null)
+  return (
+    <ResourcePage resourceName="job" setData={setJob}>
+      <EditableText value={job?.short} label="short" />
+      <EditableText value={job?.title} label="title" />
+      <hr />
+      <MultiBadge items={job?.employees} resourceName="employee" />
+      <MultiBadge items={job?.shifts} resourceName="shift" />
+    </ResourcePage>
+  )
+}
+
+export const MissionPage = () => {
+  const [mission, setMission] = useState(null)
+  return (
+    <ResourcePage resourceName="mission" setData={setMission}>
+      <EditableText value={mission?.type} label="type" />
+      <EditableText value={mission?.info} label="info" />
+      <EditableText value={mission?.time} label="time" />
+      <EditableText value={mission?.km} label="km" />
+      <hr />
+      <EditableBadge
+        resource={mission?.employee}
+        resourceName="employee"
+        disabled
+      />
+      <EditableBadge resource={mission?.work} resourceName="work" disabled />
+    </ResourcePage>
+  )
+}
+export const RrulePage = () => {
+  const [rrule, setRrule] = useState(null)
+
+  return (
+    <ResourcePage resourceName="rrule" setData={setRrule}>
+      <EditableText value={rrule?.short} label="short" />
+      <EditableText value={rrule?.content} label="content" />
+      <hr />
+      <EditableBadge resource={rrule?.shift} resourceName="shift" />
+    </ResourcePage>
+  )
+}
+
+export const SchedulePage = () => {
+  const [schedule, setSchedule] = useState(null)
+  return (
+    <ResourcePage resourceName="schedule" setData={setSchedule}>
+      <EditableText value={schedule?.short} label="short" />
+      <EditableText value={schedule?.title} label="title" />
+      <EditableText value={schedule?.start} label="start" />
+      <EditableText value={schedule?.end} label="end" />
+      <EditableText value={schedule?.deadline} label="deadline" />
+      <hr />
+      <MultiBadge items={schedule?.works} resourceName="work" disabled />
+      <MultiBadge items={schedule?.shifts} resourceName="shift" />
+      <MultiBadge items={schedule?.employees} resourceName="employee" />
+    </ResourcePage>
+  )
+}
+
+export const ShiftPage = () => {
+  const [shift, setShift] = useState(null)
+
+  return (
+    <ResourcePage resourceName="shift" setData={setShift}>
+      <EditableText value={shift?.short} label="short" />
+      <EditableText value={shift?.title} label="title" />
+      <hr />
+      <MultiBadge items={shift?.rrules} resourceName="rrule" disabled />
+      <MultiBadge items={shift?.schedules} resourceName="schedule" />
+      <MultiBadge items={shift?.jobs} resourceName="job" />
+    </ResourcePage>
+  )
+}
+
+export const WorkPage = () => {
+  const [work, setWork] = useState(null)
+
+  return (
+    <ResourcePage resourceName="work" setData={setWork}>
+      <EditableText value={work?.start} label="start" />
+      <EditableText value={work?.end} label="end" />
+      <hr />
+      <MultiBadge items={work?.employees} resourceName="employee" />
+      <EditableBadge resource={work?.rrule} resourceName="rrule" disabled />
+      <EditableBadge
+        resource={work?.schedule}
+        resourceName="schedule"
+        disabled
+      />
+      <hr />
+      <span>{titles.mission}:</span>
+      <MultiTitleCard resources={work?.missions} resourceName="mission" />
+    </ResourcePage>
+  )
+}

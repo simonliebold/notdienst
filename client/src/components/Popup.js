@@ -5,6 +5,8 @@ import { CancelButton, ConfirmDeleteButton } from "./CardButton"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faPlus, faTrash, faX } from "@fortawesome/free-solid-svg-icons"
 import { title } from "../variables"
+import EditableText from "./EditableText"
+import MultiBadge from "./MultiBadge"
 
 function Popup({
   children,
@@ -82,13 +84,16 @@ export const ConfirmDeletePopup = ({
   )
 }
 
-export const CreateNewPopup = ({
-  resource,
-  resourceName,
-  ...props
-}) => {
+export const CreateNewPopup = ({ resource, resourceName, ...props }) => {
   return (
-    <Popup {...props} icon={faPlus} title={title[resourceName]+" erstellen"}></Popup>
+    <Popup {...props} icon={faPlus} title={title[resourceName] + " erstellen"}>
+      <EditableText edit label="short" />
+      <EditableText edit label="title" />
+      <EditableText edit label="minHours" />
+      <EditableText edit label="maxHours" />
+      <hr />
+      <MultiBadge edit resourceName="employee" />
+    </Popup>
   )
 }
 

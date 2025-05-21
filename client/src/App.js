@@ -20,17 +20,18 @@ import Jobs from "./pages/admin/Jobs"
 import Rrules from "./pages/admin/Rrules"
 import Schedules from "./pages/admin/Schedules"
 import Shifts from "./pages/admin/Shifts"
-import { ScheduleDetailedCard } from "./components/DetailedCard"
-import Schedule from "./pages/admin/Schedule"
-import Freetime from "./pages/admin/Freetime"
-import Work from "./pages/admin/Work"
-import Shift from "./pages/admin/Shift"
-import Rrule from "./pages/admin/Rrule"
-import Employee from "./pages/admin/Employee"
-import Job from "./pages/admin/Job"
-import Employment from "./pages/admin/Employment"
 import Missions from "./pages/admin/Missions"
-import Mission from "./pages/admin/Mission"
+import {
+  EmployeePage,
+  EmploymentPage,
+  FreetimePage,
+  JobPage,
+  MissionPage,
+  RrulePage,
+  SchedulePage,
+  ShiftPage,
+  WorkPage,
+} from "./pages/admin/ResourcePage"
 
 function App() {
   const home = (
@@ -93,63 +94,63 @@ function App() {
     </Prot>
   )
 
-  const schedule = (
-    <Prot>
-      <Schedule />
-    </Prot>
-  )
-
-  const freetime = (
-    <Prot>
-      <Freetime />
-    </Prot>
-  )
-
-  const work = (
-    <Prot>
-      <Work />
-    </Prot>
-  )
-
-  const shift = (
-    <Prot>
-      <Shift />
-    </Prot>
-  )
-
-  const rrule = (
-    <Prot>
-      <Rrule />
-    </Prot>
-  )
-
-  const employee = (
-    <Prot>
-      <Employee />
-    </Prot>
-  )
-
-  const job = (
-    <Prot>
-      <Job />
-    </Prot>
-  )
-
-  const employment = (
-    <Prot>
-      <Employment />
-    </Prot>
-  )
-
   const missions = (
     <Prot>
       <Missions />
     </Prot>
   )
 
+  const schedule = (
+    <Prot>
+      <SchedulePage />
+    </Prot>
+  )
+
+  const freetime = (
+    <Prot>
+      <FreetimePage />
+    </Prot>
+  )
+
+  const work = (
+    <Prot>
+      <WorkPage />
+    </Prot>
+  )
+
+  const shift = (
+    <Prot>
+      <ShiftPage />
+    </Prot>
+  )
+
+  const rrule = (
+    <Prot>
+      <RrulePage />
+    </Prot>
+  )
+
+  const employee = (
+    <Prot>
+      <EmployeePage />
+    </Prot>
+  )
+
+  const job = (
+    <Prot>
+      <JobPage />
+    </Prot>
+  )
+
+  const employment = (
+    <Prot>
+      <EmploymentPage />
+    </Prot>
+  )
+
   const mission = (
     <Prot>
-      <Mission />
+      <MissionPage />
     </Prot>
   )
 
