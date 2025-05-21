@@ -11,7 +11,7 @@ import useResource from "./../../hooks/useResource"
 import useInput from "./../../hooks/useInput"
 import useSave from "./../../hooks/useSave"
 
-const useResourcePage = (resourceName) => {
+const useDetailedCard = (resourceName) => {
   const { id } = useParams()
   const [resource, refreshResource, loading] = useResource(
     resourceName + "s/" + id
@@ -37,11 +37,6 @@ const useResourcePage = (resourceName) => {
   }
 }
 
-const ResourcePage = () =>
-{
-  return <a></a>
-}
-
 export const EmployeePage = () => {
   const {
     resource: employee,
@@ -51,7 +46,7 @@ export const EmployeePage = () => {
     edit,
     setEdit,
     onInput,
-  } = useResourcePage("employee")
+  } = useDetailedCard("employee")
 
   return (
     <>
@@ -104,153 +99,493 @@ export const EmployeePage = () => {
 }
 
 export const EmploymentPage = () => {
-  const [employment, setEmployment] = useState(null)
+  const {
+    resource: employment,
+    loading,
+    saving,
+    onSaveRequest,
+    edit,
+    setEdit,
+    onInput,
+  } = useDetailedCard("employment")
   return (
-    <ResourcePage resourceName="employment" setData={setEmployment}>
-      <EditableText value={employment?.short} label="short" />
-      <EditableText value={employment?.title} label="title" />
-      <EditableText value={employment?.minHours || ""} label="minHours" />
-      <EditableText value={employment?.maxHours || ""} label="maxHours" />
-    </ResourcePage>
+    <DetailedCard
+      resourceName={"employment"}
+      resource={employment}
+      loading={loading}
+      saving={saving}
+      onSaveRequest={onSaveRequest}
+      edit={edit}
+      setEdit={setEdit}
+    >
+      <EditableText
+        value={employment?.short}
+        label="short"
+        onInput={onInput}
+        edit={edit}
+      />
+      <EditableText
+        value={employment?.title}
+        label="title"
+        onInput={onInput}
+        edit={edit}
+      />
+      <EditableText
+        value={employment?.minHours || ""}
+        label="minHours"
+        onInput={onInput}
+        edit={edit}
+      />
+      <EditableText
+        value={employment?.maxHours || ""}
+        label="maxHours"
+        onInput={onInput}
+        edit={edit}
+      />
+    </DetailedCard>
   )
 }
 export const FreetimePage = () => {
-  const [freetime, setFreetime] = useState(null)
+  const {
+    resource: freetime,
+    loading,
+    saving,
+    onSaveRequest,
+    edit,
+    setEdit,
+    onInput,
+  } = useDetailedCard("freetime")
   return (
-    <ResourcePage resourceName="freetime" setData={setFreetime}>
-      <EditableText value={freetime?.short} label="short" />
-      <EditableText value={freetime?.title} label="title" />
-      <EditableText value={freetime?.start} label="start" />
-      <EditableText value={freetime?.end} label="end" />
+    <DetailedCard
+      resourceName={"freetime"}
+      resource={freetime}
+      loading={loading}
+      saving={saving}
+      onSaveRequest={onSaveRequest}
+      edit={edit}
+      setEdit={setEdit}
+    >
+      <EditableText
+        value={freetime?.short}
+        label="short"
+        onInput={onInput}
+        edit={edit}
+      />
+      <EditableText
+        value={freetime?.title}
+        label="title"
+        onInput={onInput}
+        edit={edit}
+      />
+      <EditableText
+        value={freetime?.start}
+        label="start"
+        onInput={onInput}
+        edit={edit}
+      />
+      <EditableText
+        value={freetime?.end}
+        label="end"
+        onInput={onInput}
+        edit={edit}
+      />
       <EditableBadge
         resource={freetime?.employee}
         resourceName="employee"
+        onInput={onInput}
+        edit={edit}
         disabled
       />
-    </ResourcePage>
+    </DetailedCard>
   )
 }
 
 export const JobPage = () => {
-  const [job, setJob] = useState(null)
+  const {
+    resource: job,
+    loading,
+    saving,
+    onSaveRequest,
+    edit,
+    setEdit,
+    onInput,
+  } = useDetailedCard("job")
   return (
-    <ResourcePage resourceName="job" setData={setJob}>
-      <EditableText value={job?.short} label="short" />
-      <EditableText value={job?.title} label="title" />
+    <DetailedCard
+      resourceName={"job"}
+      resource={job}
+      loading={loading}
+      saving={saving}
+      onSaveRequest={onSaveRequest}
+      edit={edit}
+      setEdit={setEdit}
+    >
+      <EditableText
+        value={job?.short}
+        label="short"
+        onInput={onInput}
+        edit={edit}
+      />
+      <EditableText
+        value={job?.title}
+        label="title"
+        onInput={onInput}
+        edit={edit}
+      />
 
-      <MultiBadge items={job?.employees} resourceName="employee" disabled />
-    </ResourcePage>
+      <MultiBadge
+        items={job?.employees}
+        resourceName="employee"
+        disabled
+        onInput={onInput}
+        edit={edit}
+      />
+    </DetailedCard>
   )
 }
 
 export const MissionPage = () => {
-  const [mission, setMission] = useState(null)
+  const {
+    resource: mission,
+    loading,
+    saving,
+    onSaveRequest,
+    edit,
+    setEdit,
+    onInput,
+  } = useDetailedCard("mission")
   return (
-    <ResourcePage resourceName="mission" setData={setMission}>
-      <EditableText value={mission?.type} label="type" />
-      <EditableText value={mission?.info} label="info" />
-      <EditableText value={mission?.time} label="time" />
-      <EditableText value={mission?.km} label="km" />
+    <DetailedCard
+      resourceName={"mission"}
+      resource={mission}
+      loading={loading}
+      saving={saving}
+      onSaveRequest={onSaveRequest}
+      edit={edit}
+      setEdit={setEdit}
+    >
+      <EditableText
+        value={mission?.type}
+        label="type"
+        onInput={onInput}
+        edit={edit}
+      />
+      <EditableText
+        value={mission?.info}
+        label="info"
+        onInput={onInput}
+        edit={edit}
+      />
+      <EditableText
+        value={mission?.time}
+        label="time"
+        onInput={onInput}
+        edit={edit}
+      />
+      <EditableText
+        value={mission?.km}
+        label="km"
+        onInput={onInput}
+        edit={edit}
+      />
 
       <EditableBadge
         resource={mission?.employee}
         resourceName="employee"
+        onInput={onInput}
+        edit={edit}
         disabled
       />
       <EditableBadge resource={mission?.work} resourceName="work" disabled />
-    </ResourcePage>
+    </DetailedCard>
   )
 }
 export const RrulePage = () => {
-  const [rrule, setRrule] = useState(null)
+  const {
+    resource: rrule,
+    loading,
+    saving,
+    onSaveRequest,
+    edit,
+    setEdit,
+    onInput,
+  } = useDetailedCard("rrule")
 
   return (
-    <ResourcePage resourceName="rrule" setData={setRrule}>
-      <EditableText value={rrule?.short} label="short" />
-      <EditableText value={rrule?.start} label="start" />
-      <EditableText value={rrule?.end} label="end" />
-      <EditableText value={rrule?.content} label="content" />
-      <EditableBadge resource={rrule?.shift} resourceName="shift" />
-    </ResourcePage>
+    <DetailedCard
+      resourceName={"rrule"}
+      resource={rrule}
+      loading={loading}
+      saving={saving}
+      onSaveRequest={onSaveRequest}
+      edit={edit}
+      setEdit={setEdit}
+    >
+      <EditableText
+        value={rrule?.short}
+        label="short"
+        onInput={onInput}
+        edit={edit}
+      />
+      <EditableText
+        value={rrule?.start}
+        label="start"
+        onInput={onInput}
+        edit={edit}
+      />
+      <EditableText
+        value={rrule?.end}
+        label="end"
+        onInput={onInput}
+        edit={edit}
+      />
+      <EditableText
+        value={rrule?.content}
+        label="content"
+        onInput={onInput}
+        edit={edit}
+      />
+      <EditableBadge
+        resource={rrule?.shift}
+        resourceName="shift"
+        onInput={onInput}
+        edit={edit}
+      />
+    </DetailedCard>
   )
 }
 
 export const SchedulePage = () => {
-  const [schedule, setSchedule] = useState(null)
+  const {
+    resource: schedule,
+    loading,
+    saving,
+    onSaveRequest,
+    edit,
+    setEdit,
+    onInput,
+  } = useDetailedCard("schedule")
   return (
     <>
-      <ResourcePage
-        className="w-50"
-        resourceName="schedule"
-        setData={setSchedule}
+      <DetailedCard
+        resourceName={"schedule"}
+        resource={schedule}
+        loading={loading}
+        saving={saving}
+        onSaveRequest={onSaveRequest}
+        edit={edit}
+        setEdit={setEdit}
       >
-        <EditableText value={schedule?.short} label="short" />
-        <EditableText value={schedule?.title} label="title" />
-        <AsyncAllocateWorksButton schedule={schedule} className="me-3" />
-      </ResourcePage>
+        <EditableText
+          value={schedule?.short}
+          label="short"
+          onInput={onInput}
+          edit={edit}
+        />
+        <EditableText
+          value={schedule?.title}
+          label="title"
+          onInput={onInput}
+          edit={edit}
+        />
+        <AsyncAllocateWorksButton
+          schedule={schedule}
+          className="me-3"
+          onInput={onInput}
+          edit={edit}
+        />
+      </DetailedCard>
       <ScheduleCalendar schedule={schedule} />
     </>
   )
 }
 
 export const ShiftPage = () => {
-  const [shift, setShift] = useState(null)
+  const {
+    resource: shift,
+    loading,
+    saving,
+    onSaveRequest,
+    edit,
+    setEdit,
+    onInput,
+  } = useDetailedCard("shift")
 
   return (
-    <ResourcePage resourceName="shift" setData={setShift}>
-      <EditableText value={shift?.short} label="short" />
-      <EditableText value={shift?.title} label="title" />
+    <DetailedCard
+      resourceName={"shift"}
+      resource={shift}
+      loading={loading}
+      saving={saving}
+      onSaveRequest={onSaveRequest}
+      edit={edit}
+      setEdit={setEdit}
+    >
+      <EditableText
+        value={shift?.short}
+        label="short"
+        onInput={onInput}
+        edit={edit}
+      />
+      <EditableText
+        value={shift?.title}
+        label="title"
+        onInput={onInput}
+        edit={edit}
+      />
 
-      <MultiBadge items={shift?.jobs} resourceName="job" />
-      <MultiBadge items={shift?.rrules} resourceName="rrule" disabled />
-    </ResourcePage>
+      <MultiBadge
+        items={shift?.jobs}
+        resourceName="job"
+        onInput={onInput}
+        edit={edit}
+      />
+      <MultiBadge
+        items={shift?.rrules}
+        resourceName="rrule"
+        disabled
+        onInput={onInput}
+        edit={edit}
+      />
+    </DetailedCard>
   )
 }
 
 export const WorkPage = () => {
-  const [work, setWork] = useState(null)
+  const {
+    resource: work,
+    loading,
+    saving,
+    onSaveRequest,
+    edit,
+    setEdit,
+    onInput,
+  } = useDetailedCard("work")
 
   return (
-    <ResourcePage resourceName="work" setData={setWork}>
-      <EditableText value={work?.short} label="short" />
-      <EditableText value={work?.title} label="title" />
-      <EditableText value={work?.start} label="start" />
-      <EditableText value={work?.end} label="end" />
-      <MultiBadge items={work?.employees} resourceName="employee" />
-      <EditableBadge resource={work?.shift} resourceName="shift" />
-      <EditableBadge resource={work?.schedule} resourceName="schedule" />
-      <MultiBadge items={work?.jobs} resourceName="job" disabled />
-    </ResourcePage>
+    <DetailedCard
+      resourceName={"work"}
+      resource={work}
+      loading={loading}
+      saving={saving}
+      onSaveRequest={onSaveRequest}
+      edit={edit}
+      setEdit={setEdit}
+    >
+      <EditableText
+        value={work?.short}
+        label="short"
+        onInput={onInput}
+        edit={edit}
+      />
+      <EditableText
+        value={work?.title}
+        label="title"
+        onInput={onInput}
+        edit={edit}
+      />
+      <EditableText
+        value={work?.start}
+        label="start"
+        onInput={onInput}
+        edit={edit}
+      />
+      <EditableText
+        value={work?.end}
+        label="end"
+        onInput={onInput}
+        edit={edit}
+      />
+      <MultiBadge
+        items={work?.employees}
+        resourceName="employee"
+        onInput={onInput}
+        edit={edit}
+      />
+      <EditableBadge
+        resource={work?.shift}
+        resourceName="shift"
+        onInput={onInput}
+        edit={edit}
+      />
+      <EditableBadge
+        resource={work?.schedule}
+        resourceName="schedule"
+        onInput={onInput}
+        edit={edit}
+      />
+      <MultiBadge
+        items={work?.jobs}
+        resourceName="job"
+        disabled
+        onInput={onInput}
+        edit={edit}
+      />
+    </DetailedCard>
   )
 }
 
 export const ExchangePage = () => {
-  const [exchange, setExchange] = useState(null)
+  const {
+    resource: exchange,
+    loading,
+    saving,
+    onSaveRequest,
+    edit,
+    setEdit,
+    onInput,
+  } = useDetailedCard("exchange")
 
   return (
-    <ResourcePage resourceName="exchange" setData={setExchange}>
-      <EditableText value={exchange?.short} label="short" />
-      <EditableText value={exchange?.title} label="title" />
+    <DetailedCard
+      resourceName={"exchange"}
+      resource={exchange}
+      loading={loading}
+      saving={saving}
+      onSaveRequest={onSaveRequest}
+      edit={edit}
+      setEdit={setEdit}
+    >
+      <EditableText
+        value={exchange?.short}
+        label="short"
+        onInput={onInput}
+        edit={edit}
+      />
+      <EditableText
+        value={exchange?.title}
+        label="title"
+        onInput={onInput}
+        edit={edit}
+      />
       <MultiBadge
         items={exchange?.sender}
         resourceName="employee"
         customName="sender"
+        onInput={onInput}
+        edit={edit}
       />
       <EditableBadge
         resource={exchange?.outgoing}
         resourceName="work"
         customName="outgoing"
+        onInput={onInput}
+        edit={edit}
       />
       <MultiBadge
         items={exchange?.receiver}
         resourceName="employee"
         customName="receiver"
+        onInput={onInput}
+        edit={edit}
       />
       <EditableBadge
         resource={exchange?.incoming}
         resourceName="work"
         customName="incoming"
+        onInput={onInput}
+        edit={edit}
       />
-    </ResourcePage>
+    </DetailedCard>
   )
 }
