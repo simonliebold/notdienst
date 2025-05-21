@@ -37,8 +37,13 @@ module.exports = (sequelize) => {
     async (req, res) => {
       if (req.user.role < 10 && req.user.id !== Math.floor(req.params.id))
         return res.sendStatus(403)
-      let user = await sequelize.models.users.findByPk(req.params.id)
-      if (user === null) return res.status(404).send({error: "Nutzer konnte nicht gefunden werden"})
+      let users = await sequelize.models.users.findOrCreate({
+        where: { id: req.params.id },
+      })
+      if (users === null)
+        return res
+          .status(404)
+          .send({ error: "Nutzer konnte nicht gefunden werden" })
 
       const now = new Date()
       const expiresAt = now.setDate(now.getDate() + 1)
@@ -49,11 +54,11 @@ module.exports = (sequelize) => {
       }
       try {
         await sequelize.models.credentialsCodes.destroy({
-          where: { userId: user.id },
+          where: { userId: req.params.id },
         })
         const credentialsCode = await sequelize.models.credentialsCodes.create({
           code: code,
-          userId: user.id,
+          userId: req.params.id,
           expiresAt: expiresAt,
         })
 
@@ -121,12 +126,10 @@ module.exports = (sequelize) => {
         .send({ message: "Account-Daten erfolgreich festgelegt" })
     } catch (error) {
       if (error.name === "SequelizeUniqueConstraintError")
-        return res
-          .status(400)
-          .send({
-            error:
-              "E-Mail-Adresse wird bereits von einem anderen Account verwendet.",
-          })
+        return res.status(400).send({
+          error:
+            "E-Mail-Adresse wird bereits von einem anderen Account verwendet.",
+        })
       return res.status(400).send({ error: error.message })
     }
   })

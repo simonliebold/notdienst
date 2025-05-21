@@ -43,12 +43,16 @@ module.exports = (models) => {
   // Create one
   router.post("/", roles.requireAdmin, async (req, res) => {
     try {
-      const response = await models.Employee.create({
+      await models.Employee.create({
         name: req.body.name,
         initials: req.body.initials,
       })
-      return res.send({ response: response })
+      return res.send({ message: "Mitarbeiter wurde erfolgreich erstellt." })
     } catch (error) {
+      if (error.message && error.message === "Validation error")
+        return res
+          .status(400)
+          .send({ error: "Das Kürzel des Mitarbeiters existiert bereits" })
       return res.status(400).send({ error: error.message })
     }
   })

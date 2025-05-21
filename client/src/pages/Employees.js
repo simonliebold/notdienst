@@ -287,8 +287,8 @@ const EmployeeModal = () => {
           {!isLoading && (
             <Select
               defaultValue={
-                employmentId && {
-                  value: employmentId,
+                employee.employment && {
+                  value: employee.employment.id,
                   label: employee.employment.title,
                 }
               }
@@ -441,6 +441,8 @@ function Employees() {
       const response = await axios.get("http://localhost:3000/employees/")
       if (response.data.employees) setEmployees(response.data.employees)
       else addAlert("Keine Mitarbeiter gefunden", "secondary")
+
+      // const auth = await axios.get
     } catch (error) {
       if (error.response.data.error) addAlert(error.response.data.error)
       if (error.response.status === 403) setToken(undefined)
@@ -453,10 +455,12 @@ function Employees() {
         name: newName,
         initials: newInitials,
       })
-      console.log(response)
+      if (response.data.message)
+        addAlert(response.data.message, "success")
     } catch (error) {
-      if (error.response.data.error) addAlert(error.response.data.error)
-      else addAlert(error.message)
+      // if (error.response.data.error) addAlert(error.response.data.error)
+      // else
+      addAlert(error.message)
     }
     fetchEmployees()
   }

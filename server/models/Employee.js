@@ -14,6 +14,9 @@ module.exports = (sequelize) => {
         type: Sequelize.STRING,
         unique: true,
         allowNull: false,
+        set(value) {
+          this.setDataValue("initials", value.toUpperCase())
+        },
       },
       name: {
         type: Sequelize.STRING,
