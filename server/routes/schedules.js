@@ -334,7 +334,6 @@ module.exports = (models, sequelize) => {
     Object.values(req.works).forEach((work) => {
       work.employeeIds = []
       Object.values(req.employees).forEach((employee) => {
-
         let hasJob = false
         for (let i = 0; i < work.jobIds.length; i++) {
           for (let j = 0; j < employee.jobIds.length; j++) {
@@ -373,7 +372,6 @@ module.exports = (models, sequelize) => {
   }
 
   // Find employees for work
-  // TODO: check event requiredEmployees
   const allocateWorks = async (req, res, next) => {
     let workEmployees = []
     while (req.works.length > 0) {
@@ -385,10 +383,8 @@ module.exports = (models, sequelize) => {
       work.employeeIds.forEach((employeeId) => {
         const employee = req.employees[employeeId]
 
-        // remove work from available time
         employee.availableTime -= duration
 
-        //
         let employeeRemainingHours = employee.maxHours
         if (employee.minHours !== null)
           employeeRemainingHours = employee.minHours - employee.workTime
@@ -402,7 +398,28 @@ module.exports = (models, sequelize) => {
           bestEmployee === undefined ||
           employeeRemainingHours >= bestEmployeeRemainingHours
 
-        if (maxHoursCorrect && isBest) {
+        const isFree = employee.freetimes.every(
+          (freetime) =>
+            new Date(freetime.end).getTime() <= work.start.getTime() ||
+            new Date(freetime.start).getTime() >= work.end.getTime()
+        )
+
+        // TODO: Generierungsbericht
+        // console.log({
+        //   workId: work.id,
+        //   employeeId: employee.id,
+        //   isFree: isFree,
+        //   maxHoursCorrect: maxHoursCorrect,
+        //   freetimes: employee.freetimes
+        //     .filter(
+        //       (freetime) =>
+        //         new Date(freetime.end).getTime() > work.start.getTime() &&
+        //         new Date(freetime.start).getTime() < work.end.getTime()
+        //     )
+        //     .map((freetime) => freetime.work || "Wunschfrei"),
+        // })
+
+        if (maxHoursCorrect && isBest && isFree) {
           bestEmployee = employee
           bestEmployeeRemainingHours = employeeRemainingHours
         }
@@ -415,6 +432,11 @@ module.exports = (models, sequelize) => {
       workEmployees.push({
         workId: work.id,
         employeeId: bestEmployee.id,
+      })
+      bestEmployee.freetimes.push({
+        start: work.start,
+        end: work.end,
+        work: work.id,
       })
       bestEmployee.workTime += duration
       req.works.shift()
