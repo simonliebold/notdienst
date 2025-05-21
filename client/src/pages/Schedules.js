@@ -20,6 +20,10 @@ import {
   faBriefcase,
   faCalendar,
   faCalendarDays,
+  faCaretDown,
+  faCaretLeft,
+  faCaretRight,
+  faExpand,
   faNetworkWired,
   faPlus,
   faUser,
@@ -28,20 +32,18 @@ import MultiSelect from "../components/MultiSelect"
 import ListGroup from "react-bootstrap/ListGroup"
 
 import WorkCard from "../components/WorkCard"
+import Alert from "react-bootstrap/esm/Alert"
 
 const ScheduleModal = () => {
-
-  const WorkDatePicker = ({ schedule, works }) => {
-    const [show, setShow] = useState(false)
-    const [date, setDate] = useState(undefined)
+  const WorkDayPicker = ({ schedule, works }) => {
+    const [date, setDate] = useState(new Date())
     const [dateWorks, setDateWorks] = useState([])
+    const [calendar, setCalendar] = useState(false)
 
     const scheduleStart = new Date(schedule?.start)
     const scheduleEnd = new Date(schedule?.end)
-    const dateString = date?.toLocaleDateString()
 
     useEffect(() => {
-      if (date) setShow(true)
       setDateWorks(
         works.filter((work) => {
           return (
@@ -50,51 +52,50 @@ const ScheduleModal = () => {
           )
         })
       )
+      setCalendar(false)
     }, [date])
-
-    useEffect(() => {
-      if (!show) setDate(undefined)
-    }, [show])
-
-    const DateWorksModal = () => {
-      return (
-        <Modal
-          show={show}
-          onHide={(e) => setShow(false)}
-          backdrop="static"
-          keyboard={false}
-          fullscreen={"md-down"}
-        >
-          <Modal.Header closeButton>
-            <Modal.Title>
-              <Badge className="me-2">
-                <FontAwesomeIcon icon={faCalendar} className="me-2" />
-                {schedule?.id}
-              </Badge>
-              <strong> {dateString} </strong>
-              {schedule?.title}
-            </Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
-            {dateWorks.length > 0 &&
-              dateWorks.map((work) => (
-                <WorkCard key={"work-" + work.id} work={work} />
-              ))}
-          </Modal.Body>
-        </Modal>
-      )
-    }
 
     return (
       <>
-        <DayPicker
-          mode="single"
-          selected={date}
-          fromDate={scheduleStart}
-          toDate={scheduleEnd}
-          onSelect={setDate}
-        />
-        <DateWorksModal />
+        <Button
+          variant="link"
+          className="p-0 text-decoration-none mb-2"
+          onClick={(e) => setCalendar(!calendar)}
+        >
+          <FontAwesomeIcon
+            className="me-2"
+            icon={calendar ? faCaretDown : faCalendar}
+          />
+          Dienste:{" "}
+          <strong>
+            {date.toLocaleDateString("de-DE", {
+              weekday: "short",
+              year: "numeric",
+              month: "numeric",
+              day: "numeric",
+            })}
+          </strong>
+        </Button>
+
+        {calendar && (
+          <DayPicker
+            mode="single"
+            selected={date}
+            fromDate={scheduleStart}
+            toDate={scheduleEnd}
+            onSelect={setDate}
+          />
+        )}
+        {dateWorks.length > 0 &&
+          dateWorks.map((work) => (
+            <WorkCard key={"work-" + work.id} work={work} />
+          ))}
+
+        {!dateWorks.length > 0 && (
+          <Alert variant="secondary">
+            Keine Dienste an diesem Datum gefunden
+          </Alert>
+        )}
       </>
     )
   }
@@ -113,7 +114,6 @@ const ScheduleModal = () => {
   const end = useRef(null)
   const deadline = useRef(null)
 
-
   const fetchSchedule = useCallback(async () => {
     setSchedule([])
     setWorks([])
@@ -124,6 +124,7 @@ const ScheduleModal = () => {
     if (!res?.data?.schedule) return navigate("/schedules")
     setSchedule(res.data.schedule)
     setWorks(res.data.works)
+    if (!title || !start || !end || !deadline) return
     title.current.value = res.data.schedule.title
     start.current.value = res.data.schedule.start
     end.current.value = res.data.schedule.end
@@ -167,11 +168,10 @@ const ScheduleModal = () => {
       .post(process.env.REACT_APP_URL + "schedules/" + scheduleId + "/allocate")
       .catch(handleError)
 
-    if(res?.data) {
+    if (res?.data) {
       handleSuccess(res.data.message)
       fetchSchedule()
     }
-
   })
 
   useEffect(() => {
@@ -232,7 +232,7 @@ const ScheduleModal = () => {
             />
           </Col>
           <Col>
-            <h2 className="fs-6">Angestellte</h2>
+            <h2 className="fs-6">Mitarbeiter</h2>
             <MultiSelect
               valueType="employees"
               objectType="schedules"
@@ -242,7 +242,6 @@ const ScheduleModal = () => {
           </Col>
           <hr />
           <Col className="mt-0">
-            <h2 className="fs-6">Dienste</h2>
             {works.length === 0 && (
               <Button
                 onClick={generateWorks}
@@ -254,9 +253,11 @@ const ScheduleModal = () => {
               </Button>
             )}
             {works.length !== 0 && (
-              <WorkDatePicker schedule={schedule} works={works} />
+              <WorkDayPicker schedule={schedule} works={works} />
             )}
-            <Button onClick={allocateWorks}>Dienste verteilen</Button>
+            {works.length === 0 && (
+              <Button onClick={allocateWorks}>Alle Dienste verteilen</Button>
+            )}
           </Col>
         </Row>
       </Modal.Body>
@@ -344,7 +345,7 @@ const ScheduleItem = ({ schedule }) => {
         >
           <Badge className="me-2">
             <FontAwesomeIcon icon={faCalendar} className="me-1" />
-            {schedule.id}
+            {schedule.title.toUpperCase()}
           </Badge>
           {schedule.title}
         </Card.Body>
