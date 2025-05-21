@@ -16,20 +16,23 @@ function ResourcePage({ resourceName, setData, children }) {
     setData(resource)
     if (resource) setLoading(false)
     else setLoading(true)
-  }, [resource])
+  }, [resource, setData])
 
   // control input data
   const [input, setInput] = useState({})
-  const onInput = async (label, value) => {
-    if (process.env.NODE_ENV === "development")
-      console.log("INPUT", { ...input, [label]: value })
-    setInput({ ...input, [label]: value })
-  }
+  const onInput = useCallback(
+    async (label, value) => {
+      if (process.env.NODE_ENV === "development")
+        console.log("INPUT", { ...input, [label]: value })
+      setInput({ ...input, [label]: value })
+    },
+    [input]
+  )
 
   // save data
   const save = useResourceUpdate(resourceName + "s/" + id)
   const navigate = useNavigate()
-  const onSave = async () => {
+  const onSave = useCallback(async () => {
     ;(async () => {
       setLoading(true)
       await save(input)
@@ -38,7 +41,7 @@ function ResourcePage({ resourceName, setData, children }) {
       navigate("./../")
       setLoading(false)
     })()
-  }
+  }, [input, navigate, save, updateResource])
 
   return (
     <>
