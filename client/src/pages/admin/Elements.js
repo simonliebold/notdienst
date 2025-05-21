@@ -7,17 +7,19 @@ import DetailedCard, {
   EmploymentDetailedCard,
   FreetimeDetailedCard,
   JobDetailedCard,
+  RruleDetailedCard,
   ScheduleDetailedCard,
 } from "../../components/DetailedCard"
 import MultiBadge from "../../components/MultiBadge"
 import useResource from "../../hooks/useResource"
 
 function Elements() {
-  const employee = useResource(process.env.REACT_APP_URL + "employees/1")
-  const schedule = useResource(process.env.REACT_APP_URL + "schedules/1")
-  const employment = useResource(process.env.REACT_APP_URL + "employments/1")
-  const freetime = useResource(process.env.REACT_APP_URL + "freetimes/1")
-  const job = useResource(process.env.REACT_APP_URL + "jobs/1")
+  const employee = useResource("employees/1")
+  const schedule = useResource("schedules/1")
+  const employment = useResource("employments/1")
+  const freetime = useResource("freetimes/1")
+  const job = useResource("jobs/1")
+  const rrule = useResource("rrules/1")
   return (
     <>
       <h2>Badge</h2>
@@ -28,6 +30,9 @@ function Elements() {
         resource={{ id: 256, short: "OKT 23", title: "Oktober 2023" }}
         resourceName={"schedule"}
       />
+      <hr />
+      <h2>RruleDetailedCard</h2>
+      <RruleDetailedCard rrule={rrule} />
       <hr />
       <h2>JobDetailedCard</h2>
       <JobDetailedCard job={job} />

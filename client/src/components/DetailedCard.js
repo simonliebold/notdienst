@@ -31,8 +31,21 @@ const DetailedCard = ({ resource, resourceName, children }) => {
   )
 }
 
+export const RruleDetailedCard = ({ rrule }) => {
+  const { title, content, shift } = rrule || {}
+
+  return (
+    <DetailedCard resourceName="rrule" resource={rrule}>
+      Inhalt: <code>{content}</code>
+      <hr />
+      Schicht: <br />
+      <Badge resource={shift} resourceName="shift" />
+    </DetailedCard>
+  )
+}
+
 export const JobDetailedCard = ({ job }) => {
-  const { id, employees, shifts } = job || {}
+  const { employees, shifts } = job || {}
 
   return (
     <DetailedCard resourceName="job" resource={job}>

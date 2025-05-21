@@ -5,6 +5,7 @@ import {
   faCalendarXmark,
   faCar,
   faClock,
+  faCode,
   faHashtag,
   faHouseMedical,
   faKitMedical,
@@ -19,6 +20,7 @@ export const icons = {
   shift: faCalendarDay,
   job: faCar,
   freetime: faCalendarXmark,
+  rrule: faCode,
   default: faHashtag,
 }
 

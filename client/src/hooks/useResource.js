@@ -5,10 +5,12 @@ import { useErrorMessage } from "./../contexts/AlertContext"
 const useResource = (resourceUrl) => {
   const handleError = useErrorMessage()
   const [resource, setResource] = useState(null)
-
   const getData = async () => {
-    const response = await axios.get(resourceUrl).catch(handleError)
-    console.log(resourceUrl+":", response?.data)
+    console.log("drtfzguhji")
+    const response = await axios
+      .get(process.env.REACT_APP_URL + resourceUrl)
+      // .catch(handleError)
+    console.log(resourceUrl + ":", response?.data)
     setResource(response?.data)
   }
 
