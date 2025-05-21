@@ -20,7 +20,7 @@ module.exports = (models) => {
       const response = await models.Employment.create({ ...req.body })
       res.send({ response: response })
     } catch (error) {
-      res.status(400).send({ errors: error.errors })
+      res.status(400).send({ error: error })
     }
   })
 
@@ -39,7 +39,7 @@ module.exports = (models) => {
             .send({ message: "Updated successfully", rows: response[0] })
         : res.status(404).send({ message: "Not found", rows: response[0] })
     } catch (error) {
-      res.status(400).send({ errors: error })
+      res.status(400).send({ error: error })
     }
   })
 
@@ -53,7 +53,7 @@ module.exports = (models) => {
         ? res.status(200).send({ message: "Deleted successfully" })
         : res.status(404).send({ message: "Not found" })
     } catch (error) {
-      res.status(400).send({ errors: error })
+      res.status(400).send({ error: error })
     }
   })
 
