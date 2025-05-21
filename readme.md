@@ -158,9 +158,7 @@ POST /shifts
 
 content-type: application/json
 {
-    initials: String,
-    name: String,
-    employmentId: int
+    title: String
 }
 </pre>
 
@@ -170,9 +168,7 @@ PUT /shifts/:id
 
 content-type: application/json
 {
-    initials?: String,
-    name?: String,
-    employmentId?: int
+    title?: String
 }
 </pre>
 
@@ -194,9 +190,12 @@ POST /events
 
 content-type: application/json
 {
-    initials: String,
-    name: String,
-    employmentId: int
+    title: String,
+    dateStart: Date,
+    timeStart: Time,
+    duration: int,
+    repeatWeekday: int,
+    shiftId: int
 }
 </pre>
 
@@ -206,9 +205,12 @@ PUT /events/:id
 
 content-type: application/json
 {
-    initials?: String,
-    name?: String,
-    employmentId?: int
+    title?: String,
+    dateStart?: Date,
+    timeStart?: Time,
+    duration?: int,
+    repeatWeekday?: int,
+    shiftId?: int
 }
 </pre>
 
