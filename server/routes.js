@@ -11,9 +11,6 @@ module.exports = (models, sequelize) => {
   const shifts = require("./routes/shifts.js")(models)
   router.use("/shifts", roles.requireAdmin, shifts)
   
-  const events = require("./routes/events.js")(models)
-  router.use("/events", roles.requireAdmin, events)
-  
   const employees = require("./routes/employees.js")(models)
   router.use("/employees", employees)
   

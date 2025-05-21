@@ -10,9 +10,11 @@ module.exports = (models) => {
 
   // Get one
   router.get("/:id", roles.requireAdmin, async (req, res) => {
-    const freetime = await models.Freetime.findByPk(req.params.id)
+    const freetime = await models.Freetime.findByPk(req.params.id, {
+      include: [models.Schedule, models.Employee],
+    })
     if (freetime === null) return res.sendStatus(404)
-    return res.send({ freetime: freetime })
+    return res.send(freetime)
   })
 
   // Create one

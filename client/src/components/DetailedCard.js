@@ -7,6 +7,7 @@ import { localeString } from "../variables"
 
 const DetailedCard = ({ resource, resourceName, children }) => {
   const { id, short, title } = resource || {}
+
   return (
     <Card className="text-decoration-none">
       <Card.Header className="fs-6 m-0">
@@ -30,8 +31,23 @@ const DetailedCard = ({ resource, resourceName, children }) => {
   )
 }
 
-export const EmploymentDetailedCard = ({ employment }) => {
+export const FreetimeDetailedCard = ({ freetime }) => {
+  const { type, date, schedule, employee } = freetime || {}
 
+  return (
+    <DetailedCard resourceName="freetime" resource={freetime}>
+      Datum: {new Date(date).toLocaleDateString(localeString.country)} <br />
+      <hr />
+      Mitarbeiter: <br />
+      <Badge resource={employee} resourceName="employee" />
+      <hr />
+      Schichtplan: <br />
+      <Badge resource={schedule} resourceName="schedule" />
+    </DetailedCard>
+  )
+}
+
+export const EmploymentDetailedCard = ({ employment }) => {
   const hourString = (hours) => {
     if (hours) {
       if (hours === 1) return "1 Stunde"
@@ -53,7 +69,7 @@ export const EmployeeDetailedCard = ({ employee }) => {
 
   return (
     <DetailedCard resourceName="employee" resource={employee}>
-      Anstellungsverhältnis: {employment?.title} <br />
+      Anstellungsverhältnis: <br />
       <Badge resource={employment} resourceName="employment" />
       <hr />
       Dienste:

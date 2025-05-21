@@ -13,7 +13,13 @@ module.exports = (sequelize) => {
       short: {
         type: Sequelize.VIRTUAL,
         get() {
-          return this.id
+          return this.type
+        },
+      },
+      title: {
+        type: Sequelize.VIRTUAL,
+        get() {
+          return "Dienstplanwunsch"
         },
       },
       type: {

@@ -2,6 +2,7 @@ import {
   faBriefcase,
   faCalendar,
   faCalendarDay,
+  faCalendarXmark,
   faCar,
   faClock,
   faHashtag,
@@ -17,6 +18,7 @@ export const icons = {
   employment: faClock,
   shift: faCalendarDay,
   job: faCar,
+  freetime: faCalendarXmark,
   default: faHashtag,
 }
 

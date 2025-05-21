@@ -128,20 +128,12 @@ module.exports = async (models) => {
     })
   )
 
-  // for (let i = 3; i <= 5; i++) {
-  //   await models.Freetime.create({
-  //     start: "2023-10-01T06:00:00.000Z",
-  //     end: "2023-10-05T17:00:00.000Z",
-  //     scheduleId: 1,
-  //     employeeId: i,
-  //   })
-  // }
-  // for (let i = 1; i <= 2; i++) {
-  //   await models.Freetime.create({
-  //     start: "2023-10-01T06:00:00.000Z",
-  //     end: "2023-10-01T17:00:00.000Z",
-  //     scheduleId: 1,
-  //     employeeId: i,
-  //   })
-  // }
+    await models.Freetime.bulkCreate([
+      {type: "X", date: new Date(), scheduleId: 1, employeeId:1},
+      {type: "T", date: new Date(), scheduleId: 1, employeeId:1},
+      {type: "N", date: new Date(), scheduleId: 1, employeeId:1},
+      {type: "S", date: new Date(), scheduleId: 1, employeeId:1},
+      {type: "U", date: new Date(), scheduleId: 1, employeeId:1},
+    ])
+
 }
