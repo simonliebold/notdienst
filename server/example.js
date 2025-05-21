@@ -106,7 +106,7 @@ module.exports = async (models) => {
     {
       short: "A1 Nacht Mi, Fr, Sa, So",
       content: "FREQ=WEEKLY;INTERVAL=1;BYDAY=WE,FR,SA,SU",
-      start: "18:00",
+      start: "19:00",
       end: "8:00",
       shiftId: 1,
     },

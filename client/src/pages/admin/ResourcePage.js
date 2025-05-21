@@ -14,18 +14,12 @@ import { EditableBadge } from "../../components/Badge"
 import MultiBadge from "../../components/MultiBadge"
 import { titles } from "../../variables"
 import MultiTitleCard from "../../components/MultiTitleCard"
-import {
-  AsyncAllocateWorksButton,
-  AsyncGenerateWorksButton,
-} from "../../components/CardButton"
 
 import Container from "react-bootstrap/Container"
 import Row from "react-bootstrap/Row"
 import Col from "react-bootstrap/esm/Col"
 
-import FullCalendar from "@fullcalendar/react"
-import deLocale from "@fullcalendar/core/locales/de"
-import timeGridPlugin from "@fullcalendar/timegrid"
+import { ScheduleCalendar } from "../../components/Calendar"
 
 function ResourcePage({ resourceName, setData, children }) {
   const navigate = useNavigate()
@@ -221,42 +215,22 @@ export const RrulePage = () => {
 export const SchedulePage = () => {
   const [schedule, setSchedule] = useState(null)
   return (
-    <Container>
-      <Row>
-        <Col xs={4}>
-          <ResourcePage
-            className="w-50"
-            resourceName="schedule"
-            setData={setSchedule}
-          >
-            <EditableText value={schedule?.short} label="short" />
-            <EditableText value={schedule?.title} label="title" />
-            <EditableText value={schedule?.start} label="start" />
-            <EditableText value={schedule?.end} label="end" />
-            <EditableText value={schedule?.deadline} label="deadline" />
-            <hr />
-            {/* <MultiBadge items={schedule?.works} resourceName="work" disabled /> */}
-            <MultiBadge items={schedule?.shifts} resourceName="shift" />
-            <MultiBadge items={schedule?.employees} resourceName="employee" />
-            <hr />
-            <AsyncGenerateWorksButton id={schedule?.id} />
-            <br />
-            <AsyncAllocateWorksButton id={schedule?.id} />
-          </ResourcePage>
-        </Col>
-        <Col xs={8}>
-          <FullCalendar
-            xs={8}
-            plugins={[timeGridPlugin]}
-            initialView="timeGridWeek"
-            // weekends=
-            events={schedule?.works.map(work => {return {start: work.start, end: work.end, title: work.short}})}
-            locale="de"
-            // eventContent={renderEventContent}
-          />
-        </Col>
-      </Row>
-    </Container>
+    <ResourcePage
+      className="w-50"
+      resourceName="schedule"
+      setData={setSchedule}
+    >
+      <EditableText value={schedule?.short} label="short" />
+      <EditableText value={schedule?.title} label="title" />
+      <EditableText value={schedule?.start} label="start" />
+      <EditableText value={schedule?.end} label="end" />
+      <EditableText value={schedule?.deadline} label="deadline" />
+      <hr />
+      {/* <MultiBadge items={schedule?.works} resourceName="work" disabled /> */}
+      <MultiBadge items={schedule?.shifts} resourceName="shift" />
+      <MultiBadge items={schedule?.employees} resourceName="employee" />
+      <ScheduleCalendar schedule={schedule} />
+    </ResourcePage>
   )
 }
 

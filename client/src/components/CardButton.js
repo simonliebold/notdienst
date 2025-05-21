@@ -8,12 +8,13 @@ import {
   faX,
 } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import React, { useCallback } from "react"
+import React, { useCallback, useState } from "react"
 import Button from "react-bootstrap/esm/Button"
 import { Link } from "react-router-dom"
 import { icons, title, titles } from "../variables"
 import Spinner from "react-bootstrap/esm/Spinner"
 import { useAllocateWorks, useGenerateWorks } from "../hooks/useResource"
+import Placeholder from "react-bootstrap/Placeholder"
 
 function CardButton({ icon, children, ...props }) {
   return (
@@ -21,6 +22,21 @@ function CardButton({ icon, children, ...props }) {
       {icon && <FontAwesomeIcon icon={icon} className="me-2" />}
       {children}
     </Button>
+  )
+}
+
+const LoadingButton = ({ children, loading, ...props }) => {
+  return (
+    <Placeholder.Button>
+      <Spinner
+        animation="border"
+        role="status"
+        size={"sm"}
+        className="me-2"
+        {...props}
+      ></Spinner>
+      {children}
+    </Placeholder.Button>
   )
 }
 
@@ -114,15 +130,31 @@ export const AsyncGenerateWorksButton = ({ id, updateResource, ...props }) => {
   )
 }
 
-export const AsyncAllocateWorksButton = ({id, updateResource, ...props}) => {
+export const AsyncAllocateWorksButton = ({
+  id,
+  updateResource,
+  edit,
+  ...props
+}) => {
   const allocate = useAllocateWorks()
-  
+  const [loading, setLoading] = useState(false)
+
   const allocateWorks = useCallback(async () => {
+    setLoading(true)
     await allocate(id)
     await updateResource()
+    setLoading(false)
   })
+
+  if(loading) return <LoadingButton>Generiert...</LoadingButton>
+
   return (
-    <CardButton {...props} icon={icons.employee} onClick={allocateWorks}>
+    <CardButton
+      {...props}
+      icon={faCalendarPlus}
+      disabled={edit}
+      onClick={allocateWorks}
+    >
       {titles.work + " verteilen"}
     </CardButton>
   )
