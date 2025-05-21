@@ -6,7 +6,7 @@ import MultiBadge from "./MultiBadge"
 import { CardDeleteButton, CardEditButton } from "./CardButton"
 import { localeString } from "../variables"
 
-const DetailedCard = ({ resource, resourceName, children }) => {
+const DetailedCard = ({ resource, resourceName, children, className }) => {
   const { id, short, title } = resource || {}
 
   if (!resource)
@@ -32,7 +32,7 @@ const DetailedCard = ({ resource, resourceName, children }) => {
     )
 
   return (
-    <Card className="text-decoration-none">
+    <Card className={"text-decoration-none " + className}>
       <Card.Header className="fs-6 m-0">
         <Badge
           resourceName={resourceName}
@@ -180,17 +180,23 @@ export const EmployeeDetailedCard = ({ employee }) => {
     </DetailedCard>
   )
 }
-export const ScheduleDetailedCard = ({ schedule }) => {
+export const ScheduleDetailedCard = ({ schedule, className }) => {
   const { employees, shifts, works } = schedule || {}
 
-  const start = new Date(schedule?.start).toLocaleDateString(localeString.country)
+  const start = new Date(schedule?.start).toLocaleDateString(
+    localeString.country
+  )
   const end = new Date(schedule?.end).toLocaleDateString(localeString.country)
   const deadline = new Date(schedule?.deadline).toLocaleString(
     localeString.country
   )
 
   return (
-    <DetailedCard resourceName="schedule" resource={schedule}>
+    <DetailedCard
+      resourceName="schedule"
+      resource={schedule}
+      className={className}
+    >
       Start: {start && start}
       <br />
       Ende: {end && end}

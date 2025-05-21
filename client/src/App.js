@@ -21,6 +21,8 @@ import Jobs from "./pages/admin/Jobs"
 import Rrules from "./pages/admin/Rrules"
 import Schedules from "./pages/admin/Schedules"
 import Shifts from "./pages/admin/Shifts"
+import { ScheduleDetailedCard } from "./components/DetailedCard"
+import Schedule from "./pages/admin/Schedule"
 
 function App() {
   const home = (
@@ -89,6 +91,12 @@ function App() {
     </Prot>
   )
 
+  const schedule = (
+    <Prot>
+      <Schedule />
+    </Prot>
+  )
+
   return (
     <AuthProvider>
       <AlertProvider>
@@ -111,6 +119,7 @@ function App() {
               <Route path="jobs" element={jobs} />
               <Route path="rrules" element={rrules} />
               <Route path="schedules" element={schedules} />
+              <Route path="schedule/:scheduleId" element={schedule} />
               <Route path="shifts" element={shifts} />
             </Routes>
           </div>
