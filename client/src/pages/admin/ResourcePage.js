@@ -4,7 +4,10 @@ import EditableText from "../../components/EditableText"
 import { EditableBadge } from "../../components/Badge"
 import MultiBadge from "../../components/MultiBadge"
 import { EmployeeCalendar, ScheduleCalendar } from "../../components/Calendar"
-import { AsyncAllocateWorksButton } from "../../components/CardButton"
+import {
+  AsyncAllocateWorksButton,
+  AsyncGenerateWorksButton,
+} from "../../components/CardButton"
 
 import { useParams } from "react-router-dom"
 import useResource from "./../../hooks/useResource"
@@ -34,6 +37,7 @@ const useResourcePage = (resourceName) => {
     edit,
     setEdit,
     onInput,
+    refreshResource,
   }
 }
 
@@ -364,6 +368,7 @@ export const SchedulePage = () => {
     edit,
     setEdit,
     onInput,
+    refreshResource,
   } = useResourcePage("schedule")
   return (
     <>
@@ -385,6 +390,26 @@ export const SchedulePage = () => {
         <EditableText
           value={schedule?.title}
           label="title"
+          onInput={onInput}
+          edit={edit}
+        />
+        <EditableText
+          value={schedule?.start}
+          label="start"
+          onInput={onInput}
+          edit={edit}
+        />
+        <EditableText
+          value={schedule?.end}
+          label="end"
+          onInput={onInput}
+          edit={edit}
+        />
+        <AsyncGenerateWorksButton
+          schedule={schedule}
+          updateResource={refreshResource}
+          className="me-3"
+          variant="warning"
           onInput={onInput}
           edit={edit}
         />
