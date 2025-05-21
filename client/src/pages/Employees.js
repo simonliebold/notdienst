@@ -101,7 +101,7 @@ const EmployeeModal = ({ allEmployments, allJobs }) => {
     setShowTokenModal()
 
     const response = await axios
-      .get(process.env.REACT_APP_URL+"employees/" + employeeInitials)
+      .get(process.env.REACT_APP_URL + "employees/" + employeeInitials)
       .catch(handleError)
     if (!response?.data?.employee) return
 
@@ -120,7 +120,7 @@ const EmployeeModal = ({ allEmployments, allJobs }) => {
       e.preventDefault()
       setIsButtonLoading(true)
       const response = await axios
-        .put(process.env.REACT_APP_URL+"employees/" + employeeInitials, {
+        .put(process.env.REACT_APP_URL + "employees/" + employeeInitials, {
           name: name,
           initials: initials,
           employmentId: employmentId,
@@ -147,7 +147,9 @@ const EmployeeModal = ({ allEmployments, allJobs }) => {
   const createToken = useCallback(async () => {
     setIsTokenLoading(true)
     const response = await axios
-      .post(process.env.REACT_APP_AUTH_URL+"credentials/generate/" + employee.id)
+      .post(
+        process.env.REACT_APP_AUTH_URL + "credentials/generate/" + employee.id
+      )
       .catch(handleError)
     if (!response?.data?.code && !response?.data?.expiresAt) return
     setToken({
@@ -159,12 +161,12 @@ const EmployeeModal = ({ allEmployments, allJobs }) => {
   }, [employee, handleError])
 
   const deleteEmployee = useCallback(async () => {
+    close()
     const response = await axios
-      .delete(process.env.REACT_APP_URL+"employees/" + employee.id)
+      .delete(process.env.REACT_APP_URL + "employees/" + employee.id)
       .catch(handleError)
     if (!response?.data?.message) return
     handleSuccess(response.data.message)
-    close()
   }, [close, employee, handleError, handleSuccess])
 
   useEffect(() => {
@@ -428,24 +430,33 @@ const EmployeeModal = ({ allEmployments, allJobs }) => {
               variant="link"
               className="text-secondary"
               onClick={(e) => setShowDeleteModal(true)}
+              disabled={isLoading}
             >
               <FontAwesomeIcon icon={faTrash} />
             </Button>
-            <ButtonToolbar>
-              <Button
-                variant="primary"
-                onClick={createToken}
-                disabled={isTokenLoading}
-                className="me-2"
-              >
-                <FontAwesomeIcon className="me-1" icon={faKey} /> Token
-              </Button>
-              {isLoading && (
-                <Placeholder as="p" animation="glow">
-                  <Placeholder.Button>Lädt...</Placeholder.Button>
-                </Placeholder>
-              )}
-              {!isLoading && (
+
+            {isLoading && (
+              <Placeholder as="p" animation="glow">
+                <Placeholder.Button className="me-2">
+                  <FontAwesomeIcon className="me-1" icon={faKey} />
+                  Lädt...
+                </Placeholder.Button>
+                <Placeholder.Button>
+                  <FontAwesomeIcon className="me-2" icon={faSave} />
+                  Lädt...
+                </Placeholder.Button>
+              </Placeholder>
+            )}
+            {!isLoading && (
+              <ButtonToolbar>
+                <Button
+                  variant="primary"
+                  onClick={createToken}
+                  disabled={isTokenLoading}
+                  className="me-2"
+                >
+                  <FontAwesomeIcon className="me-1" icon={faKey} /> Token
+                </Button>
                 <Button
                   type="submit"
                   disabled={isButtonDisabled || isButtonLoading}
@@ -454,8 +465,8 @@ const EmployeeModal = ({ allEmployments, allJobs }) => {
                   {isButtonLoading && "Lädt..."}
                   {!isButtonLoading && "Speichern"}
                 </Button>
-              )}
-            </ButtonToolbar>
+              </ButtonToolbar>
+            )}
           </Modal.Footer>
         </Form>
       </Modal>
@@ -499,14 +510,14 @@ function Employees() {
 
   const fetchEmployees = useCallback(async () => {
     const response = await axios
-      .get(process.env.REACT_APP_URL+"employees/")
+      .get(process.env.REACT_APP_URL + "employees/")
       .catch(handleError)
     if (response?.data?.employees) setEmployees(response.data.employees)
   }, [handleError])
 
   const fetchAllEmployments = useCallback(async () => {
     const response = await axios
-      .get(process.env.REACT_APP_URL+"employments/")
+      .get(process.env.REACT_APP_URL + "employments/")
       .catch(handleError)
     if (!response?.data?.employments) return
 
@@ -519,7 +530,7 @@ function Employees() {
 
   const fetchAllJobs = useCallback(async () => {
     const response = await axios
-      .get(process.env.REACT_APP_URL+"jobs/")
+      .get(process.env.REACT_APP_URL + "jobs/")
       .catch(handleError)
     if (!response?.data?.jobs) return
     setAllJobs(
@@ -531,7 +542,7 @@ function Employees() {
 
   const createNewEmployee = useCallback(async () => {
     const response = await axios
-      .post(process.env.REACT_APP_URL+"employees", {
+      .post(process.env.REACT_APP_URL + "employees", {
         name: newName,
         initials: newInitials,
       })
