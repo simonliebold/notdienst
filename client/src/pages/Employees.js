@@ -3,9 +3,14 @@ import React, { useEffect, useState } from "react"
 import { Link, useNavigate, useParams } from "react-router-dom"
 
 import { useAlertUpdate } from "../contexts/AlertContext"
+import { useAuthUpdate } from "../contexts/AuthContext"
 
 import Select from "react-select"
 
+import QRCode from "react-qr-code"
+
+import Placeholder from "react-bootstrap/Placeholder"
+import Button from "react-bootstrap/Button"
 import Card from "react-bootstrap/Card"
 import Badge from "react-bootstrap/Badge"
 import Col from "react-bootstrap/Col"
@@ -18,18 +23,11 @@ import Alert from "react-bootstrap/Alert"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import {
   faCalendarDays,
-  faCode,
-  faDiceSix,
-  faDownload,
   faKey,
   faPlus,
   faSave,
-  faSpinner,
   faUser,
 } from "@fortawesome/free-solid-svg-icons"
-import Button from "react-bootstrap/Button"
-import { useAuthUpdate } from "../contexts/AuthContext"
-import Placeholder from "react-bootstrap/Placeholder"
 
 const dateOptions = {
   weekday: "long",
@@ -288,10 +286,12 @@ const EmployeeModal = () => {
           )}
           {!isLoading && (
             <Select
-              defaultValue={{
-                value: employee.employment.id,
-                label: employee.employment.title,
-              }}
+              defaultValue={
+                employmentId && {
+                  value: employmentId,
+                  label: employee.employment.title,
+                }
+              }
               name="employment"
               options={allEmployments}
               className="basic-multi-select"
@@ -343,27 +343,44 @@ const EmployeeModal = () => {
           <hr />
           <h2 className="fs-6 mt-3">Account-Daten ändern</h2>
           {!token && (
-            <Button onClick={createToken} variant="primary" disabled={isTokenLoading}>
+            <Button
+              onClick={createToken}
+              variant="primary"
+              disabled={isTokenLoading}
+            >
               <FontAwesomeIcon className="me-2" icon={faKey} />
               {isTokenLoading && <>Token lädt...</>}
-              {!isTokenLoading && <>Token generieren</>}
+              {!isTokenLoading && <>Neuen Token generieren</>}
             </Button>
           )}
           {token && (
             <Card bg="" text="">
               <Card.Body>
-                <Card.Title>
-                  <Badge className="me-2">
-                    <FontAwesomeIcon icon={faKey} className="me-2" />
-                    {token.code}
-                  </Badge>
-                  Account-Daten Token
-                </Card.Title>
-                E-Mail und Passwort unter folgendem Link festlegen:
-                <br />
-                <a href={"http://localhost:3001/credentials/" + token.code}>
-                  {"http://localhost:3001/credentials/" + token.code}
-                </a>
+                <Row>
+                  <Col>
+                    <Card.Title>
+                      <Badge className="me-2">
+                        <FontAwesomeIcon icon={faKey} className="me-2" />
+                        {token.code}
+                      </Badge>
+                      Account-Daten Token
+                    </Card.Title>
+                    E-Mail und Passwort können über den QR-Code festgelegt
+                    werden:
+                    <br />
+                    <a href={"http://localhost:3001/credentials/" + token.code}>
+                      {"http://localhost:3001/credentials/" + token.code}
+                    </a>
+                  </Col>
+                  <Col sm="auto" className="order-first order-sm-last">
+                    <QRCode
+                      as={Card.Image}
+                      className="w-100 m-2"
+                      size="100"
+                      value={"http://localhost:3001/credentials/" + token.code}
+                    />
+                  </Col>
+                </Row>
               </Card.Body>
               <Card.Footer>
                 Gültig bis: {new Date(token.expiresAt).toLocaleString("de-DE")}
@@ -416,6 +433,9 @@ function Employees() {
 
   const [employees, setEmployees] = useState([])
 
+  const [newName, setNewName] = useState()
+  const [newInitials, setNewInitials] = useState()
+
   const fetchEmployees = async () => {
     try {
       const response = await axios.get("http://localhost:3000/employees/")
@@ -427,6 +447,20 @@ function Employees() {
     }
   }
 
+  const createNewEmployee = async () => {
+    try {
+      const response = await axios.post("http://localhost:3000/employees", {
+        name: newName,
+        initials: newInitials,
+      })
+      console.log(response)
+    } catch (error) {
+      if (error.response.data.error) addAlert(error.response.data.error)
+      else addAlert(error.message)
+    }
+    fetchEmployees()
+  }
+
   useEffect(() => {
     fetchEmployees()
   }, [employeeInitials])
@@ -436,11 +470,21 @@ function Employees() {
       {employees.map((employee, i) => {
         return <EmployeeCard key={"employee-" + i} employee={employee} />
       })}
-      <Col className="mb-3" as={Link} onClick={(e) => alert("rftgzhuj")}>
+      <Col className="mb-3">
         <Card bg="primary" text="light" className="opacity-75">
           <Card.Body>
-            <FontAwesomeIcon className="me-2" icon={faPlus} />
-            Neuen Mitarbeiter anlegen
+            <h2 className="fs-6">Kürzel</h2>
+            <Form.Control
+              onChange={(e) => setNewInitials(e.target.value)}
+            ></Form.Control>
+            <h2 className="fs-6 my-3">Name</h2>
+            <Form.Control
+              onChange={(e) => setNewName(e.target.value)}
+            ></Form.Control>
+            <Button onClick={createNewEmployee}>
+              <FontAwesomeIcon className="me-2" icon={faPlus} />
+              Neuen Mitarbeiter anlegen
+            </Button>
           </Card.Body>
         </Card>
       </Col>
