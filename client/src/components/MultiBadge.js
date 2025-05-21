@@ -22,7 +22,7 @@ function MultiBadge({
   const onChange = (items) => {
     if (onInput)
       onInput(
-        resourceName + "Ids",
+        resourceName + "s",
         items.map((item) => {
           return item.value
         })
@@ -34,10 +34,10 @@ function MultiBadge({
       <div className={className}>
         <label className="w-100">{titles[resourceName]}:</label>
         {items?.map((item) => {
-          const { short, id } = item || {}
+          const { short, _id } = item || {}
           return (
             <Badge
-              key={short + "-" + id + "-badge"}
+              key={short + "-" + _id + "-badge"}
               resource={item}
               resourceName={resourceName}
               className="me-1 mb-1"
@@ -66,12 +66,12 @@ function MultiBadge({
           options={options?.map((option) => ({
             icon: icons[resourceName],
             label: option.short,
-            value: option.id,
+            value: option._id,
           }))}
           defaultValue={items?.map((item) => ({
             icon: icons[resourceName],
             label: item.short,
-            value: item.id,
+            value: item._id,
           }))}
           onChange={onChange}
         />
@@ -89,10 +89,10 @@ function MultiBadge({
     <div className={className}>
       <label className="w-100">{titles[resourceName]}:</label>
       {items?.map((item) => {
-        const { short, id } = item || {}
+        const { short, _id } = item || {}
         return (
           <Badge
-            key={short + "-" + id + "-badge"}
+            key={short + "-" + _id + "-badge"}
             resource={item}
             resourceName={resourceName}
             className="me-1 mb-1"

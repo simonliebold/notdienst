@@ -31,6 +31,7 @@ const loadTestData = async () => {
     title: "Simon Liebold",
     employment: minijob._id,
     jobs: [anod._id],
+    freetimes: [{start: new Date(), end: new Date()}]
   }).save()
 }
 
