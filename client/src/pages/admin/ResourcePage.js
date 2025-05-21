@@ -6,12 +6,15 @@ import MultiBadge from "../../components/MultiBadge"
 import { EmployeeCalendar, ScheduleCalendar } from "../../components/Calendar"
 import {
   AsyncAllocateWorksButton,
+  AsyncDeleteWorksButton,
   AsyncGenerateWorksButton,
   CredentialsButton,
 } from "../../components/CardButton"
 
 import { useParams } from "react-router-dom"
-import useResource, { useGenerateCredentialsToken } from "./../../hooks/useResource"
+import useResource, {
+  useGenerateCredentialsToken,
+} from "./../../hooks/useResource"
 import useInput from "./../../hooks/useInput"
 import useSave from "./../../hooks/useSave"
 import { CredentialsTokenPopup } from "../../components/Popup"
@@ -412,10 +415,16 @@ export const SchedulePage = () => {
           schedule={schedule}
           updateResource={refreshResource}
           className="me-3"
-          variant="warning"
+          variant="primary"
           onInput={onInput}
           edit={edit}
-          />
+        />
+        <AsyncDeleteWorksButton
+          edit={edit}
+          className="me-3"
+          schedule={schedule}
+          updateResource={refreshResource}
+        />
         <AsyncAllocateWorksButton
           schedule={schedule}
           updateResource={refreshResource}

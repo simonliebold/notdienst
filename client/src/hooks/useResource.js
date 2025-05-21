@@ -136,13 +136,35 @@ export const useAllocateWorks = () => {
       if (process.env.NODE_ENV === "development")
         console.log("useAllocateWorks:", response?.data)
 
-      // handleSuccess(response?.data?.message)
+      handleSuccess(response?.data?.message)
       return response?.data
     },
     [handleError, handleSuccess]
   )
 
   return allocate
+}
+
+export const useDeleteWorks = () => {
+  const handleError = useErrorMessage()
+  const handleSuccess = useSuccessMessage()
+
+  const deleteWorks = useCallback(
+    async (scheduleId) => {
+      if (!scheduleId) return
+      const response = await axios
+        .delete(process.env.REACT_APP_URL + "schedules/" + scheduleId + "/works")
+        .catch(handleError)
+      if (process.env.NODE_ENV === "development")
+        console.log("useDeleteWorks:", response?.data)
+
+      handleSuccess(response?.data?.message)
+      return response?.data
+    },
+    [handleError, handleSuccess]
+  )
+
+  return deleteWorks
 }
 
 export const useGenerateCredentialsToken = () => {

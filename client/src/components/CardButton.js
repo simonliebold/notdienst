@@ -22,6 +22,7 @@ import { icons, title, titles } from "../variables"
 import Spinner from "react-bootstrap/esm/Spinner"
 import {
   useAllocateWorks,
+  useDeleteWorks,
   useGenerateCredentialsToken,
   useGenerateWorks,
 } from "../hooks/useResource"
@@ -159,7 +160,7 @@ export const AsyncAllocateWorksButton = ({
     setLoading(false)
   }, [allocate, schedule, updateResource])
 
-  
+  if (schedule?.works?.length == 0) return
 
   if (loading)
     return (
@@ -174,7 +175,42 @@ export const AsyncAllocateWorksButton = ({
       variant="primary"
       onClick={allocateWorks}
     >
-      {title.schedule + " generieren"}
+      {"Dienste verteilen"}
+    </CardButton>
+  )
+}
+
+
+export const AsyncDeleteWorksButton = ({
+  schedule,
+  updateResource,
+  edit,
+  ...props
+}) => {
+  const deleteWorks = useDeleteWorks() // Assuming a hook for deleting works exists
+  const [loading, setLoading] = useState(false)
+
+  const handleDeleteWorks = useCallback(async () => {
+    setLoading(true)
+    await deleteWorks(schedule?._id)
+    await updateResource()
+    setLoading(false)
+  }, [deleteWorks, schedule, updateResource])
+
+  if (schedule?.works?.length == 0) return
+
+  if (loading)
+    return <LoadingButton>{title.schedule + " wird gelöscht..."}</LoadingButton>
+
+  return (
+    <CardButton
+      {...props}
+      icon={faTrash}
+      disabled={edit}
+      variant="danger"
+      onClick={handleDeleteWorks}
+    >
+      {"Dienste löschen"}
     </CardButton>
   )
 }
