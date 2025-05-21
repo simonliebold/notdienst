@@ -41,7 +41,7 @@ router.post(
       return res.sendStatus(403)
 
     const user = await User.findById(req.params.id)
-    if (!user) await User.create({ _id: req.params.id })
+    if (!user) await User.create({ _id: req.params.id, email: req.user.short })
     // let users = await sequelize.models.users.findOrCreate({
     //   where: { id: req.params.id },
     // })

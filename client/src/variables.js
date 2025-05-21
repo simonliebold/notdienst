@@ -7,6 +7,7 @@ import {
   faDatabase,
   faFileLines,
   faHashtag,
+  faKey,
   faRecycle,
   faRepeat,
   faSwimmer,
@@ -28,6 +29,7 @@ export const icons = {
   freetime: faTable,
   mission: faCar,
   exchange: faRecycle,
+  credentialsToken: faKey,
   default: faDatabase,
 }
 

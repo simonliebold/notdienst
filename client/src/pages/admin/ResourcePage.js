@@ -14,6 +14,7 @@ import { useParams } from "react-router-dom"
 import useResource, { useGenerateCredentialsToken } from "./../../hooks/useResource"
 import useInput from "./../../hooks/useInput"
 import useSave from "./../../hooks/useSave"
+import { CredentialsTokenPopup } from "../../components/Popup"
 
 const useResourcePage = (resourceName) => {
   const { id } = useParams()
@@ -96,7 +97,7 @@ export const EmployeePage = () => {
           edit={edit}
           disabled
         />
-        <CredentialsButton userId={employee?._id} />
+        <CredentialsTokenPopup employee={employee} />
         {/* <ContainsItems resources={employee?.freetimes} resourceName="freetime" /> */}
       </DetailedCard>
       <EmployeeCalendar employee={employee} />

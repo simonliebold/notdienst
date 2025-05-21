@@ -7,11 +7,14 @@ import {
   ConfirmCreateNewButton,
   ConfirmDeleteButton,
   CreateNewButton,
+  CredentialsButton,
 } from "./CardButton"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { faPlus, faTrash, faX } from "@fortawesome/free-solid-svg-icons"
-import { title } from "../variables"
+import { faKey, faPlus, faTrash, faX } from "@fortawesome/free-solid-svg-icons"
+import { localeString, localeStringTime, title } from "../variables"
 import usePopup, { useDeletePopup } from "../hooks/useDelete"
+import Badge from "./Badge"
+import QRCode from "react-qr-code"
 
 function Popup({ children, title, icon, buttons, show, onClose, ...props }) {
   return (
@@ -109,6 +112,61 @@ export const CreateNewPopup = ({
         }
       >
         {children}
+      </Popup>
+    </>
+  )
+}
+
+export const CredentialsTokenPopup = ({ employee }) => {
+  const [show, setShow] = useState(false)
+
+  const close = useCallback(() => {
+    setShow(false)
+  }, [show, setShow])
+
+  const open = useCallback(() => {
+    setShow(true)
+  }, [show, setShow])
+
+  const [result, setResult] = useState(null)
+
+  const handleResult = useCallback((r) => {
+    setResult(r)
+    open()
+  })
+
+  const link = process.env.REACT_APP_SELF_URL + "credentials/" + result?.code
+
+  return (
+    <>
+      <CredentialsButton userId={employee?._id} handleResult={handleResult} />
+      <Popup
+        title={
+          <>
+            <Badge
+              resource={{ short: result?.code }}
+              resourceName="credentialsToken"
+              className="me-2"
+              disabled
+            />
+            Account-Token
+          </>
+        }
+        show={show}
+        onClose={close}
+      >
+        <div className="row row-cols-1 row-cols-lg-2">
+          <div>
+            {"Name: " + employee?.title}
+            <hr />
+            {"Gültig bis: " +
+              new Date(result?.expiresAt).toLocaleString(localeString)}
+            <p>
+              <a href={link}>{link}</a>
+            </p>
+          </div>
+          <QRCode value={link} />
+        </div>
       </Popup>
     </>
   )

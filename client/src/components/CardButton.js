@@ -188,10 +188,21 @@ export const ExpandButton = ({ expanded, ...props }) => {
   )
 }
 
-export const CredentialsButton = ({ userId }) => {
+export const CredentialsButton = ({ userId, handleResult }) => {
   const generate = useGenerateCredentialsToken()
+
+  const [loading, setLoading] = useState(false)
+
+  const handleGenerate = useCallback(async () => {
+    setLoading(true)
+    const result = await generate(userId)
+    handleResult(result)
+    setLoading(false)
+  }, [generate, handleResult, userId])
+
+  if (loading) return <LoadingButton>{"Token wird generiert..."}</LoadingButton>
   return (
-    <CardButton icon={faKey} onClick={(e) => generate(userId)}>
+    <CardButton icon={faKey} onClick={handleGenerate}>
       Token generieren
     </CardButton>
   )
