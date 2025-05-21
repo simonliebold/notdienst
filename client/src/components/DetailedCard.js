@@ -20,10 +20,6 @@ export const ConfirmDelete = ({ resource, resourceName }) => {
   const [show, open, close, submit, deleting, input, onInput, disabled] =
     useDelete(resource, resourceName)
 
-  useEffect(() => {
-    console.log(deleting)
-  }, [deleting])
-
   return (
     <>
       <ConfirmDeletePopup

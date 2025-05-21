@@ -51,7 +51,7 @@ export const EditableBadge = ({
     return (
       <p>
         <label className="w-100">{title[name]}:</label>
-        <Badge resource={resource} resourceName={resourceName} disabled />
+        <Badge className="" resource={resource} resourceName={resourceName} disabled />
       </p>
     )
   if (edit)
@@ -88,16 +88,16 @@ export const EditableBadge = ({
 
   if (!resource)
     return (
-      <p>
+      <p className="mb-0">
         <label className="w-100">{title[name]}:</label>
-        <Badge resource={{ short: "Keine Daten" }} disabled />
+        <Badge className="" resource={{ short: "Keine Daten" }} disabled />
       </p>
     )
 
   return (
-    <p>
+    <p className="mb-0">
       <label className="w-100">{title[name]}:</label>
-      <Badge resource={resource} resourceName={resourceName} />
+      <Badge className="" resource={resource} resourceName={resourceName} />
     </p>
   )
 }

@@ -1,80 +1,22 @@
-import React, { useCallback, useEffect, useState } from "react"
-
-import { useNavigate, useParams } from "react-router-dom"
+import React, { useState } from "react"
 import DetailedCard from "../../components/DetailedCard"
-
-import useResource, {
-  useResourceDelete,
-  useResourceUpdate,
-} from "../../hooks/useResource"
-import Breadcrumb from "../../components/Breadcrumb"
-import { ConfirmDeletePopup } from "../../components/Popup"
 import EditableText from "../../components/EditableText"
 import { EditableBadge } from "../../components/Badge"
 import MultiBadge from "../../components/MultiBadge"
-import { titles } from "../../variables"
-import MultiTitleCard from "../../components/MultiTitleCard"
-
-import Container from "react-bootstrap/Container"
-import Row from "react-bootstrap/Row"
-import Col from "react-bootstrap/esm/Col"
-
-import Calendar, {
-  EmployeeCalendar,
-  ScheduleCalendar,
-} from "../../components/Calendar"
+import { EmployeeCalendar, ScheduleCalendar } from "../../components/Calendar"
 import { AsyncAllocateWorksButton } from "../../components/CardButton"
-import useResourcePage from "../../hooks/useResourcePage"
-import useInput from "../../hooks/useInput"
-import useSave from "../../hooks/useSave"
 
-function ResourcePage({ resourceName, buttons, children }) {
-  return (
-    <div></div>
-    // <Breadcrumb resourceName={resourceName} resource={resource} />
-    // <ConfirmDeletePopup
-    //   show={showConfirmDeletePopup}
-    //   onConfirm={onDeleteConfirm}
-    //   onClose={onDeleteClose}
-    //   resource={resource}
-    //   resourceName={resourceName}
-    // >
-    //   Bist du sicher, dass du das löschen möchtest?
-    // </ConfirmDeletePopup>
-    // <DetailedCard
-    //   resourceName={resourceName}
-    //   resource={resource}
-    //   loading={loading}
-    //   saving={saving}
-    //   onSaveRequest={onSaveRequest}
-    //   edit={edit}
-    //   onEditRequest={onEditRequest}
-    //   onCloseRequest={onCloseRequest}
-    //   onDeleteRequest={onDeleteRequest}
-    // >
+import { useParams } from "react-router-dom"
+import useResource from "./../../hooks/useResource"
+import useInput from "./../../hooks/useInput"
+import useSave from "./../../hooks/useSave"
 
-    //   {/* {React.Children.map(children, (child) => {
-    //     if (React.isValidElement(child))
-    //       return React.cloneElement(child, {
-    //         onInput,
-    //         updateResource,
-    //         className: "mb-3",
-    //         edit,
-    //       })
-    //   })} */}
-    // </DetailedCard>
-  )
-}
-
-export const EmployeePage = () => {
-  const resourceName = "employee"
-
+const useResourcePage = (resourceName) => {
   const { id } = useParams()
   const [resource, refreshResource, loading] = useResource(
     resourceName + "s/" + id
   )
   const [edit, setEdit] = useState(false)
-  const employee = resource
 
   const [input, onInput] = useInput(loading)
   const [saving, onSaveRequest] = useSave(
@@ -83,6 +25,33 @@ export const EmployeePage = () => {
     refreshResource,
     setEdit
   )
+
+  return {
+    resource,
+    loading,
+    saving,
+    onSaveRequest,
+    edit,
+    setEdit,
+    onInput,
+  }
+}
+
+const ResourcePage = () =>
+{
+  return <a></a>
+}
+
+export const EmployeePage = () => {
+  const {
+    resource: employee,
+    loading,
+    saving,
+    onSaveRequest,
+    edit,
+    setEdit,
+    onInput,
+  } = useResourcePage("employee")
 
   return (
     <>
