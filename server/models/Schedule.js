@@ -10,6 +10,11 @@ module.exports = (sequelize) => {
         autoIncrement: true,
         allowNull: false,
       },
+      short: {
+        type: Sequelize.STRING,
+        unique: true,
+        allowNull: false,
+      },
       title: {
         type: Sequelize.STRING,
         allowNull: false,

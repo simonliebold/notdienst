@@ -11,6 +11,12 @@ module.exports = (sequelize) => {
         autoIncrement: true,
         allowNull: false,
       },
+      short: {
+        type: Sequelize.VIRTUAL,
+        get() {
+          return this.id
+        },
+      },
       start: {
         type: Sequelize.DATE,
         allowNull: false,
@@ -19,18 +25,14 @@ module.exports = (sequelize) => {
         type: Sequelize.DATE,
         allowNull: false,
       },
-      duration: {
-        type: Sequelize.INTEGER,
-        allowNull: false
-      },
       scheduleId: {
         type: Sequelize.INTEGER,
         allowNull: false,
-      },
-      eventId: {
-        type: Sequelize.INTEGER,
-        allowNull: false,
-      },
+        references: {
+          model: sequelize.models.Schedule,
+          key: "id",
+        },
+      }
     },
     { timestamps: false }
   )

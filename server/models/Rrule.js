@@ -2,7 +2,7 @@ const { Sequelize } = require("sequelize")
 
 module.exports = (sequelize) => {
   return sequelize.define(
-    "shift",
+    "rrule",
     {
       id: {
         type: Sequelize.INTEGER,
@@ -10,16 +10,14 @@ module.exports = (sequelize) => {
         autoIncrement: true,
         allowNull: false,
       },
-      short: {
-        type: Sequelize.STRING,
-        unique: true,
+      shiftId: {
+        type: Sequelize.INTEGER,
         allowNull: false,
+        references: {
+          model: sequelize.models.Shift,
+          key: "id",
+        },
       },
-      title: {
-        type: Sequelize.STRING,
-        allowNull: false,
-        unique: true,
-      }
     },
     { timestamps: false }
   )

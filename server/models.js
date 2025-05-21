@@ -5,20 +5,20 @@ module.exports = (db) => {
   const Job = require("./models/Job")(sequelize)
   const Employment = require("./models/Employment")(sequelize)
   const Shift = require("./models/Shift")(sequelize)
-  const Event = require("./models/Event")(sequelize)
+  const Rrule = require("./models/Rrule")(sequelize)
   const Work = require("./models/Work")(sequelize)
-  const Schedule = require("./models/Schedule")(sequelize, db.Sequelize)
+  const Schedule = require("./models/Schedule")(sequelize)
   const Freetime = require("./models/Freetime")(sequelize)
 
   Employee.belongsTo(Employment)
 
   Work.belongsTo(Schedule)
-  Work.belongsTo(Event)
 
   Freetime.belongsTo(Schedule)
   Freetime.belongsTo(Employee)
 
-  Event.belongsTo(Shift)
+  Rrule.belongsTo(Shift)
+  // Shift.belongsToMany(Rrule, {through: "rrules"})
 
   const JobEmployee = require("./models/JobEmployee")(sequelize)
   Job.belongsToMany(Employee, { through: "jobs_employees" })
@@ -45,7 +45,7 @@ module.exports = (db) => {
     Job,
     Employment,
     Shift,
-    Event,
+    Rrule,
     Work,
     Schedule,
     Freetime,

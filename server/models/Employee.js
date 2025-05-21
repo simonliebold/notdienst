@@ -37,6 +37,10 @@ module.exports = (sequelize) => {
       employmentId: {
         type: Sequelize.INTEGER,
         allowNull: true,
+        references: {
+          model: sequelize.models.Employment,
+          key: "id",
+        },
       },
     },
     { timestamps: false }

@@ -10,21 +10,36 @@ module.exports = (sequelize) => {
         autoIncrement: true,
         allowNull: false,
       },
-      start: {
-        type: Sequelize.DATE,
-        allowNull: false,
+      short: {
+        type: Sequelize.VIRTUAL,
+        get() {
+          return this.id
+        },
       },
-      end: {
-        type: Sequelize.DATE,
+      type: {
+        type: Sequelize.STRING,
+        allowNull: false,
+        defaultValue: "X",
+      },
+      date: {
+        type: Sequelize.DATEONLY,
         allowNull: false,
       },
       scheduleId: {
         type: Sequelize.INTEGER,
         allowNull: false,
+        references: {
+          model: sequelize.models.Schedule,
+          key: "id",
+        },
       },
       employeeId: {
         type: Sequelize.INTEGER,
         allowNull: false,
+        references: {
+          model: sequelize.models.Employee,
+          key: "id",
+        },
       },
     },
     { timestamps: false }

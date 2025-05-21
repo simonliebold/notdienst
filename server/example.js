@@ -37,13 +37,13 @@ module.exports = async (models) => {
   // }
 
   const jobs = [
-    { title: "ÄNoD Fahrer/-in" },
-    { title: "EZ Dispo" },
-    { title: "MTD / HNR Fahrer/-in" },
-    { title: "RH" },
-    { title: "RS" },
-    { title: "SH" },
-    { title: "NFS" },
+    { short: "ÄNOD", title: "ÄNoD Fahrer/-in" },
+    { short: "EZ", title: "EZ Dispo" },
+    { short: "MTD / HNR Fahrer/-in", title: "MTD / HNR Fahrer/-in" },
+    { short: "RH", title: "Rettungshelfer" },
+    { short: "RS", title: "Rettungssanitäter" },
+    { short: "SH", title: "Sanitätshelfer" },
+    { short: "NFS", title: "Notfallsanitäter" },
   ]
 
   await models.Job.bulkCreate(jobs)
@@ -51,14 +51,17 @@ module.exports = async (models) => {
   const employments = [
     {
       title: "Minijob",
+      short: "MINI",
       maxHours: 40,
     },
     {
       title: "Teilzeit",
+      short: "TEIL",
       minHours: 80,
     },
     {
       title: "Vollzeit",
+      short: "VOLL",
       minHours: 160,
       maxHours: 180,
     },
@@ -66,241 +69,24 @@ module.exports = async (models) => {
 
   await models.Employment.bulkCreate(employments)
 
-  // let employees = await generateEmployees()
-  // employees = await models.Employee.bulkCreate(employees)
-
   let shifts = [
-    { title: "A1 früh" },
-    { title: "A2 früh" },
-    { title: "A1 spät" },
-    { title: "A2 spät" },
-    { title: "A1 Nacht" },
-    { title: "A2 Nacht" },
-    { title: "C1 früh" },
-    { title: "C2 früh" },
-    { title: "C1 spät" },
-    { title: "C2 spät" },
+    { short: "A1 früh", title: "A1 früh" },
+    { short: "A2 früh", title: "A2 früh" },
+    { short: "A1 spät", title: "A1 spät" },
+    { short: "A2 spät", title: "A2 spät" },
+    { short: "A1 Nacht", title: "A1 Nacht" },
+    { short: "A2 Nacht", title: "A2 Nacht" },
+    { short: "C1 früh", title: "C1 früh" },
+    { short: "C2 früh", title: "C2 früh" },
+    { short: "C1 spät", title: "C1 spät" },
+    { short: "C2 spät", title: "C2 spät" },
   ]
 
   shifts = await models.Shift.bulkCreate(shifts)
 
-  let events = [
-    {
-      title: "A1 früh Samstag",
-      timeStart: "08:00",
-      timeEnd: "19:00",
-      repeatWeekday: 6,
-      shiftId: 1,
-    },
-    {
-      title: "A1 früh Sonntag",
-      timeStart: "08:00",
-      timeEnd: "19:00",
-      repeatWeekday: 0,
-      shiftId: 1,
-    },
-    {
-      title: "A2 früh Samstag",
-      timeStart: "08:00",
-      timeEnd: "19:00",
-      repeatWeekday: 6,
-      shiftId: 2,
-    },
-    {
-      title: "A2 früh Sonntag",
-      timeStart: "08:00",
-      timeEnd: "19:00",
-      repeatWeekday: 0,
-      shiftId: 2,
-    },
-    {
-      title: "A1 spät Mittwoch",
-      timeStart: "13:00",
-      timeEnd: "19:00",
-      repeatWeekday: 3,
-      shiftId: 3,
-    },
-    {
-      title: "A1 spät Freitag",
-      timeStart: "13:00",
-      timeEnd: "19:00",
-      repeatWeekday: 5,
-      shiftId: 3,
-    },
-    {
-      title: "A2 spät Mittwoch",
-      timeStart: "13:00",
-      timeEnd: "19:00",
-      repeatWeekday: 3,
-      shiftId: 4,
-    },
-    {
-      title: "A2 spät Freitag",
-      timeStart: "13:00",
-      timeEnd: "19:00",
-      repeatWeekday: 5,
-      shiftId: 4,
-    },
-    {
-      title: "A1 Nacht Montag",
-      timeStart: "18:00",
-      timeEnd: "08:00",
-      repeatWeekday: 1,
-      shiftId: 5,
-    },
-    {
-      title: "A1 Nacht Dienstag",
-      timeStart: "18:00",
-      timeEnd: "08:00",
-      repeatWeekday: 2,
-      shiftId: 5,
-    },
-    {
-      title: "A1 Nacht Donnerstag",
-      timeStart: "18:00",
-      timeEnd: "08:00",
-      repeatWeekday: 4,
-      shiftId: 5,
-    },
-    {
-      title: "A1 Nacht Mittwoch",
-      timeStart: "19:00",
-      timeEnd: "08:00",
-      repeatWeekday: 3,
-      shiftId: 5,
-    },
-    {
-      title: "A1 Nacht Freitag",
-      timeStart: "19:00",
-      timeEnd: "08:00",
-      repeatWeekday: 5,
-      shiftId: 5,
-    },
-    {
-      title: "A1 Nacht Samstag",
-      timeStart: "19:00",
-      timeEnd: "08:00",
-      repeatWeekday: 6,
-      shiftId: 5,
-    },
-    {
-      title: "A1 Nacht Sonntag",
-      timeStart: "19:00",
-      timeEnd: "08:00",
-      repeatWeekday: 0,
-      shiftId: 5,
-    },
-    {
-      title: "A2 Nacht Montag",
-      timeStart: "18:00",
-      timeEnd: "08:00",
-      repeatWeekday: 1,
-      shiftId: 6,
-    },
-    {
-      title: "A2 Nacht Dienstag",
-      timeStart: "18:00",
-      timeEnd: "08:00",
-      repeatWeekday: 2,
-      shiftId: 6,
-    },
-    {
-      title: "A2 Nacht Donnerstag",
-      timeStart: "18:00",
-      timeEnd: "08:00",
-      repeatWeekday: 4,
-      shiftId: 6,
-    },
-    {
-      title: "A2 Nacht Mittwoch",
-      timeStart: "19:00",
-      timeEnd: "08:00",
-      repeatWeekday: 3,
-      shiftId: 6,
-    },
-    {
-      title: "A2 Nacht Freitag",
-      timeStart: "19:00",
-      timeEnd: "08:00",
-      repeatWeekday: 5,
-      shiftId: 6,
-    },
-    {
-      title: "A2 Nacht Samstag",
-      timeStart: "19:00",
-      timeEnd: "08:00",
-      repeatWeekday: 6,
-      shiftId: 6,
-    },
-    {
-      title: "A2 Nacht Sonntag",
-      timeStart: "19:00",
-      timeEnd: "08:00",
-      repeatWeekday: 0,
-      shiftId: 6,
-    },
-    {
-      title: "C1 früh Samstag",
-      timeStart: "08:00",
-      timeEnd: "16:00",
-      repeatWeekday: 6,
-      shiftId: 7,
-    },
-    {
-      title: "C1 früh Sonntag",
-      timeStart: "08:00",
-      timeEnd: "16:00",
-      repeatWeekday: 0,
-      shiftId: 7,
-    },
-    {
-      title: "C2 früh Samstag",
-      timeStart: "08:00",
-      timeEnd: "13:00",
-      repeatWeekday: 6,
-      shiftId: 8,
-    },
-    {
-      title: "C2 früh Sonntag",
-      timeStart: "08:00",
-      timeEnd: "13:00",
-      repeatWeekday: 0,
-      shiftId: 8,
-    },
-    {
-      title: "C1 spät Samstag",
-      timeStart: "16:00",
-      timeEnd: "23:00",
-      repeatWeekday: 6,
-      shiftId: 9,
-    },
-    {
-      title: "C1 spät Sonntag",
-      timeStart: "19:00",
-      timeEnd: "23:00",
-      repeatWeekday: 0,
-      shiftId: 9,
-    },
-    {
-      title: "C2 spät Samstag",
-      timeStart: "16:00",
-      timeEnd: "23:00",
-      repeatWeekday: 6,
-      shiftId: 10,
-    },
-    {
-      title: "C2 spät Sonntag",
-      timeStart: "19:00",
-      timeEnd: "23:00",
-      repeatWeekday: 0,
-      shiftId: 10,
-    },
-  ]
-
-  await models.Event.bulkCreate(events)
-
   await models.Schedule.create({
-    title: "November ÄNoD",
+    title: "November 2023",
+    short: "NOV 23",
     start: "2023-10-01",
     end: "2023-10-31",
     deadline: "2023-10-29",

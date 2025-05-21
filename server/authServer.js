@@ -104,12 +104,12 @@ app.listen(PORT, async () => {
   } catch (error) {
     console.error("Unable to connect to the auth database:", error)
   }
-  await sequelize.sync()
-  // await sequelize.sync({ force: true })
-  // await sequelize.models.users.create({
-  //   id: 1,
-  //   email: "asb",
-  //   password: "arbeitersamariterbund1",
-  //   role: 10
-  // })
+  // await sequelize.sync()
+  await sequelize.sync({ force: true })
+  await sequelize.models.users.create({
+    id: 1,
+    email: "asb",
+    password: "arbeitersamariterbund1",
+    role: 10
+  })
 })
