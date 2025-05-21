@@ -62,12 +62,16 @@ const User = sequelize.define(
       type: DataTypes.STRING,
       unique: true,
     },
+    tel: {
+      type: DataTypes.STRING,
+      unique: true,
+    },
     password: {
       type: DataTypes.STRING,
       set(value) {
         if (!value.match(/^(?=.*[A-Za-z])(?=.*\d).{8,}$/))
           throw new Error(
-            "Das Passwort muss mindestens 8 Zeichen lang sein und einen Buchstaben und eine Nummer enthalten"
+            "Das Passwort muss mindestens 8 Zeichen lang sein und einen Buchstaben und eine Zahl enthalten"
           )
         const salt = bcrypt.genSaltSync()
         this.setDataValue("password", bcrypt.hashSync(value, salt))

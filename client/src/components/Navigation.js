@@ -8,6 +8,7 @@ import { Link, useLocation } from "react-router-dom"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import {
   faCalendar,
+  faCube,
   faHome,
   faRightFromBracket,
   faUser,
@@ -47,6 +48,11 @@ function Navigation() {
       name: "Startseite",
       icon: faHome,
       path: "/",
+    },
+    {
+      name: "Elements",
+      icon: faCube,
+      path: "/elements",
     },
   ]
 

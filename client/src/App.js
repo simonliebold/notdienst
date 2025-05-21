@@ -12,11 +12,18 @@ import Credentials from "./pages/Credentials"
 import Container from "react-bootstrap/esm/Container"
 import AlertBox from "./components/AlertBox"
 import Logout from "./pages/Logout"
+import Elements from "./pages/admin/Elements"
 
 function App() {
   const home = (
     <Prot>
       <Home />
+    </Prot>
+  )
+
+  const elements = (
+    <Prot>
+      <Elements />
     </Prot>
   )
 
@@ -39,6 +46,7 @@ function App() {
                 <Route path=":code" element={<Credentials />} />
               </Route>
               <Route path="" element={home} />
+              <Route path="elements" element={elements} />
               <Route path="logout" element={logout} />
             </Routes>
           </div>
