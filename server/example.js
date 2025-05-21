@@ -2,7 +2,7 @@ module.exports = async (models) => {
   let jobs = [
     { short: "ÄNOD", title: "ÄNoD Fahrer/-in" },
     { short: "EZ", title: "EZ Dispo" },
-    { short: "MTD / HNR Fahrer/-in", title: "MTD / HNR Fahrer/-in" },
+    { short: "MTD / HNR", title: "MTD / HNR Fahrer/-in" },
     { short: "RH", title: "Rettungshelfer" },
     { short: "RS", title: "Rettungssanitäter" },
     { short: "SH", title: "Sanitätshelfer" },

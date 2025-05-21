@@ -73,6 +73,11 @@ function Navigation() {
       path: "/works",
     },
     {
+      name: "Schichten",
+      icon: icons.shift,
+      path: "/shifts",
+    },
+    {
       name: "Mitarbeiter",
       icon: icons.employee,
       path: "/employees",
