@@ -10,9 +10,11 @@ module.exports = (models) => {
 
   // Get one
   router.get("/:id", async (req, res) => {
-    const job = await models.Job.findByPk(req.params.id)
-    if (job === null) res.status(404).send({ message: "Not found" })
-    else res.send({ job: job })
+    const job = await models.Job.findByPk(req.params.id, {
+      include: [models.Employee, models.Shift],
+    })
+    if (job === null) res.status(404).send({ message: "Job nicht gefunden" })
+    else res.send(job)
   })
 
   // Create one

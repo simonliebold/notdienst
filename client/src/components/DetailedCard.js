@@ -31,8 +31,22 @@ const DetailedCard = ({ resource, resourceName, children }) => {
   )
 }
 
+export const JobDetailedCard = ({ job }) => {
+  const { id, employees, shifts } = job || {}
+
+  return (
+    <DetailedCard resourceName="job" resource={job}>
+      Mitarbeiter:
+      <MultiBadge resourceName="employee" items={employees} />
+      <hr />
+      Schichten:
+      <MultiBadge resourceName="shift" items={shifts} />
+    </DetailedCard>
+  )
+}
+
 export const FreetimeDetailedCard = ({ freetime }) => {
-  const { type, date, schedule, employee } = freetime || {}
+  const { date, schedule, employee } = freetime || {}
 
   return (
     <DetailedCard resourceName="freetime" resource={freetime}>
