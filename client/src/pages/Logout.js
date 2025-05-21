@@ -1,7 +1,6 @@
 import axios from "axios"
 import React, { useEffect } from "react"
 import {
-  useAuth,
   useAuthUpdate,
   useRefreshToken,
   useRefreshTokenUpdate,
@@ -29,7 +28,7 @@ function Logout() {
       setRefreshToken()
     }
     logout()
-  }, [])
+  }, [setToken, handleError, handleSuccess, refreshToken, setRefreshToken])
   return <div>Logout</div>
 }
 

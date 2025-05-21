@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react"
+import React, { useEffect } from "react"
 import { Link, useParams } from "react-router-dom"
 
 import Select from "react-select"
@@ -7,7 +7,6 @@ import BootstrapBadge from "react-bootstrap/Badge"
 
 import useResource from "../hooks/useResource"
 import { icons, selectStyles, title } from "./../variables"
-import FloatingLabel from "react-bootstrap/esm/FloatingLabel"
 
 function Badge({ resource, resourceName, disabled, className, ...props }) {
   const { id, short } = resource || {}
@@ -41,7 +40,7 @@ export const EditableBadge = ({
 
   useEffect(() => {
     updateOptions()
-  }, [resourceName])
+  }, [resourceName, updateOptions])
 
   if (action === "edit" && disabled)
     return (

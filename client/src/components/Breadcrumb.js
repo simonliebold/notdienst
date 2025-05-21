@@ -1,5 +1,5 @@
 import React from "react"
-import { icons, title, titles } from "../variables"
+import { title, titles } from "../variables"
 import { Link } from "react-router-dom"
 import Badge from "./Badge"
 import BootstrapBreadcrumb from "react-bootstrap/Breadcrumb"

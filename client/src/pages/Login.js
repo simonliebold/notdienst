@@ -20,7 +20,6 @@ function Login() {
 
   const token = useAuth()
   const setToken = useAuthUpdate()
-  const refreshToken = useRefreshToken()
   const setRefreshToken = useRefreshTokenUpdate()
 
   const navigate = useNavigate()
