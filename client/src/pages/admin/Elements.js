@@ -10,8 +10,8 @@ function Elements() {
       <h2>Badge</h2>
       <Badge
         icon={faHashtag}
-        resource={{ short: 201 }}
-        // resourceName=""
+        resource={{ id: 201, short: 201 }}
+        resourceName="employee"
         className=""
       />
       <h2>TitleCard</h2>

@@ -8,12 +8,12 @@ function TitleCard({ resource, resourceName }) {
 
   return (
     <Card>
-      <Card.Body
-        as={Link}
-        to={"/" + resourceName + "/" + id}
-        className="text-decoration-none"
-      >
-        <Badge className="me-2" resource={resource} resourceName={resourceName} />
+      <Card.Body className="text-decoration-none">
+        <Badge
+          className="me-2"
+          resource={resource}
+          resourceName={resourceName}
+        />
         {title}
       </Card.Body>
     </Card>
