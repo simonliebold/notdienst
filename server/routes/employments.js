@@ -4,16 +4,21 @@ module.exports = (models) => {
   // Get all
   router.get("/", async (req, res) => {
     const employments = await models.Employment.findAll()
-    res.send({ employments: employments })
+    res.send(employments)
   })
 
   // Get one
   router.get("/:id", async (req, res) => {
     const employment = await models.Employment.findByPk(req.params.id)
-    if (employment === null) return res.status(404).send({ message: "Anstellungsverhältnis nicht gefunden" })
-    
-    const employees = await models.Employee.findAll({where: {employmentId: req.params.id}})
-    return res.send({...employment.dataValues, employees})
+    if (employment === null)
+      return res
+        .status(404)
+        .send({ message: "Anstellungsverhältnis nicht gefunden" })
+
+    const employees = await models.Employee.findAll({
+      where: { employmentId: req.params.id },
+    })
+    return res.send({ ...employment.dataValues, employees })
   })
 
   // Create one

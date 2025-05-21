@@ -15,6 +15,7 @@ import Logout from "./pages/Logout"
 import Elements from "./pages/admin/Elements"
 import Works from "./pages/admin/Works"
 import Employees from "./pages/admin/Employees"
+import Employment from "./pages/admin/Employment"
 
 function App() {
   const home = (
@@ -47,6 +48,12 @@ function App() {
     </Prot>
   )
 
+  const employments = (
+    <Prot>
+      <Employment />
+    </Prot>
+  )
+
   return (
     <AuthProvider>
       <AlertProvider>
@@ -64,6 +71,7 @@ function App() {
               <Route path="logout" element={logout} />
               <Route path="works" element={works} />
               <Route path="employees" element={employees} />
+              <Route path="employments" element={employments} />
             </Routes>
           </div>
         </Container>

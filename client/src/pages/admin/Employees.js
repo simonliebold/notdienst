@@ -11,7 +11,7 @@ function Employees() {
     <>
       <CardList className="mt-2">
         {employees?.map((employee) => {
-            return <EmployeeDetailedCard key={"employee-" + employee.id} employee={employee} />
+            // return <EmployeeDetailedCard key={"employee-" + employee.id} employee={employee} />
           return (
             <TitleCard
               key={"employee-titlecard-" + employee.id}

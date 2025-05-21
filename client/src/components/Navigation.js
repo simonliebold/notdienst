@@ -46,24 +46,29 @@ function Navigation() {
 
   const routes = [
     {
-      name: "Startseite",
+      // name: "Startseite",
       icon: faHome,
       path: "/",
     },
     {
-      name: "Elemente",
+      // name: "Elemente",
       icon: faCube,
       path: "/elements",
     },
     {
-      name: "Dienste",
+      // name: "Dienste",
       icon: icons.work,
       path: "/works",
     },
     {
-      name: "Mitarbeiter",
+      // name: "Mitarbeiter",
       icon: icons.employee,
       path: "/employees",
+    },
+    {
+      // name: "Anstellungsverhältnis",
+      icon: icons.employment,
+      path: "/employments",
     },
   ]
 
