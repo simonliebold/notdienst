@@ -17,6 +17,7 @@ module.exports = (sequelize) => {
     const authHeader = req.headers["authorization"]
     const token = authHeader && authHeader.split(" ")[1]
     if (token == null) return res.sendStatus(401)
+    req.credentialsToken = token
 
     jwt.verify(token, process.env.CREDENTIALS_TOKEN_SECRET, (err, user) => {
       if (err) return res.sendStatus(401)
@@ -65,12 +66,13 @@ module.exports = (sequelize) => {
 
   // Get credentials token by code
   router.get("/credentials/:code", async (req, res) => {
-    const token = await sequelize.models.credentialsTokens.findOne({
+    const credentialsToken = await sequelize.models.credentialsTokens.findOne({
       where: { code: req.params.code },
     })
-    if (token === null) return res.sendStatus(404)
-
-    return res.send({ token: token.token })
+    if (credentialsToken === null) return res.sendStatus(404)
+    const token = credentialsToken.token
+    await credentialsToken.destroy()
+    return res.send({ token: token })
   })
 
   // Change email / password
@@ -79,13 +81,14 @@ module.exports = (sequelize) => {
     authenticateCredentialsToken,
     async (req, res) => {
       try {
-        await sequelize.models.users.update(
+        const [count, user] = await sequelize.models.users.update(
           {
             email: req.body.email,
             password: req.body.password,
           },
           { where: { id: req.user.id }, individualHooks: true }
         )
+        if (count < 1) return res.sendStatus(400)
         return res.sendStatus(200)
       } catch (error) {
         return res.status(400).send({ error: error.message })
