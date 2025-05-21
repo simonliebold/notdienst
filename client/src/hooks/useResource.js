@@ -89,4 +89,25 @@ export const useResourceCreate = (resourceUrl) => {
   return create
 }
 
+export const useGenerateWorks = () => {
+  const handleError = useErrorMessage()
+  const handleSuccess = useSuccessMessage()
+
+  const generate = useCallback(
+    // async (data) => {
+    //   const response = await axios
+    //     .post(process.env.REACT_APP_URL + resourceUrl, data)
+    //     .catch(handleError)
+    //   if (process.env.NODE_ENV === "development")
+    //     console.log("CREATE:", resourceUrl, response?.data)
+
+    //   // handleSuccess(response?.data?.message)
+    //   return response?.data
+    // },
+    // [handleError, handleSuccess, resourceUrl]
+  )
+
+  return generate
+}
+
 export default useResource

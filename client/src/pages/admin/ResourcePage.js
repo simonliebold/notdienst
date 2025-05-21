@@ -14,6 +14,7 @@ import { EditableBadge } from "../../components/Badge"
 import MultiBadge from "../../components/MultiBadge"
 import { titles } from "../../variables"
 import MultiTitleCard from "../../components/MultiTitleCard"
+import { AsyncGenerateWorksButton } from "../../components/CardButton"
 
 function ResourcePage({ resourceName, setData, children }) {
   const navigate = useNavigate()
@@ -218,6 +219,8 @@ export const SchedulePage = () => {
       <MultiBadge items={schedule?.works} resourceName="work" disabled />
       <MultiBadge items={schedule?.shifts} resourceName="shift" />
       <MultiBadge items={schedule?.employees} resourceName="employee" />
+      <hr />
+      <AsyncGenerateWorksButton />
     </ResourcePage>
   )
 }

@@ -1,4 +1,5 @@
 import {
+  faCalendarPlus,
   faCancel,
   faPen,
   faPlus,
@@ -82,7 +83,7 @@ export const CreateNewButton = ({ resourceName, ...props }) => {
     </CardButton>
   )
 }
-// TODO: disabled when creating, 
+// TODO: disabled when creating,
 export const ConfirmCreateNewButton = ({
   resource,
   resourceName,
@@ -93,6 +94,14 @@ export const ConfirmCreateNewButton = ({
     <CardButton variant="primary" icon={faPlus} disabled={creating} {...props}>
       {creating && "Erstellt..."}
       {!creating && title[resourceName] + " erstellen"}
+    </CardButton>
+  )
+}
+
+export const AsyncGenerateWorksButton = ({ ...props }) => {
+  return (
+    <CardButton {...props} icon={faCalendarPlus} onClick={(e) => alert("Generate works!")}>
+      {titles.work + " generieren"}
     </CardButton>
   )
 }
