@@ -9,9 +9,16 @@ module.exports = (models) => {
 
   // Get one
   router.get("/:id", async (req, res) => {
-    const response = await models.Shift.findByPk(req.params.id)
-    if (response === null) res.status(404).send({ message: "Not found" })
-    else res.send({ response: response })
+    const shift = await models.Shift.findByPk(req.params.id, {
+      include: [models.Schedule, models.Job],
+    })
+    if (shift === null)
+      return res.status(404).send({ message: "Schicht nicht gefunden" })
+
+    const rrules = await models.Rrule.findAll({
+      where: { shiftId: req.params.id },
+    })
+    return res.send({ ...shift.dataValues, rrules: rrules })
   })
 
   // Create one

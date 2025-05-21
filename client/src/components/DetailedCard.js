@@ -31,6 +31,23 @@ const DetailedCard = ({ resource, resourceName, children }) => {
   )
 }
 
+export const ShiftDetailedCard = ({ shift }) => {
+  const { schedules, jobs, rrules } = shift || {}
+
+  return (
+    <DetailedCard resource={shift} resourceName="shift">
+      Jobs:
+      <MultiBadge items={jobs} resourceName="job" />
+      <hr />
+      Schichtpläne:
+      <MultiBadge items={schedules} resourceName="schedule" />
+      <hr />
+      Rrules:
+      <MultiBadge items={rrules} resourceName="rrule" />
+    </DetailedCard>
+  )
+}
+
 export const RruleDetailedCard = ({ rrule }) => {
   const { title, content, shift } = rrule || {}
 
@@ -46,6 +63,8 @@ export const RruleDetailedCard = ({ rrule }) => {
 
 export const JobDetailedCard = ({ job }) => {
   const { employees, shifts } = job || {}
+
+  console.log("shifts", shifts)
 
   return (
     <DetailedCard resourceName="job" resource={job}>

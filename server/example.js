@@ -55,7 +55,7 @@ module.exports = async (models) => {
 
   shifts = await models.Shift.bulkCreate(shifts)
 
-  let rrules = [{ title: "A1 früh", content: "rrule a1 früh", shiftId: 1 }]
+  let rrules = [{ title: "A1 früh", content: "FREQ=WEEKLY;INTERVAL=1;BYDAY=SU,SA", shiftId: 1 }]
 
   rrules = await models.Rrule.bulkCreate(rrules)
 
