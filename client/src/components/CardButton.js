@@ -1,4 +1,6 @@
 import {
+  faArrowDownShortWide,
+  faCalendarDays,
   faCalendarPlus,
   faCancel,
   faPen,
@@ -146,16 +148,17 @@ export const AsyncAllocateWorksButton = ({
     setLoading(false)
   })
 
-  if(loading) return <LoadingButton>Generiert...</LoadingButton>
+  if(loading) return <LoadingButton>{title.schedule + " wird generiert..."}</LoadingButton>
 
   return (
     <CardButton
       {...props}
-      icon={faCalendarPlus}
+      icon={faCalendarDays}
       disabled={edit}
+      variant="primary"
       onClick={allocateWorks}
     >
-      {titles.work + " verteilen"}
+      {title.schedule + " generieren"}
     </CardButton>
   )
 }

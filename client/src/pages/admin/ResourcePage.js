@@ -215,22 +215,24 @@ export const RrulePage = () => {
 export const SchedulePage = () => {
   const [schedule, setSchedule] = useState(null)
   return (
-    <ResourcePage
-      className="w-50"
-      resourceName="schedule"
-      setData={setSchedule}
-    >
-      <EditableText value={schedule?.short} label="short" />
-      <EditableText value={schedule?.title} label="title" />
-      <EditableText value={schedule?.start} label="start" />
-      <EditableText value={schedule?.end} label="end" />
-      <EditableText value={schedule?.deadline} label="deadline" />
-      <hr />
-      {/* <MultiBadge items={schedule?.works} resourceName="work" disabled /> */}
-      <MultiBadge items={schedule?.shifts} resourceName="shift" />
-      <MultiBadge items={schedule?.employees} resourceName="employee" />
+    <>
+      <ResourcePage
+        className="w-50"
+        resourceName="schedule"
+        setData={setSchedule}
+      >
+        <EditableText value={schedule?.short} label="short" />
+        <EditableText value={schedule?.title} label="title" />
+        <EditableText value={schedule?.start} label="start" />
+        <EditableText value={schedule?.end} label="end" />
+        <EditableText value={schedule?.deadline} label="deadline" />
+        <hr />
+        {/* <MultiBadge items={schedule?.works} resourceName="work" disabled /> */}
+        <MultiBadge items={schedule?.shifts} resourceName="shift" />
+        <MultiBadge items={schedule?.employees} resourceName="employee" />
+      </ResourcePage>
       <ScheduleCalendar schedule={schedule} />
-    </ResourcePage>
+    </>
   )
 }
 

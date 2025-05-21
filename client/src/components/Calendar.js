@@ -16,11 +16,15 @@ function Calendar({ works, view, ...props }) {
       //   {...props}
       plugins={[timeGridPlugin, listPlugin]}
       initialView={view ? view : "listWeek"}
-      headerToolbar={{ left: "", center: "title", right: "" }}
-      footerToolbar={{
-        right: "today,prev,next",
-        // center: "title",
+      headerToolbar={{
+        right: "prev,next",
         left: "timeGridWeek,timeGridDay,listWeek",
+        //  center: "title",
+        // left: "",
+      }}
+      footerToolbar={{
+        // right: "today,prev,next",
+        // center: "title",
       }}
       buttonText={{
         today: "Heute",
@@ -29,13 +33,16 @@ function Calendar({ works, view, ...props }) {
         day: "Tag",
         list: "Liste",
       }}
+      height={850}
+
       allDaySlot={false}
       eventClick={(e) => navigate("./../../works/" + e.event.id)}
       events={works.map((work) => {
         return {
           start: work.start,
           end: work.end,
-          title: work.short,
+          title:
+            work.short + " " + work.employees.map((employee) => employee.title),
           id: work.id,
         }
       })}
