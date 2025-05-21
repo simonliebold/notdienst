@@ -186,6 +186,16 @@ module.exports = (models) => {
     next()
   }
 
+  // Get freetimes
+  const getFreetimes = async (req, res, next) => {
+    for (const employeeId in req.employees) {
+      req.employees[employeeId].freetimes = await models.Freetime.findAll({
+        where: { scheduleId: req.schedule.id, employeeId: employeeId },
+      })
+    }
+    next()
+  }
+
   // Get events
   const getEvents = async (req, res, next) => {
     const events = await models.Event.findAll({
@@ -269,6 +279,7 @@ module.exports = (models) => {
     "/:id/plan",
     getSchedule,
     getEmployees,
+    getFreetimes,
     getEvents,
     getWorks,
     async (req, res) => {

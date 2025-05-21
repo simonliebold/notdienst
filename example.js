@@ -318,10 +318,10 @@ module.exports = async (models) => {
     await models.ScheduleShift.create({ scheduleId: 1, shiftId: i })
   }
 
-  // await models.Freetime.create({
-  //   start: "2023-11-01T08:00:00.000Z",
-  //   end: "2023-11-01T19:00:00.000Z",
-  //   scheduleId: 1,
-  //   employeeId: 2,
-  // })
+  await models.Freetime.create({
+    start: "2023-10-01T08:00:00.000Z",
+    end: "2023-11-01T19:00:00.000Z",
+    scheduleId: 1,
+    employeeId: 2,
+  })
 }
