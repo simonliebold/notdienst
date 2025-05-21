@@ -146,6 +146,38 @@ content-type: application/json
 </pre>
 
 ## Shifts
+### Get all shifts
+<pre>GET /shifts</pre>
+
+### Get one shift
+<pre>GET /shifts/:id</pre>
+
+### Create one shift
+<pre>
+POST /shifts
+
+content-type: application/json
+{
+    initials: String,
+    name: String,
+    employmentId: int
+}
+</pre>
+
+### Update one shift
+<pre>
+PUT /shifts/:id
+
+content-type: application/json
+{
+    initials?: String,
+    name?: String,
+    employmentId?: int
+}
+</pre>
+
+### Delete one shift
+<pre>DELETE /shifts/:id</pre>
 
 ## Works
 
