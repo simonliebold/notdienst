@@ -71,6 +71,14 @@ function App() {
                     </ProtectedRoute>
                   }
                 />
+              <Route
+                  path=":scheduleId"
+                  element={
+                    <ProtectedRoute>
+                      <Schedules />
+                    </ProtectedRoute>
+                  }
+                />
               </Route>
             </Routes>
           </div>

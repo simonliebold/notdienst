@@ -21,7 +21,6 @@ module.exports = (models, sequelize) => {
   })
 
   // Get one
-  // TODO: also return employees and works
   router.get("/:id", roles.requireAdmin, async (req, res) => {
     const schedule = await models.Schedule.findOne({
       where: { id: req.params.id },
@@ -32,6 +31,8 @@ module.exports = (models, sequelize) => {
   })
 
   // Create one
+  // TODO: add employees
+  // TODO: add shifts
   router.post("/", roles.requireAdmin, async (req, res) => {
     try {
       const schedule = await models.Schedule.create({
@@ -50,15 +51,20 @@ module.exports = (models, sequelize) => {
   router.put("/:id", roles.requireAdmin, async (req, res) => {
     try {
       const response = await models.Schedule.update(
-        { ...req.body },
+        {
+          title: req?.body?.title,
+          start: req?.body?.start,
+          end: req?.body?.end,
+          deadline: req?.body?.deadline,
+        },
         {
           where: { id: req.params.id },
         }
       )
       if (response[0] > 0)
-        return res.status(200).send({ message: "Updated successfully" })
+        return res.status(200).send({ message: "Dienstplan erfolgreich aktualisiert" })
 
-      return res.sendStatus(404)
+      return res.status(404).send({error: "Keine Änderungen vorgenommen"})
     } catch (error) {
       return res.status(400).send({ error: error.message })
     }

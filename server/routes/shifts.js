@@ -3,8 +3,8 @@ module.exports = (models) => {
 
   // Get all
   router.get("/", async (req, res) => {
-    const response = await models.Shift.findAll()
-    res.send({ response: response })
+    const shifts = await models.Shift.findAll()
+    res.send({ shifts: shifts })
   })
 
   // Get one
