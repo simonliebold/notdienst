@@ -1,5 +1,4 @@
 module.exports = (models) => {
-  const { Op } = require("sequelize")
   const router = require("express").Router()
   const roles = require("./../roles")
 

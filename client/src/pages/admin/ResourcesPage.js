@@ -142,7 +142,14 @@ export function MissionsPage() {
 
 export function RrulesPage() {
   const [rrules] = useResource("rrules")
-  return <ResourcesPage resources={rrules} resourceName="rrule"></ResourcesPage>
+  return (
+    <ResourcesPage resources={rrules} resourceName="rrule">
+      <EditableText label="short" />
+      <EditableText label="content" />
+      <hr />
+      <EditableBadge resourceName="shift" />
+    </ResourcesPage>
+  )
 }
 
 export function SchedulesPage() {
