@@ -50,10 +50,10 @@ module.exports = () => {
         employeeId,
       })
       await freetime.save()
+      return res.send(freetime)
     } catch (err) {
       return next(err)
     }
-    return res.send(freetime)
   })
 
   // Update one
