@@ -18,9 +18,7 @@ function Employee() {
       />
       <hr />
       <MultiBadge items={employee?.works} resourceName="work" />
-      <hr />
       <MultiBadge items={employee?.schedules} resourceName="schedule" />
-      <hr />
       <MultiBadge items={employee?.jobs} resourceName="job" />
     </Resource>
   )

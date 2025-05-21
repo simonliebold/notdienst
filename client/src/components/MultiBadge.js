@@ -57,7 +57,7 @@ function MultiBadge({ items, resourceName, onInput }) {
       </p>
     )
   }
-  if (items?.length === 0)
+  if (!items || items?.length === 0)
     return (
       <p>
         <label className="w-100">{titles[resourceName]}:</label>

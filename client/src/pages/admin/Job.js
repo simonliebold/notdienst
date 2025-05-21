@@ -1,21 +1,20 @@
-import React from "react"
-
-import { Link, useParams } from "react-router-dom"
-
-
-import useResource from "../../hooks/useResource"
-import { JobDetailedCard } from "../../components/DetailedCard"
-import Breadcrumb from "../../components/Breadcrumb"
+import React, { useState } from "react"
+import EditableText from "../../components/EditableText"
+import { EditableBadge } from "../../components/Badge"
+import MultiBadge from "../../components/MultiBadge"
+import Resource from "./ResourcePage"
 
 function Job() {
-  const { jobId } = useParams()
-  const job = useResource("jobs/" + jobId)
+  const [job, setJob] = useState(null)
+
   return (
-    <>
-      <Breadcrumb resourceName="job" resource={job} />
-      <JobDetailedCard job={job} className="mt-3" />
-    </>
+    <Resource resourceName="job" setData={setJob}>
+      <EditableText value={job?.short} label="short" />
+      <EditableText value={job?.title} label="title" />
+      <hr />
+      <MultiBadge items={job?.employees} resourceName="employee" />
+      <MultiBadge items={job?.shifts} resourceName="shift" />
+    </Resource>
   )
 }
-
 export default Job

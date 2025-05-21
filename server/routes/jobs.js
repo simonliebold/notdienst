@@ -32,17 +32,38 @@ module.exports = (models) => {
   // Update one
   router.put("/:id", async (req, res) => {
     try {
-      const job = await models.Job.update(
-        { ...req.body },
+      const job = await models.Job.findByPk(req.params.id)
+
+      if (!job) return res.status(400).send({ error: "Job nicht gefunden" })
+
+      await models.Job.update(
+        { short: req.body.short, title: req.body.title },
         {
           where: { id: req.params.id },
         }
       )
-      job[0] > 0
-        ? res
-            .status(200)
-            .send({ message: "Updated successfully", rows: job[0] })
-        : res.status(404).send({ message: "Not found", rows: job[0] })
+      if (req.body.employeeIds) {
+        await models.JobEmployee.destroy({
+          where: { jobId: job.id },
+        })
+        await models.JobEmployee.bulkCreate(
+          req.body.employeeIds.map((employeeId) => {
+            return { jobId: job.id, employeeId: employeeId }
+          })
+        )
+      }
+      if (req.body.shiftIds) {
+        await models.JobShift.destroy({
+          where: { jobId: job.id },
+        })
+        await models.JobShift.bulkCreate(
+          req.body.shiftIds.map((shiftId) => {
+            return { jobId: job.id, shiftId: shiftId }
+          })
+        )
+      }
+
+      return res.status(200).send({ message: "Änderungen gespeichert" })
     } catch (error) {
       res.status(400).send({ error: error })
     }
