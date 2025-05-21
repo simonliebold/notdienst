@@ -1,7 +1,7 @@
 import React from "react"
 import Card from "react-bootstrap/Card"
 import Placeholder from "react-bootstrap/Placeholder"
-import Badge from "./Badge"
+import Badge, { EditableBadge } from "./Badge"
 import MultiBadge from "./MultiBadge"
 import { CardDeleteButton, CardEditButton } from "./CardButton"
 import { localeString } from "../variables"
@@ -75,7 +75,7 @@ export const WorkDetailedCard = ({ work }) => {
       <Badge resource={rrule?.shift} resourceName="shift" />
       <hr />
       Rrule: <br />
-      <Badge resource={rrule} resourceName="rrule" />
+      <EditableBadge resource={rrule} resourceName="rrule" />
     </DetailedCard>
   )
 }
@@ -105,7 +105,7 @@ export const RruleDetailedCard = ({ rrule }) => {
       Inhalt: <code>{content}</code>
       <hr />
       Schicht: <br />
-      <Badge resource={shift} resourceName="shift" />
+      <EditableBadge resource={shift} resourceName="shift" />
     </DetailedCard>
   )
 }
@@ -132,10 +132,10 @@ export const FreetimeDetailedCard = ({ freetime }) => {
       Datum: {new Date(date).toLocaleDateString(localeString.country)} <br />
       <hr />
       Mitarbeiter: <br />
-      <Badge resource={employee} resourceName="employee" />
+      <EditableBadge resource={employee} resourceName="employee" />
       <hr />
       Schichtplan: <br />
-      <Badge resource={schedule} resourceName="schedule" />
+      <EditableBadge resource={schedule} resourceName="schedule" />
     </DetailedCard>
   )
 }
@@ -167,7 +167,7 @@ export const EmployeeDetailedCard = ({ employee }) => {
   return (
     <DetailedCard resourceName="employee" resource={employee}>
       Anstellungsverhältnis: <br />
-      <Badge resource={employment} resourceName="employment" />
+      <EditableBadge resource={employment} resourceName="employment" />
       <hr />
       Dienste:
       <MultiBadge items={works} resourceName="work" />

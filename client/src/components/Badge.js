@@ -3,17 +3,17 @@ import BootstrapBadge from "react-bootstrap/Badge"
 import Placeholder from "react-bootstrap/Placeholder"
 import { icons, titles } from "./../variables"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { Link } from "react-router-dom"
+import { Link, useParams } from "react-router-dom"
 import { faSpinner, faX } from "@fortawesome/free-solid-svg-icons"
 import FloatingLabel from "react-bootstrap/FloatingLabel"
 import Form from "react-bootstrap/Form"
+import Select from "react-select"
+import useResource from "../hooks/useResource"
 
-function Badge({ resource, resourceName, disabled, edit, className }) {
+function Badge({ resource, resourceName, disabled, className }) {
   const { id, short } = resource || {}
 
   const icon = icons[resourceName] || icons.default
-
-  // if (edit) return <Form.Control />
 
   return (
     <BootstrapBadge
@@ -22,11 +22,29 @@ function Badge({ resource, resourceName, disabled, edit, className }) {
       className={className + " text-decoration-none w-auto"}
       bg={disabled ? "secondary" : "primary"}
     >
-      {/* <FontAwesomeIcon icon={faX} className="me-3" /> */}
       {resource && <FontAwesomeIcon icon={icon} className="me-2" />}
       {short?.toString().toUpperCase()}
     </BootstrapBadge>
   )
+}
+
+export const EditableBadge = ({ resource, resourceName }) => {
+  const { action } = useParams()
+  const options = useResource(resourceName + "s")
+  const defaultValue = { label: resource.short, value: resource.id }
+
+  if (action === "edit")
+    return (
+      <Select
+        options={options?.map((option) => ({
+          label: option.short,
+          value: option.id,
+        }))}
+        defaultValue={defaultValue}
+      />
+    )
+
+  return <Badge resource={resource} resourceName={resourceName} />
 }
 
 export default Badge
