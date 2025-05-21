@@ -87,15 +87,13 @@ export const ScheduleCalendar = ({
       schedule.works[schedule.works.length - 1]?.start
     ).getTime()
     const today = new Date().getTime()
-
     if (today > last) return last
     if (today < last && today > first) return today
     return first
-  }, [])
+  }, [schedule])
 
   if (!schedule) return
   if (!schedule.works || schedule.works.length === 0) return
-
 
   return (
     <Calendar
