@@ -3,7 +3,7 @@ module.exports = (sequelize) => {
   const jwt = require("jsonwebtoken")
 
   function generateAccessToken(user) {
-    return jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, { expiresIn: "1m" })
+    return jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, { expiresIn: "1d" })
   }
 
   function authenticateToken(req, res, next) {
@@ -18,10 +18,11 @@ module.exports = (sequelize) => {
     })
   }
 
-  router.post("/generate/:id", authenticateToken, async (req, res) => {
+  // Generate credentials token
+  router.post("/token/:id", authenticateToken, async (req, res) => {
     if (req.user.role < 10) return res.sendStatus(403)
     let user = await sequelize.models.users.findByPk(req.params.id)
-    if (user === undefined) return res.sendStatus(404)
+    if (user === null) return res.sendStatus(404)
     user = user.dataValues
     delete user.password
     const token = generateAccessToken(user)
@@ -31,24 +32,40 @@ module.exports = (sequelize) => {
     for (let i = 0; i < 4; i++) {
       code += codeString.charAt(Math.floor(Math.random() * codeString.length))
     }
-    const accountToken = await sequelize.models.accountTokens.create({
+    const credentialsToken = await sequelize.models.credentialsTokens.create({
       code: code,
       token: token,
-      userId: req.params.id,
     })
-    res.send(accountToken)
+    res.send({ code: credentialsToken.code })
   })
 
+  // Get credentials token by code
   router.get("/token/:code", async (req, res) => {
-    const token = await sequelize.models.accountTokens.findOne({
+    const token = await sequelize.models.credentialsTokens.findOne({
       where: { code: req.params.code },
-      include: sequelize.models.users
     })
     if (token === null) return res.sendStatus(404)
 
     return res.send({ token: token.token })
   })
 
+  // Change email / password
+  router.post("/credentials", authenticateToken, async (req, res) => {
+    try {
+      await sequelize.models.users.update(
+        {
+          email: req.body.email,
+          password: req.body.password,
+        },
+        { where: { id: req.user.id } }
+      )
+      return res.sendStatus(200)
+    } catch (error) {
+      return res.status(400).send({ error: error.message })
+    }
+  })
+
+  // Refresh token
   router.post("/token", async (req, res) => {
     const refreshToken = req.body.token
     if (refreshToken == null) return res.sendStatus(401)
@@ -61,6 +78,7 @@ module.exports = (sequelize) => {
     })
   })
 
+  // Destroy refreshtoken
   router.delete("/logout", async (req, res) => {
     try {
       await sequelize.models.refreshTokens.destroy({
@@ -85,7 +103,6 @@ module.exports = (sequelize) => {
     return res.json({ accessToken: accessToken, refreshToken: refreshToken })
   })
 
-  // TODO: user creation
-  // TODO: password reset / password encryption
+  // TODO: password encryption
   return router
 }

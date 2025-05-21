@@ -14,8 +14,8 @@ const sequelize = new Sequelize(
   }
 )
 
-const AccountToken = sequelize.define(
-  "accountTokens",
+sequelize.define(
+  "credentialsTokens",
   {
     code: {
       type: DataTypes.STRING(4),
@@ -41,7 +41,7 @@ sequelize.define(
   { timestamps: false }
 )
 
-const User = sequelize.define(
+sequelize.define(
   "users",
   {
     id: {
@@ -50,6 +50,7 @@ const User = sequelize.define(
     },
     email: {
       type: DataTypes.STRING,
+      unique: true,
     },
     password: {
       type: DataTypes.STRING,
@@ -62,8 +63,6 @@ const User = sequelize.define(
   },
   { timestamps: false }
 )
-
-AccountToken.belongsTo(User)
 
 const routes = require("./authRoutes")(sequelize)
 app.use("/", routes)
@@ -87,16 +86,13 @@ app.listen(PORT, async () => {
   await sequelize.sync({ force: true })
   await sequelize.models.users.create({
     id: 1,
-    email: "simon@bitel.net",
+    email: "lieb@asb.de",
     password: "lieb",
   })
   await sequelize.models.users.create({
     id: 2,
-    email: "rerucha",
+    email: "rer@asb.de",
     password: "rer",
     role: 10,
   })
-
-  const today = new Date()
-
 })
