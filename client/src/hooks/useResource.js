@@ -167,6 +167,28 @@ export const useDeleteWorks = () => {
   return deleteWorks
 }
 
+export const useCreateReport = () => {
+  const handleError = useErrorMessage()
+  const handleSuccess = useSuccessMessage()
+
+  const createReport = useCallback(
+    async (scheduleId) => {
+      if (!scheduleId) return
+      const response = await axios
+        .get(process.env.REACT_APP_URL + "schedules/" + scheduleId + "/report")
+        .catch(handleError)
+      if (process.env.NODE_ENV === "development")
+        console.log("useCreateReport:", response?.data)
+
+      handleSuccess(response?.data?.message)
+      return response?.data
+    },
+    [handleError, handleSuccess]
+  )
+
+  return createReport
+}
+
 export const useGenerateCredentialsToken = () => {
   const handleError = useErrorMessage()
 

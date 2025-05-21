@@ -7,6 +7,7 @@ import {
   faCaretLeft,
   faCaretRight,
   faExpand,
+  faFile,
   faKey,
   faPen,
   faPlus,
@@ -22,6 +23,7 @@ import { icons, title, titles } from "../variables"
 import Spinner from "react-bootstrap/esm/Spinner"
 import {
   useAllocateWorks,
+  useCreateReport,
   useDeleteWorks,
   useGenerateCredentialsToken,
   useGenerateWorks,
@@ -211,6 +213,40 @@ export const AsyncDeleteWorksButton = ({
       onClick={handleDeleteWorks}
     >
       {"Dienste löschen"}
+    </CardButton>
+  )
+}
+
+
+export const AsyncCreateReportButton = ({
+  schedule,
+  updateResource,
+  edit,
+  ...props
+}) => {
+  const createReport = useCreateReport()
+  const [loading, setLoading] = useState(false)
+
+  const handleCreateReport = useCallback(async () => {
+    setLoading(true)
+    await createReport(schedule?._id)
+    setLoading(false)
+  }, [createReport, schedule, updateResource])
+
+  if (schedule?.works?.length == 0) return
+
+  if (loading)
+    return <LoadingButton>{title.schedule + " wird gelöscht..."}</LoadingButton>
+
+  return (
+    <CardButton
+      {...props}
+      icon={faFile}
+      disabled={edit}
+      variant="primary"
+      onClick={handleCreateReport}
+    >
+      Bericht generieren
     </CardButton>
   )
 }

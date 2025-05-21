@@ -110,6 +110,7 @@ const getWorks = async (scheduleId) => {
         end: 1,
         jobs: "$jobs",
         jobIds: "$shift.jobIds",
+        employeeIds: 1,
       },
     },
   ])
@@ -515,6 +516,83 @@ router.delete("/:id/works", roles.requireAdmin, async (req, res, next) => {
     })
 
     res.send({ message: "Dienste erfolgreich gelöscht" })
+  } catch (err) {
+    return next(err)
+  }
+})
+
+router.get("/:id/report", roles.requireAdmin, async (req, res, next) => {
+  try {
+    const schedule = await getSchedule(req.params.id)
+    const employees = await getEmployees(schedule)
+    const works = await getWorks(schedule._id)
+
+    const report = employees.map((employee) => {
+      const employeeWorks = works.filter((work) =>
+        work.employeeIds.some(
+          (employeeId) => employeeId.toString() === employee._id.toString()
+        )
+      )
+
+      // Check if employee is within their min and max hours
+      const totalWorkHours = employeeWorks.reduce((sum, work) => {
+        return (
+          sum + (work.end.getTime() - work.start.getTime()) / (1000 * 60 * 60)
+        )
+      }, 0)
+
+      const withinHours =
+        (employee.minHours === null || totalWorkHours >= employee.minHours) &&
+        (employee.maxHours === null || totalWorkHours <= employee.maxHours)
+
+      // Check if all assigned works have at least 12 hours in between
+      const sortedWorks = employeeWorks.sort((a, b) => a.start - b.start)
+      const has12HourBreaks = sortedWorks.every((work, index) => {
+        if (index === 0) return true
+        const previousWork = sortedWorks[index - 1]
+        return (
+          work.start.getTime() - previousWork.end.getTime() >=
+          12 * 60 * 60 * 1000
+        )
+      })
+
+      // Calculate the smallest break between shifts
+      const smallestBreak = sortedWorks.reduce((minBreak, work, index) => {
+        if (index === 0) return minBreak
+        const previousWork = sortedWorks[index - 1]
+        const breakDuration =
+          (work.start.getTime() - previousWork.end.getTime()) / (1000 * 60 * 60)
+        return Math.min(minBreak, breakDuration)
+      }, Infinity)
+
+      // Check if freetimes overlap with assigned shifts
+      const freetimeOverlaps = employeeWorks.some((work) =>
+        employee.freetimes.some(
+          (freetime) =>
+            new Date(freetime.start).getTime() < work.end.getTime() &&
+            new Date(freetime.end).getTime() > work.start.getTime()
+        )
+      )
+
+      // Check if shifts are overlapping
+      const hasOverlappingShifts = sortedWorks.some((work, index) => {
+        if (index === 0) return false
+        const previousWork = sortedWorks[index - 1]
+        return work.start.getTime() < previousWork.end.getTime()
+      })
+
+      return {
+        employee: employee.short,
+        totalWorkHours,
+        withinHours,
+        has12HourBreaks,
+        smallestBreak: smallestBreak === Infinity ? null : smallestBreak, // Return null if no breaks exist
+        freetimeOverlaps,
+        hasOverlappingShifts,
+      }
+    })
+
+    res.send({ report })
   } catch (err) {
     return next(err)
   }

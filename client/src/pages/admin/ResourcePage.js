@@ -6,6 +6,7 @@ import MultiBadge from "../../components/MultiBadge"
 import { EmployeeCalendar, ScheduleCalendar } from "../../components/Calendar"
 import {
   AsyncAllocateWorksButton,
+  AsyncCreateReportButton,
   AsyncDeleteWorksButton,
   AsyncGenerateWorksButton,
   CredentialsButton,
@@ -426,6 +427,13 @@ export const SchedulePage = () => {
           updateResource={refreshResource}
         />
         <AsyncAllocateWorksButton
+          schedule={schedule}
+          updateResource={refreshResource}
+          className="me-3"
+          onInput={onInput}
+          edit={edit}
+        />
+        <AsyncCreateReportButton
           schedule={schedule}
           updateResource={refreshResource}
           className="me-3"
