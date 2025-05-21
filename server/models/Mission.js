@@ -19,6 +19,13 @@ module.exports = (sequelize) => {
       title: {
         type: Sequelize.STRING,
       },
+      info: {
+        type: Sequelize.STRING,
+        set(value) {
+          if (value.length > 0) this.setDataValue("info", value)
+          else this.setDataValue("info", null)
+        },
+      },
       km: {
         type: Sequelize.INTEGER,
       },

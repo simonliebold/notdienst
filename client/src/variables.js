@@ -33,7 +33,7 @@ export const titles = {
   job: "Jobs",
   freetime: "Dienstplanwünsche",
   rrule: "Wiederholungsmuster",
-  mission: "Einsatz",
+  mission: "Einsätze",
   default: "Objekte",
 }
 
@@ -46,7 +46,7 @@ export const title = {
   job: "Job",
   freetime: "Dienstplanwunsch",
   rrule: "Wiederholungsmuster",
-  mission: "Einsätze",
+  mission: "Einsatz",
   default: "Objekt",
 }
 
@@ -60,7 +60,10 @@ export const labels = {
   content: "Inhalt",
   start: "Start",
   end: "Ende",
-  deadline: "Deadline"
+  deadline: "Deadline",
+  time: "Zeitpunkt",
+  km: "Kilometer",
+  info: "Zusätzliche Information"
 }
 
 export const localeString = {

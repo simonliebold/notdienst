@@ -98,9 +98,9 @@ function Navigation() {
       path: "/employments",
     },
     {
-      name: "Elemente",
-      icon: faCube,
-      path: "/elements",
+      name: "Einsätze",
+      icon: icons.mission,
+      path: "/missions",
     },
   ]
 

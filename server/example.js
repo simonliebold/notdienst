@@ -177,12 +177,30 @@ module.exports = async (models) => {
     { type: "Wunschfrei", date: new Date(), scheduleId: 1, employeeId: 1 },
     { type: "Nicht Tag", date: new Date(), scheduleId: 1, employeeId: 1 },
     { type: "Nicht Nacht", date: new Date(), scheduleId: 1, employeeId: 1 },
-    { type: "Seminar / Ausbildung", date: new Date(), scheduleId: 1, employeeId: 1 },
+    {
+      type: "Seminar / Ausbildung",
+      date: new Date(),
+      scheduleId: 1,
+      employeeId: 1,
+    },
     { type: "Urlaub", date: new Date(), scheduleId: 1, employeeId: 1 },
   ])
 
   await models.Mission.bulkCreate([
-    {title: "Arzt aufgenommen", km: 255090, time: new Date(), workId: 1, employeeId: 1},
-    {title: "Arzt abgeliefert", km: 255168, time: new Date(), workId: 1, employeeId: 1}
+    {
+      title: "Arzt aufgenommen",
+      km: 255090,
+      time: new Date(),
+      workId: 1,
+      employeeId: 1,
+    },
+    {
+      title: "Arzt abgeliefert",
+      info: "Übergabe an der Wache an nächsten Fahrer",
+      km: 255168,
+      time: new Date(),
+      workId: 1,
+      employeeId: 1,
+    },
   ])
 }

@@ -30,6 +30,7 @@ import Employee from "./pages/admin/Employee"
 import Job from "./pages/admin/Job"
 import Employment from "./pages/admin/Employment"
 import Missions from "./pages/admin/Missions"
+import Mission from "./pages/admin/Mission"
 
 function App() {
   const home = (
@@ -146,6 +147,12 @@ function App() {
     </Prot>
   )
 
+  const mission = (
+    <Prot>
+      <Mission />
+    </Prot>
+  )
+
   return (
     <AuthProvider>
       <AlertProvider>
@@ -194,8 +201,7 @@ function App() {
               <Route path="employment/:id/:action" element={employment} />
 
               <Route path="missions" element={missions} />
-              {/* <Route path="employment/:id/" element={employment} />
-              <Route path="employment/:id/:action" element={employment} /> */}
+              <Route path="mission/:id/" element={mission} />
             </Routes>
           </div>
         </Container>
