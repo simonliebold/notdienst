@@ -95,6 +95,7 @@ const EmployeeModal = () => {
   const [isLoading, setIsLoading] = useState(true)
 
   const [token, setToken] = useState(false)
+  const [isTokenLoading, setIsTokenLoading] = useState(false)
 
   const close = () => {
     navigate("/employees")
@@ -178,6 +179,7 @@ const EmployeeModal = () => {
   }
 
   const createToken = async () => {
+    setIsTokenLoading(true)
     try {
       const response = await axios.post(
         "http://localhost:4000/credentials/generate/" + employee.id
@@ -190,6 +192,7 @@ const EmployeeModal = () => {
     } catch (error) {
       if (error.response.data.error) addAlert(error.response.data.error)
     }
+    setIsTokenLoading(false)
   }
 
   useEffect(() => {
@@ -338,16 +341,24 @@ const EmployeeModal = () => {
           <hr />
           <h2 className="fs-6 mt-3">Account-Daten ändern</h2>
           {!token && (
-            <Button onClick={createToken} variant="primary">
+            <Button onClick={createToken} variant="primary" disabled={isTokenLoading}>
               <FontAwesomeIcon className="me-2" icon={faKey} />
-              Token generieren
+              {isTokenLoading && <>Token lädt...</>}
+              {!isTokenLoading && <>Token generieren</>}
             </Button>
           )}
           {token && (
             <Card bg="" text="">
               <Card.Body>
-                <Card.Title>Code: {token.code}</Card.Title>
-                Besuche folgende Seite, um die Account-Daten festzulegen:{" "}
+                <Card.Title>
+                  <Badge className="me-2">
+                    <FontAwesomeIcon icon={faKey} className="me-2" />
+                    {token.code}
+                  </Badge>
+                  Account-Daten Token
+                </Card.Title>
+                E-Mail und Passwort unter folgendem Link festlegen:
+                <br />
                 <a href={"http://localhost:3001/credentials/" + token.code}>
                   {"http://localhost:3001/credentials/" + token.code}
                 </a>
