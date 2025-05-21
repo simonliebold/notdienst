@@ -57,5 +57,19 @@ module.exports = (models) => {
     }
   })
 
+  // Delete one by schedule id
+  router.delete("/schedule/:id", async (req, res) => {
+    try {
+      const response = await models.Work.destroy({
+        where: { scheduleId: req.params.id },
+      })
+      response > 0
+        ? res.status(200).send({ message: "Deleted successfully" })
+        : res.status(404).send({ message: "Not found" })
+    } catch (error) {
+      res.status(400).send({ errors: error })
+    }
+  })
+
   return router
 }
