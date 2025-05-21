@@ -85,6 +85,10 @@ module.exports = (models) => {
       }
       return res.status(200).send({ message: "Änderungen gespeichert" })
     } catch (error) {
+      if (error.message && error.message === "Validation error")
+        return res
+          .status(400)
+          .send({ error: "Das Kürzel des Mitarbeiters existiert bereits" })
       return res.status(400).send({ error: error.message })
     }
   })

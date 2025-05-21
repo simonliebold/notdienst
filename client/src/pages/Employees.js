@@ -159,7 +159,8 @@ const EmployeeModal = () => {
     }
   }
 
-  const updateEmployee = async () => {
+  const handleFormSubmit = async (e) => {
+    e.preventDefault()
     setIsButtonLoading(true)
     try {
       const response = await axios.put(
@@ -175,6 +176,7 @@ const EmployeeModal = () => {
       close()
     } catch (error) {
       if (error.response.data.error) addAlert(error.response.data.error)
+      setIsButtonLoading(false)
     }
   }
 
@@ -247,7 +249,7 @@ const EmployeeModal = () => {
         )}
       </Modal.Header>
       <Modal.Body>
-        <Form>
+        <Form onSubmit={handleFormSubmit}>
           <Row>
             <Col xs={3}>
               <h2 className="fs-6">Kürzel</h2>
@@ -330,7 +332,7 @@ const EmployeeModal = () => {
           {!isLoading && (
             <Button
               className="mt-3"
-              onClick={updateEmployee}
+              type="submit"
               disabled={isButtonDisabled || isButtonLoading}
             >
               <FontAwesomeIcon className="me-2" icon={faSave} />
