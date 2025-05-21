@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useEffect, useState } from "react"
 
 import { useParams } from "react-router-dom"
 
@@ -9,15 +9,23 @@ import { titles } from "../../variables"
 
 function Employee() {
   const { employeeId } = useParams()
-  const employee = useResource("employees/" + employeeId)
+  const getEmployee = useResource("employees/" + employeeId)
+  const [employee, setEmployee] = useState(null)
+
+  useEffect(() => {
+    const refresh = async () => {
+      const newEmployee = await getEmployee()
+      setEmployee(newEmployee)
+    }
+    refresh()
+  }, [employeeId])
+
+  // refresh()
 
   return (
     <>
       <Breadcrumb resourceName="employee" resource={employee} />
-      <EmployeeDetailedCard
-        employee={employee}
-        className="mt-3"
-      />
+      <EmployeeDetailedCard employee={employee} className="mt-3" />
     </>
   )
 }

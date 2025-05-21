@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useEffect, useState } from "react"
 import useResource from "../../hooks/useResource"
 import {
   EmployeeDetailedCard,
@@ -9,7 +9,15 @@ import CardList from "../../components/CardList"
 import Breadcrumb from "../../components/Breadcrumb"
 
 function Employees() {
-  const employees = useResource("employees")
+  const getEmployees = useResource("employees")
+  const [employees, setEmployees] = useState(null)
+
+  useEffect(() => {
+    const refresh = async () => {
+      setEmployees(await getEmployees())
+    }
+    refresh()
+  }, [])
 
   return (
     <>
