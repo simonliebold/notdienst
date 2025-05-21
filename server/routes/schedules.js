@@ -235,7 +235,7 @@ module.exports = (models, sequelize) => {
     getEvents,
     createWorks,
     async (req, res) => {
-      res.send({ message: "Dienste erfolgreich generiert" })
+      return res.send({ message: "Dienste erfolgreich generiert" })
     }
   )
 
