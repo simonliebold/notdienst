@@ -41,7 +41,6 @@ function authenticateToken(req, res, next) {
 
 // Error handling
 const handleError = (err, req, res, next) => {
-  console.log(err)
   return res.status(400).send({ error: err.message })
 }
 

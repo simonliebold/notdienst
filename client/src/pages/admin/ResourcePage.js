@@ -141,6 +141,7 @@ export const EmployeePage = () => {
           resourceName="employment"
         />
         <MultiBadge items={employee?.jobs} resourceName="job" />
+        <MultiBadge items={employee?.freetimes} resourceName="freetime" disabled />
         {/* <ContainsItems resources={employee?.freetimes} resourceName="freetime" /> */}
       </ResourcePage>
       <EmployeeCalendar employee={employee} />
@@ -163,11 +164,11 @@ export const FreetimePage = () => {
   const [freetime, setFreetime] = useState(null)
   return (
     <ResourcePage resourceName="freetime" setData={setFreetime}>
+      <EditableText value={freetime?.short} label="short" />
+      <EditableText value={freetime?.title} label="title" />
       <EditableText value={freetime?.start} label="start" />
       <EditableText value={freetime?.end} label="end" />
-      <EditableText value={freetime?.type} label="type" />
-
-      <EditableBadge resource={freetime?.employee} resourceName="employee" />
+      <EditableBadge resource={freetime?.employee} resourceName="employee" disabled />
     </ResourcePage>
   )
 }

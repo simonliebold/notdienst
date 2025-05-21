@@ -7,57 +7,80 @@ module.exports = () => {
 
   // Get all
   router.get("/", roles.requireAdmin, async (req, res, next) => {
-    const freetimes = await Freetime.find({}).catch(next)
-    if (!freetimes) return next(new Error("Nicht gefunden"))
-    return res.send(freetimes)
+    try {
+      const freetimes = await Freetime.find({})
+      if (!freetimes) return next(new Error("Nicht gefunden"))
+      return res.send(freetimes)
+    } catch (err) {
+      return next(err)
+    }
   })
 
   // Get one
   router.get("/:id", roles.requireAdmin, async (req, res, next) => {
-    const freetime = await Freetime.aggregate([
-      { $match: { _id: new mongoose.Types.ObjectId(req.params.id) } },
-      {
-        $lookup: {
-          from: "employees",
-          localField: "employeeId",
-          foreignField: "_id",
-          as: "employee",
+    try {
+      const freetime = await Freetime.aggregate([
+        { $match: { _id: new mongoose.Types.ObjectId(req.params.id) } },
+        {
+          $lookup: {
+            from: "employees",
+            localField: "employeeId",
+            foreignField: "_id",
+            as: "employee",
+          },
         },
-      },
-      { $unwind: "$employee" },
-    ]).catch(next)
-    if (!freetime) return next(new Error("Nicht gefunden"))
-    return res.send(freetime[0])
+        { $unwind: "$employee" },
+      ])
+      if (!freetime) return next(new Error("Nicht gefunden"))
+      return res.send(freetime[0])
+    } catch (err) {
+      return next(err)
+    }
   })
 
   // Create one
   router.post("/", roles.requireAdmin, async (req, res, next) => {
-    const { short, title, employmentId, jobIds } = req?.body || {}
-    const freetime = new Freetime({
-      short,
-      title,
-    })
-
-    await freetime.save().catch(next)
-
+    try {
+      const { short, title, start, end, employeeId } = req?.body || {}
+      const freetime = new Freetime({
+        short,
+        title,
+        start,
+        end,
+        employeeId,
+      })
+      await freetime.save()
+    } catch (err) {
+      return next(err)
+    }
     return res.send(freetime)
   })
 
   // Update one
   router.put("/:id", roles.requireAdmin, async (req, res, next) => {
-    const { short, title, employmentId, jobIds } = req?.body || {}
-    await Freetime.findByIdAndUpdate(req.params.id, {
-      short,
-      title,
-    }).catch(next)
+    try {
+      const { short, title, start, end } = req?.body || {}
+      await Freetime.findByIdAndUpdate(req.params.id, {
+        short,
+        title,
+        start,
+        end,
+      })
 
-    return res.send({ message: "Erfolgreich aktualisiert" })
+      return res.send({ message: "Erfolgreich aktualisiert" })
+    } catch (err) {
+      return next(err)
+    }
   })
 
   // Delete one
   router.delete("/:id", roles.requireAdmin, async (req, res, next) => {
-    await Freetime.findByIdAndDelete(req.params.id).catch(next)
-    return res.send({ message: "Endgültig gelöscht" })
+    try {
+      await Freetime.findByIdAndDelete(req.params.id)
+      return res.send({ message: "Endgültig gelöscht" })
+    } catch (err) {
+      return next(err)
+    }
   })
 
   return router

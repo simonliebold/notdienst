@@ -33,6 +33,14 @@ module.exports = () => {
         },
       },
       { $unwind: { path: "$employment", preserveNullAndEmptyArrays: true } },
+      {
+        $lookup: {
+          from: "freetimes",
+          localField: "_id",
+          foreignField: "employeeId",
+          as: "freetimes",
+        },
+      },
     ]).catch(next)
     if (!employee) return next(new Error("Nicht gefunden"))
     return res.send(employee[0])

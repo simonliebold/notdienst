@@ -45,7 +45,7 @@ function ResourcesPage({ resourceName, resources, children }) {
           )
         })}
       </CardList>
-      
+
       <CreateNewPopup
         onConfirm={onCreateConfirm}
         resourceName={resourceName}
@@ -75,7 +75,7 @@ export const EmployeesPage = () => {
       <EditableBadge resourceName="employment" />
       {/* <MultiBadge edit resourceName="work" />
       <MultiBadge edit resourceName="schedule" /> */}
-      <MultiBadge edit resourceName="job" /> 
+      <MultiBadge edit resourceName="job" />
     </ResourcesPage>
   )
 }
@@ -96,11 +96,11 @@ export const FreetimesPage = () => {
   const [freetimes] = useResource("freetimes")
   return (
     <ResourcesPage resources={freetimes} resourceName="freetime">
-      <EditableText label="date" />
-      <EditableText label="type" />
-      <hr />
+      <EditableText label="short" />
+      <EditableText label="title" />
+      <EditableText label="start" />
+      <EditableText label="end" />
       <EditableBadge resourceName="employee" />
-      <EditableBadge resourceName="schedule" />
     </ResourcesPage>
   )
 }
