@@ -31,19 +31,20 @@ const getEmployees = async (schedule) => {
         let: { employeeId: "$_id" },
         pipeline: [
           {
-            $project: {
-              start: "$start",
-              end: "$end",
-            },
-          },
-          {
             $match: {
               $expr: {
                 $and: [
+                  { $eq: ["$employeeId", "$$employeeId"] },
                   { $lt: ["$start", schedule.end] },
                   { $gt: ["$end", schedule.start] },
                 ],
               },
+            },
+          },
+          {
+            $project: {
+              start: 1,
+              end: 1,
             },
           },
         ],
@@ -61,6 +62,7 @@ const getEmployees = async (schedule) => {
     { $unwind: "$employment" },
     {
       $project: {
+        short: 1,
         freetimes: "$freetimes",
         jobIds: "$jobIds",
         minHours: "$employment.minHours",
@@ -100,6 +102,8 @@ const getWorks = async (scheduleId) => {
     },
     {
       $project: {
+        short: 1,
+        title: 1,
         start: 1,
         end: 1,
         jobs: "$jobs",
@@ -247,38 +251,42 @@ router.post("/:id/create", roles.requireAdmin, async (req, res, next) => {
 // Get employees
 
 // Add employee ids to works
-const getSortedWorks = async (works, employees) => {
-  let newWorks = []
+const sortWorks = async (works, employees) => {
   Object.values(works).forEach((work) => {
     work.employeeIds = []
     Object.values(employees).forEach((employee) => {
-      let hasJob = false
-      for (let i = 0; i < work.jobIds.length; i++) {
-        for (let j = 0; j < employee.jobIds.length; j++) {
-          if (work.jobIds[i] !== employee.jobIds[j]) continue
-          hasJob = true
-          break
-        }
-        if (hasJob) break
-      }
+      const hasJob =
+        work.jobIds.find((workJobId) => {
+          return (
+            employee.jobIds.find((employeeJobId) => {
+              return workJobId.toString() === employeeJobId.toString()
+            }) !== undefined
+          )
+        }) !== undefined
+
+      // console.log(
+      //   work.short,
+      //   employee.short,
+      //   "hasJob " + hasJob
+      // )
       if (!hasJob) return
 
-      const isFree = employees[employee.id].freetimes.every(
+      const isFree = employee.freetimes.every(
         (freetime) =>
           new Date(freetime.end).getTime() <= work.start.getTime() ||
           new Date(freetime.start).getTime() >= work.end.getTime()
       )
+      console.log(work.title, employee.short, "isFree " + isFree)
       if (isFree) {
         const duration =
           (work.end.getTime() - work.start.getTime()) / (1000 * 60 * 60)
-        employees[employee.id].availableTime += duration
-        work.employeeIds.push(employee.id)
+        employee.availableTime += duration
+        work.employeeIds.push(employee._id)
       }
     })
-    newWorks.push(work)
   })
 
-  return await newWorks.sort((a, b) => {
+  works.sort((a, b) => {
     if (a.employeeIds.length < b.employeeIds.length) return -1
     else if (a.employeeIds.length > b.employeeIds.length) return 1
     else return Math.random() < 0.5 ? 1 : -1
@@ -323,8 +331,8 @@ const allocateWorks = async (works, employees) => {
 
       // TODO: Generierungsbericht
       protocol.push({
-        workId: work.id,
-        employeeId: employee.id,
+        workId: work._id,
+        employeeId: employee._id,
         isFree: isFree,
         isBest: isBest,
         maxHoursCorrect: maxHoursCorrect,
@@ -343,7 +351,7 @@ const allocateWorks = async (works, employees) => {
       }
     })
     if (!bestEmployee) {
-      await models.Work.destroy({ where: { scheduleId: req.schedule.id } })
+      await models.Work.destroy({ where: { scheduleId: req.schedule._id } })
       return res.status(400).send({
         error:
           "Es stehen zu wenig Mitarbeiter für die Anzahl an Diensten zur Verfügung.",
@@ -351,13 +359,13 @@ const allocateWorks = async (works, employees) => {
       })
     }
     workEmployees.push({
-      workId: work.id,
-      employeeId: bestEmployee.id,
+      workId: work._id,
+      employeeId: bestEmployee._id,
     })
     bestEmployee.freetimes.push({
       start: work.start,
       end: work.end,
-      work: work.id,
+      work: work._id,
     })
     bestEmployee.workTime += duration
     works.shift()
@@ -370,7 +378,7 @@ const allocate = async (scheduleId) => {
   const schedule = await getSchedule(scheduleId)
   const works = await getWorks(schedule?._id)
   const employees = await getEmployees(schedule)
-  // const sortedWorks = await getSortedWorks(works, employees)
+  await sortWorks(works, employees)
   return { works, employees }
   // await allocateWorks(sortedWorks, employees)
   // return employees
