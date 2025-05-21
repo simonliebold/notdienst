@@ -2,7 +2,7 @@ const mongoose = require("mongoose")
 const { Schema, model } = mongoose
 
 const shiftSchema = new Schema({
-  short: { type: String, uppercase: true, required: true },
+  short: { type: String, uppercase: true, required: true, unique: true },
   title: { type: String, required: true },
   jobIds: [{ type: Schema.Types.ObjectId, ref: "Job", required: true }],
 })

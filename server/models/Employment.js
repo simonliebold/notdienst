@@ -2,7 +2,7 @@ const mongoose = require("mongoose")
 const { Schema } = mongoose
 
 const employmentSchema = new Schema({
-  short: { type: String, uppercase: true },
+  short: { type: String, uppercase: true, required: true, unique: true },
   title: String,
   minHours: Number,
   maxHours: Number,

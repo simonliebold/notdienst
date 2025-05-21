@@ -2,7 +2,7 @@ const mongoose = require("mongoose")
 const { Schema } = mongoose
 
 const rruleSchema = new Schema({
-  short: { type: String, uppercase: true, required: true },
+  short: { type: String, uppercase: true, required: true, unique: true },
   title: { type: String, required: true },
   start: { type: String, required: true },
   end: { type: String, required: true },

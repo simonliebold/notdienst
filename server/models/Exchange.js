@@ -2,7 +2,7 @@ const mongoose = require("mongoose")
 const { Schema, model } = mongoose
 
 const exchangeSchema = new Schema({
-  short: { type: String, uppercase: true, required: true },
+  short: { type: String, uppercase: true, required: true, unique: true },
   title: { type: String, required: true },
   status: {
     type: String,

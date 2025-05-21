@@ -267,7 +267,7 @@ const createWorks = async (schedule) => {
 
       return {
         title: `${rrule.title} am ${start.toLocaleDateString("de-DE")}`,
-        short: rrule.short,
+        short: `${rrule.short} - ${start.toLocaleDateString("de-DE")}`,
         start,
         end,
         shiftId: rrule.shiftId,
