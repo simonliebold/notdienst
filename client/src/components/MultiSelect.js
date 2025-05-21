@@ -11,6 +11,8 @@ function MultiSelect({ valueType, objectType, objectId, defaultValues }) {
   const [defaults, setDefaults] = useState([])
   const [values, setValues] = useState([])
 
+  const [saving, setSaving] = useState(false)
+
   const handleError = useErrorMessage()
   const handleSuccess = useSuccessMessage()
 
@@ -27,6 +29,7 @@ function MultiSelect({ valueType, objectType, objectId, defaultValues }) {
   }, [handleError, valueType])
 
   const updateValues = useCallback(async () => {
+    setSaving(true)
     const res = await axios
       .put(
         process.env.REACT_APP_URL +
@@ -40,6 +43,7 @@ function MultiSelect({ valueType, objectType, objectId, defaultValues }) {
       .catch(handleError)
 
     if (res?.data?.message) handleSuccess(res.data.message)
+    setSaving(false)
   }, [handleError, handleSuccess, objectId, objectType, valueType, values])
 
   useEffect(() => {
@@ -65,7 +69,7 @@ function MultiSelect({ valueType, objectType, objectId, defaultValues }) {
     return sortedValues === sortedDefault
   }, [values, defaults])
 
-  if (!defaults || !values || !options) return <Select isDisabled isLoading />
+  if (!defaults || !values || !options) return <Select isDisabled isLoading placeholder="Aktualisiert..." />
 
   return (
     <div className="d-flex align-items-end">
@@ -75,13 +79,17 @@ function MultiSelect({ valueType, objectType, objectId, defaultValues }) {
         values={values}
         onChange={setValues}
         name={valueType}
+        isLoading={saving}
+        isDisabled={saving}
+        placeholder="Auswählen..."
         isMulti
         className="basic-multi-select flex-fill"
         classNamePrefix="select"
       />
       {!disabled() && (
-        <Button className="ms-3" onClick={updateValues}>
-          Speichern
+        <Button className="ms-3" onClick={updateValues} disabled={saving}>
+          {!saving && "Speichern"}
+          {saving && "Speichert..."}
         </Button>
       )}
     </div>
