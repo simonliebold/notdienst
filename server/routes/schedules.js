@@ -194,6 +194,12 @@ const getEmployees = async (schedule) => {
         let: { employeeId: "$_id" },
         pipeline: [
           {
+            $project: {
+              start: "$start",
+              end: "$end",
+            },
+          },
+          {
             $match: {
               $expr: {
                 $and: [
@@ -207,43 +213,32 @@ const getEmployees = async (schedule) => {
         as: "freetimes",
       },
     },
-    // {$match: {}}
+    {
+      $lookup: {
+        from: "employments",
+        localField: "employmentId",
+        foreignField: "_id",
+        as: "employment",
+      },
+    },
+    { $unwind: "$employment" },
+    {
+      $project: {
+        freetimes: "$freetimes",
+        jobIds: "$jobIds",
+        minHours: "$employment.minHours",
+        maxHours: "$employment.maxHours",
+      },
+    },
+    {
+      $addFields: {
+        availableTime: 0,
+        workTime: 0,
+      },
+    },
   ])
 
   return employees
-
-  const newEmployees = {}
-  const employeeIds = []
-
-  employees.forEach((employee) => {
-    newEmployees[employee.id] = {
-      id: employee.id,
-      freetimes: [],
-      jobIds: employee.jobs.map((job) => job.id),
-      minHours: employee.employment.minHours,
-      maxHours: employee.employment.maxHours,
-      availableTime: 0,
-      workTime: 0,
-    }
-    employeeIds.push(employee.id)
-  })
-
-  // Get freetimes
-  // const freetimes = await models.Freetime.findAll({
-  //   where: {
-  //     [Op.and]: [
-  //       { employeeId: { [Op.in]: employeeIds } },
-  //       { start: { [Op.lt]: schedule.end } },
-  //       { end: { [Op.gt]: schedule.start } },
-  //     ],
-  //   },
-  // })
-
-  // freetimes?.forEach((freetime) => {
-  //   newEmployees[freetime.employeeId].freetimes.push(freetime.dataValues)
-  // })
-
-  return newEmployees
 }
 
 // Add employee ids to works
