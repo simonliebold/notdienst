@@ -34,31 +34,37 @@ export const EditableBadge = ({ resource, resourceName, onInput }) => {
 
   if (action === "edit")
     return (
-      <Select
-        options={options?.map((option) => ({
-          icon: icons[resourceName],
-          label: option.short,
-          value: option.id,
-        }))}
-        placeholder="Keine Daten"
-        noOptionsMessage={() => "Keine Optionen"}
-        styles={selectStyles}
-        getOptionLabel={(option) => (
-          <>
-            <FontAwesomeIcon icon={option.icon} className="me-2" />
-            {option.label}
-          </>
-        )}
-        defaultValue={{
-          label: resource.short,
-          value: resource.id,
-          icon: icons[resourceName],
-        }}
-        onChange={(item) => onInput(resourceName + "Id", item.value)}
-      />
+      <p>
+        <Select
+          options={options?.map((option) => ({
+            icon: icons[resourceName],
+            label: option.short,
+            value: option.id,
+          }))}
+          placeholder="Keine Daten"
+          noOptionsMessage={() => "Keine Optionen"}
+          styles={selectStyles}
+          getOptionLabel={(option) => (
+            <>
+              <FontAwesomeIcon icon={option.icon} className="me-2" />
+              {option.label}
+            </>
+          )}
+          defaultValue={{
+            label: resource.short,
+            value: resource.id,
+            icon: icons[resourceName],
+          }}
+          onChange={(item) => onInput(resourceName + "Id", item.value)}
+        />
+      </p>
     )
 
-  return <Badge resource={resource} resourceName={resourceName} />
+  return (
+    <p>
+      <Badge resource={resource} resourceName={resourceName} />
+    </p>
+  )
 }
 
 export default Badge

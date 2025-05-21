@@ -24,6 +24,7 @@ function MultiBadge({ items, resourceName, onInput }) {
 
   if (action === "edit") {
     return (
+      <p>
       <Select
         isMulti
         getOptionLabel={(option) => (
@@ -47,16 +48,17 @@ function MultiBadge({ items, resourceName, onInput }) {
         }))}
         onChange={onChange}
       />
+    </p>
     )
   }
   if (items?.length === 0)
     return (
-      <div>
+      <p>
         <Badge resource={{ short: "Keine Daten" }} disabled />
-      </div>
+      </p>
     )
   return (
-    <div>
+    <p>
       {items?.map((item) => {
         const { short } = item || {}
         return (
@@ -68,7 +70,7 @@ function MultiBadge({ items, resourceName, onInput }) {
           />
         )
       })}
-    </div>
+    </p>
   )
 }
 
