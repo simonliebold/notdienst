@@ -8,7 +8,7 @@ module.exports = () => {
   // Get all
   router.get("/", roles.requireAdmin, async (req, res, next) => {
     try {
-      const shifts = await Shift.find({}).catch(next)
+      const shifts = await Shift.find({})
       if (!shifts) return next(new Error("Nicht gefunden"))
       return res.send(shifts)
     } catch (err) {
