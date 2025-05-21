@@ -176,5 +176,34 @@ module.exports = (models) => {
     next()
   }
 
+  // Get events->shift->jobs->employees
+  const getEvents = async (req, res, next) => {
+    const events = await models.Event.findAll({
+      include: [
+        {
+          model: models.Shift,
+          include: [
+            {
+              model: models.Job,
+              through: { attributes: [] },
+              include: {
+                model: models.Employee,
+                through: { attributes: [] },
+              },
+            },
+            {
+              model: models.Schedule,
+              through: { where: { scheduleId: req.params.id }, attributes: [] },
+            },
+          ],
+        },
+      ],
+    })
+    if (events === null) res.status(404).send({ message: "No events found" })
+    req.events = events.map((event) => event.dataValues)
+
+    next()
+  }
+
   return router
 }
