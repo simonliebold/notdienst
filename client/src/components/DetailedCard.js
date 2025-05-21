@@ -1,13 +1,16 @@
 import React from "react"
+
+import { useNavigate, useParams } from "react-router-dom"
+
 import Card from "react-bootstrap/Card"
 import Placeholder from "react-bootstrap/Placeholder"
+import CloseButton from "react-bootstrap/CloseButton"
 import Spinner from "react-bootstrap/Spinner"
+
 import Badge, { EditableBadge } from "./Badge"
 import MultiBadge from "./MultiBadge"
 import { CardDeleteButton, CardEditButton, CardSaveButton } from "./CardButton"
 import { localeString } from "../variables"
-import { Link, useNavigate, useParams } from "react-router-dom"
-import CloseButton from "react-bootstrap/CloseButton"
 
 const DetailedCard = ({ resource, resourceName, children, className }) => {
   const { title } = resource || {}
@@ -47,9 +50,9 @@ const DetailedCard = ({ resource, resourceName, children, className }) => {
             resourceName={resourceName}
             resource={resource}
             className="me-2"
-            />
+          />
           {title}
-            {action === "edit" && " bearbeiten "}
+          {action === "edit" && " bearbeiten "}
         </div>
         {action === "edit" && (
           <CloseButton

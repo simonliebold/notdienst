@@ -6,7 +6,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import BootstrapBadge from "react-bootstrap/Badge"
 
 import useResource from "../hooks/useResource"
-import { icons } from "./../variables"
+import { icons, selectStyles } from "./../variables"
 
 function Badge({ resource, resourceName, disabled, className }) {
   const { id, short } = resource || {}
@@ -35,12 +35,13 @@ export const EditableBadge = ({ resource, resourceName }) => {
     return (
       <Select
         options={options?.map((option) => ({
+          icon: icons[resourceName],
           label: option.short,
           value: option.id,
-          icon: icons[resourceName],
         }))}
         placeholder="Keine Daten gefunden"
         noOptionsMessage={() => "Keine weiteren Optionen verfügbar"}
+        styles={selectStyles}
         getOptionLabel={(option) => (
           <>
             <FontAwesomeIcon icon={option.icon} className="me-2" />

@@ -5,7 +5,7 @@ import Container from "react-bootstrap/Container"
 import { useParams } from "react-router-dom"
 import Select from "react-select"
 import useResource from "../hooks/useResource"
-import { icons } from "../variables"
+import { icons, selectStyles } from "../variables"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 
 function MultiBadge({ items, resourceName }) {
@@ -24,6 +24,7 @@ function MultiBadge({ items, resourceName }) {
         )}
         placeholder="Keine Daten gefunden"
         noOptionsMessage={() => "Keine weiteren Optionen verfügbar"}
+        styles={selectStyles}
         options={options?.map((option) => ({
           icon: icons[resourceName],
           label: option.short,
