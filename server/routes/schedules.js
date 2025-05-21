@@ -59,6 +59,7 @@ module.exports = (models, sequelize) => {
       await models.Schedule.update(
         {
           title: req.body.title,
+          short: req.body.short,
           start: req.body.start,
           end: req.body.end,
           deadline: req.body.deadline,
