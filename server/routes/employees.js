@@ -6,10 +6,8 @@ module.exports = () => {
 
   // Get all
   router.get("/", roles.requireAdmin, async (req, res, next) => {
-    const employees = await Employee.find({}).catch((err) => {
-      console.log(err)
-      if (err) return next(err)
-    })
+    const employees = await Employee.find({}).catch(next)
+    if (!employees) return next(new Error("Nicht gefunden"))
     return res.send(employees)
   })
 
@@ -17,6 +15,7 @@ module.exports = () => {
   router.get("/:id", roles.requireAdmin, async (req, res, next) => {
     const employee = await Employee.findById(req.params.id)
       .populate("employment")
+      .populate("jobs")
       .catch(next)
     if (!employee) return next(new Error("Nicht gefunden"))
     return res.send(employee)
