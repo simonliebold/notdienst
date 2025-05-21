@@ -475,7 +475,7 @@ module.exports = (models, sequelize) => {
     "/:id/allocate",
     roles.requireAdmin,
     generateWorks,
-    async (req, res, next) => {
+    async (req, res) => {
       return res.send(await allocate(req.params.id))
     }
   )

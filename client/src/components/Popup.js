@@ -48,9 +48,8 @@ export const ConfirmDeletePopup = ({
   const onInput = useCallback(
     (e) => {
       const newInput = e.target.value.toUpperCase()
-      console.log(newInput, resource?.short)
       setInput(newInput)
-      if (newInput == resource?.short) setDisabled(false)
+      if (newInput == resource?.short.toUpperCase()) setDisabled(false)
       else setDisabled(true)
     },
     [resource, setDisabled]
