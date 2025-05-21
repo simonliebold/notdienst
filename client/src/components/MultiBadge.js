@@ -5,7 +5,7 @@ import Container from "react-bootstrap/Container"
 import { useParams } from "react-router-dom"
 import Select from "react-select"
 import useResource from "../hooks/useResource"
-import { icons, selectStyles } from "../variables"
+import { icons, selectStyles, title, titles } from "../variables"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 
 function MultiBadge({ items, resourceName, onInput }) {
@@ -30,6 +30,7 @@ function MultiBadge({ items, resourceName, onInput }) {
   if (action === "edit") {
     return (
       <p>
+        <label className="w-100">{titles[resourceName]}:</label>
         <Select
           isMulti
           getOptionLabel={(option) => (
@@ -59,11 +60,13 @@ function MultiBadge({ items, resourceName, onInput }) {
   if (items?.length === 0)
     return (
       <p>
+        <label className="w-100">{titles[resourceName]}:</label>
         <Badge resource={{ short: "Keine Daten" }} disabled />
       </p>
     )
   return (
     <p>
+      <label className="w-100">{titles[resourceName]}:</label>
       {items?.map((item) => {
         const { short } = item || {}
         return (

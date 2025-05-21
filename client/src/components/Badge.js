@@ -6,7 +6,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import BootstrapBadge from "react-bootstrap/Badge"
 
 import useResource from "../hooks/useResource"
-import { icons, selectStyles } from "./../variables"
+import { icons, selectStyles, title } from "./../variables"
 import FloatingLabel from "react-bootstrap/esm/FloatingLabel"
 
 function Badge({ resource, resourceName, disabled, className }) {
@@ -31,7 +31,6 @@ function Badge({ resource, resourceName, disabled, className }) {
 export const EditableBadge = ({ resource, resourceName, onInput }) => {
   const { action } = useParams()
 
-  // const [options, setOptions] = useState(null)
   const [options, updateOptions] = useResource(resourceName + "s")
 
   useEffect(() => {
@@ -41,6 +40,7 @@ export const EditableBadge = ({ resource, resourceName, onInput }) => {
   if (action === "edit")
     return (
       <p>
+        <label className="w-100">{title[resourceName]}:</label>
         <Select
           options={options?.map((option) => ({
             icon: icons[resourceName],
@@ -68,6 +68,7 @@ export const EditableBadge = ({ resource, resourceName, onInput }) => {
 
   return (
     <p>
+      <label className="w-100">{title[resourceName]}:</label>
       <Badge resource={resource} resourceName={resourceName} />
     </p>
   )
