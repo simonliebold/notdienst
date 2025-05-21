@@ -222,6 +222,7 @@ module.exports = (models, sequelize) => {
         if (end < start) end.setDate(end.getDate() + 1)
 
         works.push({
+          title: rrule.short + " am " + start.toLocaleDateString(),
           start: start,
           end: end,
           rruleId: rrule.id,

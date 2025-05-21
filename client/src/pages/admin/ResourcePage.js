@@ -14,7 +14,17 @@ import { EditableBadge } from "../../components/Badge"
 import MultiBadge from "../../components/MultiBadge"
 import { titles } from "../../variables"
 import MultiTitleCard from "../../components/MultiTitleCard"
-import { AsyncAllocateWorksButton, AsyncGenerateWorksButton } from "../../components/CardButton"
+import {
+  AsyncAllocateWorksButton,
+  AsyncGenerateWorksButton,
+} from "../../components/CardButton"
+
+import Container from "react-bootstrap/Container"
+import Row from "react-bootstrap/Row"
+
+import FullCalendar from "@fullcalendar/react"
+import timeGridPlugin from "@fullcalendar/timegrid"
+import Col from "react-bootstrap/esm/Col"
 
 function ResourcePage({ resourceName, setData, children }) {
   const navigate = useNavigate()
@@ -83,7 +93,7 @@ function ResourcePage({ resourceName, setData, children }) {
   }, [setShowConfirmDeletePopup])
 
   return (
-    <>
+    <div>
       <Breadcrumb resourceName={resourceName} resource={resource} />
       <ConfirmDeletePopup
         show={showConfirmDeletePopup}
@@ -115,7 +125,7 @@ function ResourcePage({ resourceName, setData, children }) {
             })
         })}
       </DetailedCard>
-    </>
+    </div>
   )
 }
 
@@ -210,21 +220,41 @@ export const RrulePage = () => {
 export const SchedulePage = () => {
   const [schedule, setSchedule] = useState(null)
   return (
-    <ResourcePage resourceName="schedule" setData={setSchedule}>
-      <EditableText value={schedule?.short} label="short" />
-      <EditableText value={schedule?.title} label="title" />
-      <EditableText value={schedule?.start} label="start" />
-      <EditableText value={schedule?.end} label="end" />
-      <EditableText value={schedule?.deadline} label="deadline" />
-      <hr />
-      <MultiBadge items={schedule?.works} resourceName="work" disabled />
-      <MultiBadge items={schedule?.shifts} resourceName="shift" />
-      <MultiBadge items={schedule?.employees} resourceName="employee" />
-      <hr />
-      <AsyncGenerateWorksButton id={schedule?.id} />
-      <br />
-      <AsyncAllocateWorksButton id={schedule?.id} />
-    </ResourcePage>
+    <Container>
+      <Row>
+        <Col xs={4}>
+          <ResourcePage
+            className="w-50"
+            resourceName="schedule"
+            setData={setSchedule}
+          >
+            <EditableText value={schedule?.short} label="short" />
+            <EditableText value={schedule?.title} label="title" />
+            <EditableText value={schedule?.start} label="start" />
+            <EditableText value={schedule?.end} label="end" />
+            <EditableText value={schedule?.deadline} label="deadline" />
+            <hr />
+            <MultiBadge items={schedule?.works} resourceName="work" disabled />
+            <MultiBadge items={schedule?.shifts} resourceName="shift" />
+            <MultiBadge items={schedule?.employees} resourceName="employee" />
+            <hr />
+            <AsyncGenerateWorksButton id={schedule?.id} />
+            <br />
+            <AsyncAllocateWorksButton id={schedule?.id} />
+          </ResourcePage>
+        </Col>
+        <Col xs={8}>
+          <FullCalendar
+            xs={8}
+            plugins={[timeGridPlugin]}
+            initialView="timeGridWeek"
+            // weekends=
+            events={schedule?.works}
+            // eventContent={renderEventContent}
+          />
+        </Col>
+      </Row>
+    </Container>
   )
 }
 

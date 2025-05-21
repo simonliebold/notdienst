@@ -18,10 +18,14 @@ module.exports = (sequelize) => {
         },
       },
       title: {
-        type: Sequelize.VIRTUAL,
-        get() {
-          return "Dienst am " + new Date(this.start).toLocaleString("de-DE")
-        },
+        type: Sequelize.STRING,
+        // get() {
+        //   const getRrule = async () => {
+        //     const rrule = await sequelize.models.rrule.findByPk(this.rruleId)
+        //     return "Dienst am " + new Date(this.start).toLocaleString("de-DE")
+        //   }
+        //   getRrule()
+        // },
       },
       start: {
         type: Sequelize.DATE,
