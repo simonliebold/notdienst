@@ -135,8 +135,10 @@ export function RrulesPage() {
   return (
     <ResourcesPage resources={rrules} resourceName="rrule">
       <EditableText label="short" />
+      <EditableText label="title" />
+      <EditableText label="start" />
+      <EditableText label="end" />
       <EditableText label="content" />
-      <hr />
       <EditableBadge resourceName="shift" />
     </ResourcesPage>
   )

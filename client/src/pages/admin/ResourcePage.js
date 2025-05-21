@@ -244,7 +244,7 @@ export const ShiftPage = () => {
       <EditableText value={shift?.title} label="title" />
 
       <MultiBadge items={shift?.jobs} resourceName="job" />
-      {/* <MultiTitleCard items={shift?.rrules} resourceName="rrule" disabled /> */}
+      <MultiBadge items={shift?.rrules} resourceName="rrule" disabled />
     </ResourcePage>
   )
 }

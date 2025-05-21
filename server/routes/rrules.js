@@ -1,82 +1,87 @@
-module.exports = (models) => {
+const { default: mongoose } = require("mongoose")
+const Rrule = require("../schemas/Rrule")
+
+module.exports = () => {
   const router = require("express").Router()
-  const roles = require("./../roles")
+  const roles = require("../roles")
 
   // Get all
-  router.get("/", roles.requireAdmin, async (req, res) => {
-    const rrules = await models.Rrule.findAll({ include: models.Shift })
-
-    return res.send(rrules)
+  router.get("/", roles.requireAdmin, async (req, res, next) => {
+    try {
+      const rrules = await Rrule.find({})
+      if (!rrules) return next(new Error("Nicht gefunden"))
+      return res.send(rrules)
+    } catch (err) {
+      return next(err)
+    }
   })
 
   // Get one
-  router.get("/:id", roles.requireAdmin, async (req, res) => {
-    const rrule = await models.Rrule.findByPk(req.params.id, {
-      include: [models.Shift],
-    })
-    if (!rrule)
-      return res.status(404).send({ message: "Rrule nicht gefunden." })
-
-    return res.send(rrule)
-  })
-
-  // Update one
-  router.put("/:id", roles.requireAdmin, async (req, res) => {
+  router.get("/:id", roles.requireAdmin, async (req, res, next) => {
     try {
-      const rrule = await models.Rrule.findByPk(req.params.id)
-
-      if (!rrule) return res.status(400).send({ error: "Rrule nicht gefunden" })
-
-      await models.Rrule.update(
+      const rrule = await Rrule.aggregate([
+        { $match: { _id: new mongoose.Types.ObjectId(req.params.id) } },
         {
-          short: req.body.short,
-          title: req.body.title,
-          content: req.body.content,
-          shiftId: req.body.shiftId,
-          start: req.body.start,
-          end: req.body.end,
+          $lookup: {
+            from: "shifts",
+            localField: "shiftId",
+            foreignField: "_id",
+            as: "shift",
+          },
         },
-        {
-          where: { id: req.params.id },
-        }
-      )
-
-      return res.status(200).send({ message: "Änderungen gespeichert" })
-    } catch (error) {
-      res.status(400).send({ error: error })
+        { $unwind: "$shift" },
+      ])
+      if (!rrule) return next(new Error("Nicht gefunden"))
+      return res.send(rrule[0])
+    } catch (err) {
+      return next(err)
     }
   })
 
   // Create one
-  router.post("/", roles.requireAdmin, async (req, res) => {
+  router.post("/", roles.requireAdmin, async (req, res, next) => {
     try {
-      const rrule = await models.Rrule.create({
-        short: req.body.short,
-        title: req.body.title,
-        content: req.body.content,
-        shiftId: req.body.shiftId,
-        start: req.body.start,
-        end: req.body.end,
+      const { short, title, start, end, content, shiftId } = req?.body || {}
+      const rrule = new Rrule({
+        short,
+        title,
+        start,
+        end,
+        content,
+        shiftId,
       })
+      await rrule.save()
       return res.send(rrule)
-    } catch (error) {
-      return res.status(400).send({ error: error.message })
+    } catch (err) {
+      return next(err)
+    }
+  })
+
+  // Update one
+  router.put("/:id", roles.requireAdmin, async (req, res, next) => {
+    try {
+      const { short, title, start, end, content } = req?.body || {}
+      await Rrule.findByIdAndUpdate(req.params.id, {
+        short,
+        title,
+        start,
+        end,
+        content,
+      })
+
+      return res.send({ message: "Erfolgreich aktualisiert" })
+    } catch (err) {
+      return next(err)
     }
   })
 
   // Delete one
-  router.delete("/:id", roles.requireAdmin, async (req, res) => {
+  router.delete("/:id", roles.requireAdmin, async (req, res, next) => {
     try {
-      const response = await models.Rrule.destroy({
-        where: { id: req.params.id },
-      })
-      if (response === 0)
-        return res
-          .status(404)
-          .send({ error: "Rrule konnte nicht gefunden werden" })
-      return res.status(200).send({ message: "Rrule gelöscht" })
-    } catch (error) {
-      return res.status(400).send({ error: error.message })
+      await Rrule.findByIdAndDelete(req.params.id)
+      return res.send({ message: "Endgültig gelöscht" })
+    } catch (err) {
+      return next(err)
     }
   })
 

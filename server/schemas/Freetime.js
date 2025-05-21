@@ -4,8 +4,8 @@ const { Schema } = mongoose
 const freetimeSchema = new Schema({
   short: { type: String, uppercase: true, required: true },
   title: { type: String, required: true },
-  start: Date,
-  end: Date,
+  start: { type: Date, required: true },
+  end: { type: Date, required: true },
   employeeId: {
     type: Schema.Types.ObjectId,
     ref: "Employment",
