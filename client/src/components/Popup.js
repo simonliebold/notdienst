@@ -29,7 +29,7 @@ function Popup({
   )
 }
 
-export const DeletePopup = ({
+export const ConfirmDeletePopup = ({
   onConfirm,
   onClose,
   resource,
@@ -54,16 +54,7 @@ export const DeletePopup = ({
     <Popup
       {...props}
       onClose={onClose}
-      title={
-        <>
-          <Badge
-            resource={resource}
-            resourceName={resourceName}
-            className="me-2"
-          />
-          {resource?.title + " löschen"}
-        </>
-      }
+      title="Endgültig löschen bestätigen"
       buttons={
         <>
           <CancelButton onClick={onClose} />

@@ -5,7 +5,7 @@ import DetailedCard from "../../components/DetailedCard"
 
 import useResource, { useResourceDelete, useResourceUpdate } from "../../hooks/useResource"
 import Breadcrumb from "../../components/Breadcrumb"
-import Popup, { DeletePopup } from "../../components/Popup"
+import Popup, { ConfirmDeletePopup } from "../../components/Popup"
 
 function ResourcePage({ resourceName, setData, children }) {
   const navigate = useNavigate()
@@ -57,34 +57,34 @@ function ResourcePage({ resourceName, setData, children }) {
 
   // popup delete
   const destroy = useResourceDelete(resourceName + "s/" + id)
-  const [showDeletePopup, setShowDeletePopup] = useState(false)
+  const [showConfirmDeletePopup, setShowConfirmDeletePopup] = useState(false)
 
   const onDeleteRequest = useCallback(() => {
-    setShowDeletePopup(true)
-  }, [setShowDeletePopup])
+    setShowConfirmDeletePopup(true)
+  }, [setShowConfirmDeletePopup])
 
   const onDeleteConfirm = useCallback(async () => {
     await destroy()
-    setShowDeletePopup(false)
+    setShowConfirmDeletePopup(false)
     navigate("./../")
   }, [destroy])
 
   const onDeleteClose = useCallback(() => {
-    setShowDeletePopup(false)
-  }, [setShowDeletePopup])
+    setShowConfirmDeletePopup(false)
+  }, [setShowConfirmDeletePopup])
 
   return (
     <>
       <Breadcrumb resourceName={resourceName} resource={resource} />
-      <DeletePopup
-        show={showDeletePopup}
+      <ConfirmDeletePopup
+        show={showConfirmDeletePopup}
         onConfirm={onDeleteConfirm}
         onClose={onDeleteClose}
         resource={resource}
         resourceName={resourceName}
       >
         Bist du sicher, dass du das löschen möchtest?
-      </DeletePopup>
+      </ConfirmDeletePopup>
       <DetailedCard
         resourceName={resourceName}
         resource={resource}
