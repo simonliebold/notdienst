@@ -34,6 +34,14 @@ module.exports = () => {
       },
       {
         $lookup: {
+          from: "jobs",
+          localField: "shift.jobIds",
+          foreignField: "_id",
+          as: "jobs",
+        },
+      },
+      {
+        $lookup: {
           from: "schedules",
           localField: "scheduleId",
           foreignField: "_id",
@@ -49,12 +57,16 @@ module.exports = () => {
 
   // Create one
   router.post("/", roles.requireAdmin, async (req, res, next) => {
-    const { short, title, employmentId, jobIds } = req?.body || {}
+    const { short, title, start, end, shiftId, scheduleId, employeeIds } =
+      req?.body || {}
     const work = new Work({
       short,
       title,
-      employmentId,
-      jobIds,
+      start,
+      end,
+      shiftId,
+      scheduleId,
+      employeeIds,
     })
 
     await work.save().catch(next)
@@ -64,12 +76,16 @@ module.exports = () => {
 
   // Update one
   router.put("/:id", roles.requireAdmin, async (req, res, next) => {
-    const { short, title, employment, jobs } = req?.body || {}
+    const { short, title, start, end, shiftId, scheduleId, employeeIds } =
+      req?.body || {}
     await Work.findByIdAndUpdate(req.params.id, {
       short,
       title,
-      employment,
-      jobs,
+      start,
+      end,
+      shiftId,
+      scheduleId,
+      employeeIds,
     }).catch(next)
 
     return res.send({ message: "Erfolgreich aktualisiert" })

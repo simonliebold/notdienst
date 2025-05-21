@@ -168,10 +168,13 @@ export function WorksPage() {
   const [works] = useResource("works")
   return (
     <ResourcesPage resources={works} resourceName="work">
+      <EditableText label="short" />
+      <EditableText label="title" />
       <EditableText label="start" />
       <EditableText label="end" />
-      <hr />
       <EditableBadge resourceName="schedule" />
+      <EditableBadge resourceName="shift" />
+      <MultiBadge resourceName="employee" />
     </ResourcesPage>
   )
 }

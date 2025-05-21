@@ -248,9 +248,8 @@ export const ShiftPage = () => {
       <EditableText value={shift?.short} label="short" />
       <EditableText value={shift?.title} label="title" />
 
-      <MultiBadge items={shift?.rrules} resourceName="rrule" disabled />
-      <MultiBadge items={shift?.schedules} resourceName="schedule" />
       <MultiBadge items={shift?.jobs} resourceName="job" />
+      {/* <MultiTitleCard items={shift?.rrules} resourceName="rrule" disabled /> */}
     </ResourcePage>
   )
 }
@@ -264,17 +263,14 @@ export const WorkPage = () => {
       <EditableText value={work?.title} label="title" />
       <EditableText value={work?.start} label="start" />
       <EditableText value={work?.end} label="end" />
-
       <MultiBadge items={work?.employees} resourceName="employee" />
-      <EditableBadge resource={work?.shift} resourceName="shift" disabled />
-      <EditableBadge
-        resource={work?.schedule}
-        resourceName="schedule"
-        disabled
-      />
+      <EditableBadge resource={work?.shift} resourceName="shift" />
+      <EditableBadge resource={work?.schedule} resourceName="schedule" />
 
-      <span>{titles.mission}:</span>
-      <MultiTitleCard resources={work?.missions} resourceName="mission" />
+      <MultiBadge items={work?.jobs} resourceName="job" disabled />
+
+      {/* <span>{titles.mission}:</span>
+      <MultiTitleCard resources={work?.missions} resourceName="mission" /> */}
     </ResourcePage>
   )
 }

@@ -11,6 +11,7 @@ const loadTestData = async () => {
   await Job.deleteMany({})
   await Shift.deleteMany({})
   await Work.deleteMany({})
+  await Schedule.deleteMany({})
 
   const minijob = new Employment({
     short: "MINI",
@@ -67,7 +68,6 @@ const loadTestData = async () => {
     end: new Date().toISOString(),
     shiftId: a1Nacht._id,
     scheduleId: jan24._id,
-    // jobIds: undefined,
     employeeIds: [lbd._id],
   })
 

@@ -55,12 +55,12 @@ module.exports = () => {
 
   // Update one
   router.put("/:id", roles.requireAdmin, async (req, res, next) => {
-    const { short, title, employment, jobs } = req?.body || {}
+    const { short, title, employmentId, jobIds } = req?.body || {}
     await Employee.findByIdAndUpdate(req.params.id, {
       short,
       title,
-      employment,
-      jobs,
+      employmentId,
+      jobIds,
     }).catch(next)
 
     return res.send({ message: "Erfolgreich aktualisiert" })

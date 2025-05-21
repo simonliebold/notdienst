@@ -78,7 +78,7 @@ export const useResourceCreate = (resourceUrl) => {
         .post(process.env.REACT_APP_URL + resourceUrl, data)
         .catch(handleError)
       if (process.env.NODE_ENV === "development")
-        console.log("useResourceCreate:", resourceUrl, response)
+        console.log("useResourceCreate:", resourceUrl, data, response)
 
       // handleSuccess(response?.data?.message)
       return response?.data
