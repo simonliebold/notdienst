@@ -22,7 +22,7 @@ function Breadcrumb({ resourceName, resource }) {
         </BootstrapBreadcrumb.Item>
         <BootstrapBreadcrumb.Item
           linkAs={Link}
-          linkProps={{ to: "/" + resourceName + "s/" + resource?.id }}
+          linkProps={{ to: "/" + resourceName + "s/" + resource?._id }}
         >
           {resource && resource?.title}
         </BootstrapBreadcrumb.Item>

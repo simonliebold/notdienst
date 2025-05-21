@@ -38,8 +38,13 @@ function authenticateToken(req, res, next) {
   })
 }
 
+// Error handling
+const handleError = (err, req, res, next) => {
+  return res.status(400).send({ error: err.message })
+}
+
 const routes = require("./routes.js")(models, db.sequelize)
-app.use("/", authenticateToken, routes)
+app.use("/", authenticateToken, routes, handleError)
 
 const port = process.env.PORT || 3000
 app.listen(port, async () => {
@@ -61,7 +66,6 @@ app.listen(port, async () => {
     await Employment.deleteMany({})
     await Job.deleteMany({})
 
-    const employee = new Employee({ short: "lbd", title: "Simon Liebold" })
     const employment = new Employment({
       short: "MINI",
       title: "Minijob",
@@ -69,13 +73,16 @@ app.listen(port, async () => {
       minHours: 20,
     })
     const job = new Job({ short: "ÄNoD", title: "Fahrer KVWL" })
+    const employee = new Employee({
+      short: "lbd",
+      title: "Simon Liebold",
+      employment: employment._id,
+      jobs: [job._id],
+    })
 
-    employee.employmentId = employment._id
-    employee.jobIds = [job._id]
-
-    await employee.save()
     await job.save()
     await employment.save()
+    await employee.save()
   } catch (error) {
     console.error("Unable to connect to the database:", error)
   }

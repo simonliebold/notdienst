@@ -14,7 +14,7 @@ const useResource = (resourceUrl) => {
       console.log("useResource", resourceUrl + ":", response?.data)
 
     setData(response?.data)
-  }, [handleError, resourceUrl])
+  }, [resourceUrl])
 
   useEffect(() => {
     update()
@@ -95,7 +95,7 @@ export const useGenerateWorks = () => {
 
   const generate = useCallback(
     async (scheduleId) => {
-      if(!scheduleId) return 
+      if (!scheduleId) return
       const response = await axios
         .post(process.env.REACT_APP_URL + "schedules/" + scheduleId + "/create")
         .catch(handleError)
@@ -117,9 +117,11 @@ export const useAllocateWorks = () => {
 
   const allocate = useCallback(
     async (scheduleId) => {
-      if(!scheduleId) return 
+      if (!scheduleId) return
       const response = await axios
-        .post(process.env.REACT_APP_URL + "schedules/" + scheduleId + "/allocate")
+        .post(
+          process.env.REACT_APP_URL + "schedules/" + scheduleId + "/allocate"
+        )
         .catch(handleError)
       if (process.env.NODE_ENV === "development")
         console.log("useAllocateWorks:", response?.data)

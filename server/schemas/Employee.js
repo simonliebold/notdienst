@@ -9,9 +9,9 @@ const freetimeSchema = new Schema({
 const employeeSchema = new Schema({
   short: { type: String, uppercase: true, required: true },
   title: { type: String, required: true },
-  employmentId: { type: Schema.Types.ObjectId },
+  employment: { type: Schema.Types.ObjectId, ref: "Employment" },
   freetimes: [freetimeSchema],
-//   jobIds: [{ type: Schema.Types.ObjectId, ref: "Job", required: true }],
+  //   jobIds: [{ type: Schema.Types.ObjectId, ref: "Job", required: true }],
 })
 
 module.exports = model("Employee", employeeSchema)

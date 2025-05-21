@@ -69,7 +69,7 @@ export const EditableBadge = ({
           )}
           defaultValue={{
             label: resource?.short,
-            value: resource?.id,
+            value: resource?._id,
             icon: icons[resourceName],
           }}
           onChange={(item) => onInput(resourceName + "Id", item.value)}
