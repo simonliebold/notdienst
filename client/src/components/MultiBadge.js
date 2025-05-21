@@ -5,25 +5,47 @@ import Container from "react-bootstrap/Container"
 import { useParams } from "react-router-dom"
 import Select from "react-select"
 import useResource from "../hooks/useResource"
+import { icons } from "../variables"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 
 function MultiBadge({ items, resourceName }) {
   const { action } = useParams()
   const options = useResource(resourceName + "s")
 
-  if (action === "edit")
+  if (action === "edit") {
+    const customStyles = {
+      option: (provided, state) => ({
+        ...provided,
+        display: "flex",
+        alignItems: "center",
+      }),
+    }
+
+    const getOptionLabel = (option) => (
+      <div>
+        <FontAwesomeIcon icon={option.icon} />
+        <span style={{ marginLeft: "8px" }}>{option.label}</span>
+      </div>
+    )
+
     return (
       <Select
         isMulti
+        styles={customStyles}
+        getOptionLabel={getOptionLabel}
         options={options?.map((option) => ({
+          icon: icons[resourceName],
           label: option.short,
           value: option.id,
         }))}
         defaultValue={items?.map((item) => ({
+          icon: icons[resourceName],
           label: item.short,
           value: item.id,
         }))}
       />
     )
+  }
   if (items?.length === 0)
     return (
       <div>
