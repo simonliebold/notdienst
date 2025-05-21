@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useEffect, useState } from "react"
 import { Link, useParams } from "react-router-dom"
 
 import Select from "react-select"
@@ -30,7 +30,16 @@ function Badge({ resource, resourceName, disabled, className }) {
 
 export const EditableBadge = ({ resource, resourceName, onInput }) => {
   const { action } = useParams()
-  const options = useResource(resourceName + "s")
+
+  const [options, setOptions] = useState(null)
+  const getOptions = useResource(resourceName + "s")
+
+  useEffect(() => {
+    const refresh = async () => {
+      setOptions(await getOptions())
+    }
+    refresh()
+  }, [resourceName])
 
   if (action === "edit")
     return (

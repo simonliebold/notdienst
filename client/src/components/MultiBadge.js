@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useEffect, useState } from "react"
 import Badge from "./Badge"
 import Alert from "react-bootstrap/Alert"
 import Container from "react-bootstrap/Container"
@@ -10,7 +10,16 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 
 function MultiBadge({ items, resourceName, onInput }) {
   const { action } = useParams()
-  const options = useResource(resourceName + "s")
+
+  const [options, setOptions] = useState(null)
+  const getOptions = useResource(resourceName + "s")
+
+  useEffect(() => {
+    const refresh = async () => {
+      setOptions(await getOptions())
+    }
+    refresh()
+  }, [resourceName])
 
   const onChange = (items) => {
     if (onInput)
