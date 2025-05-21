@@ -176,6 +176,40 @@ content-type: application/json
 <pre>DELETE /shifts/:id</pre>
 
 ## Works
+### Get all works
+<pre>GET /works</pre>
+
+### Get one work
+<pre>GET /works/:id</pre>
+
+### Create one work
+<pre>
+POST /works
+
+content-type: application/json
+{
+    start: Timestamp,
+    end: Timestamp,
+    scheduleId: int,
+    eventId: int
+}
+</pre>
+
+### Update one work
+<pre>
+PUT /works/:id
+
+content-type: application/json
+{
+    start?: Timestamp,
+    end?: Timestamp,
+    scheduleId?: int,
+    eventId?: int
+}
+</pre>
+
+### Delete one work
+<pre>DELETE /works/:id</pre>
 
 ## Events
 ### Get all events
