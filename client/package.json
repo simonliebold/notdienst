@@ -13,6 +13,7 @@
     "react": "^18.2.0",
     "react-auth-code-input": "^3.2.1",
     "react-bootstrap": "^2.9.1",
+    "react-day-picker": "^8.9.1",
     "react-dom": "^18.2.0",
     "react-qr-code": "^2.0.12",
     "react-router-dom": "^6.18.0",

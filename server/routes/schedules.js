@@ -379,11 +379,7 @@ module.exports = (models, sequelize) => {
     orderWorks,
     allocateWorks,
     async (req, res) => {
-      return res.send({
-        schedule: req.schedule,
-        employees: req.employees,
-        works: req.works,
-      })
+      return res.send({message: "Dienste erfolgreich verteilt"})
     }
   )
 

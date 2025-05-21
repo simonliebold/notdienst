@@ -2,6 +2,7 @@ import React from "react"
 import ReactDOM from "react-dom/client"
 import "./style.css"
 import "./style.scss"
+import 'react-day-picker/dist/style.css';
 import App from "./App"
 import { BrowserRouter } from "react-router-dom"
 

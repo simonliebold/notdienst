@@ -5,6 +5,8 @@ import { useErrorMessage, useSuccessMessage } from "../contexts/AlertContext"
 
 import Select from "react-select"
 
+import { DayPicker } from "react-day-picker"
+
 import Col from "react-bootstrap/Col"
 import Card from "react-bootstrap/Card"
 import Badge from "react-bootstrap/Badge"
@@ -15,8 +17,10 @@ import Form from "react-bootstrap/Form"
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import {
+  faBriefcase,
   faCalendar,
   faCalendarDays,
+  faNetworkWired,
   faPlus,
   faUser,
 } from "@fortawesome/free-solid-svg-icons"
@@ -43,32 +47,96 @@ const ScheduleModal = () => {
     return (
       <Col>
         <Card>
-            <Card.Header className="fs-6 m-0">
-
-              <Badge className="me-2">
-                <FontAwesomeIcon icon={faCalendarDays} className="me-1" />
-                {work.id}
-              </Badge>
-              {work.event.title}
-            </Card.Header>
+          <Card.Header className="fs-6 m-0">
+            <Badge className="me-2">
+              <FontAwesomeIcon icon={faCalendarDays} className="me-1" />
+              {work.id}
+            </Badge>
+            {work.event.title}
+          </Card.Header>
           <Card.Body>
             Mitarbeiter:
-              {work?.employees &&
-                work.employees.map((employee) => {
-                  return (
-                    <Badge className="mx-2">
-                      <FontAwesomeIcon icon={faUser} className="me-1" />
-                      {employee.initials}
-                    </Badge>
-                  )
-                })}
-
+            {work?.employees &&
+              work.employees.map((employee) => {
+                return (
+                  <Badge className="mx-2">
+                    <FontAwesomeIcon icon={faUser} className="me-1" />
+                    {employee.initials}
+                  </Badge>
+                )
+              })}
           </Card.Body>
-          <Card.Footer>
-            {dateString}
-          </Card.Footer>
+          <Card.Footer>{dateString}</Card.Footer>
         </Card>
       </Col>
+    )
+  }
+
+  const WorkDatePicker = ({ schedule, works }) => {
+    const [show, setShow] = useState(false)
+    const [date, setDate] = useState(undefined)
+    const [dateWorks, setDateWorks] = useState([])
+
+    const scheduleStart = new Date(schedule?.start)
+    const scheduleEnd = new Date(schedule?.end)
+    const dateString = date?.toLocaleDateString()
+
+    useEffect(() => {
+      if (date) setShow(true)
+      setDateWorks(
+        works.filter((work) => {
+          return (
+            new Date(work.start).toLocaleDateString() ===
+            date?.toLocaleDateString()
+          )
+        })
+      )
+    }, [date])
+
+    useEffect(() => {
+      if (!show) setDate(undefined)
+    }, [show])
+
+    const DateWorksModal = () => {
+      return (
+        <Modal
+          show={show}
+          onHide={(e) => setShow(false)}
+          backdrop="static"
+          keyboard={false}
+          fullscreen={"md-down"}
+        >
+          <Modal.Header closeButton>
+            <Modal.Title>
+              <Badge className="me-2">
+                <FontAwesomeIcon icon={faCalendar} className="me-2" />
+                {schedule?.id}
+              </Badge>
+              <strong> {dateString} </strong>
+              {schedule?.title}
+            </Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            {dateWorks.length > 0 &&
+              dateWorks.map((work) => (
+                <WorkCard key={"work-" + work.id} work={work} />
+              ))}
+          </Modal.Body>
+        </Modal>
+      )
+    }
+
+    return (
+      <>
+        <DayPicker
+          mode="single"
+          selected={date}
+          fromDate={scheduleStart}
+          toDate={scheduleEnd}
+          onSelect={setDate}
+        />
+        <DateWorksModal />
+      </>
     )
   }
 
@@ -78,7 +146,7 @@ const ScheduleModal = () => {
   const handleSuccess = useSuccessMessage()
   const navigate = useNavigate()
 
-  const [schedule, setSchedule] = useState(null)
+  const [schedule, setSchedule] = useState([])
   const [works, setWorks] = useState([])
 
   const title = useRef(null)
@@ -86,14 +154,9 @@ const ScheduleModal = () => {
   const end = useRef(null)
   const deadline = useRef(null)
 
-  const fetchEmployees = useCallback(async () => {
-    const res = await axios
-      .get(process.env.REACT_APP_URL + "employees")
-      .catch(handleError)
-  }, [])
 
   const fetchSchedule = useCallback(async () => {
-    setSchedule(null)
+    setSchedule([])
     setWorks([])
     const res = await axios
       .get(process.env.REACT_APP_URL + "schedules/" + scheduleId)
@@ -132,7 +195,10 @@ const ScheduleModal = () => {
       .post(process.env.REACT_APP_URL + "schedules/" + scheduleId + "/create")
       .catch(handleError)
 
-    if (res?.data?.message) handleSuccess(res.data.message)
+    if (res?.data?.message) {
+      handleSuccess(res.data.message)
+      fetchSchedule()
+    }
 
     console.log(res)
   }, [handleError, handleSuccess, scheduleId])
@@ -142,13 +208,16 @@ const ScheduleModal = () => {
       .post(process.env.REACT_APP_URL + "schedules/" + scheduleId + "/allocate")
       .catch(handleError)
 
-    console.log(res?.data)
+    if(res?.data) {
+      handleSuccess(res.data.message)
+      fetchSchedule()
+    }
+
   })
 
   useEffect(() => {
     if (scheduleId) {
       fetchSchedule()
-      fetchEmployees()
     } else setSchedule(null)
   }, [scheduleId, fetchSchedule])
 
@@ -189,6 +258,12 @@ const ScheduleModal = () => {
             <Form.Control required type="datetime-local" ref={deadline} />
           </Col>
           <Col>
+            <Button type="submit" onClick={handleFormSubmit}>
+              Speichern
+            </Button>
+          </Col>
+          <hr />
+          <Col className="mt-0">
             <h2 className="fs-6">Schichten</h2>
             <MultiSelect
               valueType="shifts"
@@ -206,10 +281,9 @@ const ScheduleModal = () => {
               defaultValues={schedule?.employees}
             />
           </Col>
-
-          <Col>
+          <hr />
+          <Col className="mt-0">
             <h2 className="fs-6">Dienste</h2>
-            <Button onClick={allocateWorks}>Dienste verteilen</Button>
             {works.length === 0 && (
               <Button
                 onClick={generateWorks}
@@ -220,18 +294,14 @@ const ScheduleModal = () => {
                 Dienste generieren
               </Button>
             )}
-            {works.length > 0 &&
-              works.map((work) => {
-                return <WorkCard key={"work-" + work.id} work={work} />
-              })}
+            {works.length !== 0 && (
+              <WorkDatePicker schedule={schedule} works={works} />
+            )}
+            <Button onClick={allocateWorks}>Dienste verteilen</Button>
           </Col>
         </Row>
       </Modal.Body>
-      <Modal.Footer>
-        <Button type="submit" onClick={handleFormSubmit}>
-          Speichern
-        </Button>
-      </Modal.Footer>
+      <Modal.Footer></Modal.Footer>
     </Modal>
   )
 }
