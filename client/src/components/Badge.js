@@ -1,27 +1,25 @@
 import React from "react"
-import BootstrapBadge from "react-bootstrap/Badge"
-import Placeholder from "react-bootstrap/Placeholder"
-import { icons, titles } from "./../variables"
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { Link, useParams } from "react-router-dom"
-import { faSpinner, faX } from "@fortawesome/free-solid-svg-icons"
-import FloatingLabel from "react-bootstrap/FloatingLabel"
-import Form from "react-bootstrap/Form"
+
 import Select from "react-select"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import BootstrapBadge from "react-bootstrap/Badge"
+
 import useResource from "../hooks/useResource"
-// import { icons } from "../variables"
+import { icons } from "./../variables"
 
 function Badge({ resource, resourceName, disabled, className }) {
   const { id, short } = resource || {}
+  const { action } = useParams()
 
   const icon = icons[resourceName] || icons.default
 
   return (
     <BootstrapBadge
-      as={disabled ? BootstrapBadge : Link}
+      as={disabled || action === "edit" ? BootstrapBadge : Link}
       to={"/" + resourceName + "/" + id}
       className={className + " text-decoration-none w-auto"}
-      bg={disabled ? "secondary" : "primary"}
+      bg={disabled || action === "edit" ? "secondary" : "primary"}
     >
       {resource && <FontAwesomeIcon icon={icon} className="me-2" />}
       {short?.toString().toUpperCase()}

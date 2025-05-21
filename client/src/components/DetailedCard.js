@@ -10,7 +10,7 @@ import { Link, useNavigate, useParams } from "react-router-dom"
 import CloseButton from "react-bootstrap/CloseButton"
 
 const DetailedCard = ({ resource, resourceName, children, className }) => {
-  const { id, short, title } = resource || {}
+  const { title } = resource || {}
   const { action } = useParams()
   const navigate = useNavigate()
 
@@ -93,10 +93,10 @@ export const WorkDetailedCard = ({ work }) => {
       <MultiBadge items={employees} resourceName="employee" />
       <hr />
       Dienstplan: <br />
-      <Badge resource={schedule} resourceName="schedule" />
+      <EditableBadge resource={schedule} resourceName="schedule" />
       <hr />
       Schicht: <br />
-      <Badge resource={rrule?.shift} resourceName="shift" />
+      <EditableBadge resource={rrule?.shift} resourceName="shift" />
       <hr />
       Rrule: <br />
       <EditableBadge resource={rrule} resourceName="rrule" />
