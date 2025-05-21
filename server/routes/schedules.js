@@ -40,6 +40,7 @@ module.exports = (models, sequelize) => {
   router.post("/", roles.requireAdmin, async (req, res) => {
     try {
       const schedule = await models.Schedule.create({
+        short: req.body.short,
         title: req.body.title,
         start: req.body.start,
         end: req.body.end,

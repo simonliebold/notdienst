@@ -69,7 +69,7 @@ const User = sequelize.define(
     password: {
       type: DataTypes.STRING,
       set(value) {
-        if (!value.match(/^(?=.*[A-Za-z])(?=.*\d).{8,}$/))
+        if (!value.match(/^(?=.*[A-Za-z])(?=.*\d).{8,}$/) && process.env.NODE_ENV === "production")
           throw new Error(
             "Das Passwort muss mindestens 8 Zeichen lang sein und einen Buchstaben und eine Zahl enthalten"
           )
@@ -113,7 +113,7 @@ app.listen(PORT, async () => {
   await sequelize.models.users.create({
     id: 1,
     email: "asb",
-    password: "arbeitersamariterbund1",
+    password: "asb",
     role: 10
   })
 })
