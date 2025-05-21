@@ -16,7 +16,12 @@ function TitleCard({ resource, resourceName, className }) {
       </Card>
     )
   return (
-    <Card className={className}>
+    <Card
+      className={"text-decoration-none "+className}
+      as={Link}
+      to={"/" + resourceName + "/" + resource?.id}
+      href={"/" + resourceName + "/" + resource?.id}
+    >
       <Card.Header className="text-decoration-none">
         <Badge
           className="me-2"

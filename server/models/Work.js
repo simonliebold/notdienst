@@ -20,7 +20,7 @@ module.exports = (sequelize) => {
       title: {
         type: Sequelize.VIRTUAL,
         get() {
-          return "Dienst: " + new Date(this.start).toLocaleString("de-DE")
+          return "Dienst am " + new Date(this.start).toLocaleString("de-DE")
         },
       },
       start: {

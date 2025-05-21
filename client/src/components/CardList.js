@@ -5,7 +5,7 @@ import TitleCard from "./TitleCard"
 
 function CardList({ children, className }) {
   return (
-    <Row xs={1} lg={2} xl={3} xxl={4} className={"g-3 " + className}>
+    <Row xs={1} lg={2} xl={3} xxl={3} className={"g-3 " + className}>
       {children?.map((child, i) => (
         <Col key={"cardlist-col-" + i}>{child}</Col>
       ))}
