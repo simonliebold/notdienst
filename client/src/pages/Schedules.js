@@ -135,7 +135,7 @@ const ScheduleModal = () => {
             />
           </Col>
           <Col>
-            <h2 className="fs-6">Schichten</h2>
+            <h2 className="fs-6">Angestellte</h2>
             <MultiSelect
               valueType="employees"
               objectType="schedules"
@@ -143,24 +143,6 @@ const ScheduleModal = () => {
               defaultValues={schedule?.employees}
             />
           </Col>
-          {/* <Col>
-            {schedule?.employees && (
-              <>
-                <h2 className="fs-6">Mitarbeiter</h2>
-                <Select
-                  defaultValue={schedule.employees.map((employee) => {
-                    return { value: employee.id, label: employee.initials }
-                  })}
-                  isMulti
-                  name="employees"
-                  options={allEmployees}
-                  className="basic-multi-select"
-                  classNamePrefix="select"
-                  ref={employees}
-                />
-              </>
-            )}
-          </Col> */}
         </Row>
       </Modal.Body>
       <Modal.Footer>

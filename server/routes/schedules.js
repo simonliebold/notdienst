@@ -87,63 +87,29 @@ module.exports = (models, sequelize) => {
     }
   })
 
-  // Get all employees from schedule
-  // TODO: return employee table
-  router.get("/:id/employee", roles.requireAdmin, async (req, res) => {
-    const response = await models.ScheduleEmployee.findAll({
-      where: { scheduleId: req.params.id },
-    })
-    return res.send({ response: response })
-  })
 
-  // Add Employees to Schedule
-  router.post("/:id/employee", roles.requireAdmin, async (req, res) => {
+  // update schedule employees
+  router.put("/:id/employees", roles.requireAdmin, async (req, res) => {
     try {
-      const response = await models.ScheduleEmployee.bulkCreate(
-        req.body.employeeIds.map((employeeId) => ({
+      await models.ScheduleEmployee.destroy({
+        where: { scheduleId: req.params.id },
+      })
+
+      const newEmployees =
+        req.body?.values?.map((employeeId) => ({
           scheduleId: req.params.id,
           employeeId: employeeId,
-        }))
-      )
-      return res.send({ response: response })
+        })) || []
+
+      await models.ScheduleEmployee.bulkCreate(newEmployees)
+
+      return res.send({ message: "Erfolgreich aktualisiert" })
+
     } catch (error) {
-      return res.status(400).send({ error: error })
+      return res.status(400).send({ error: error.message })
     }
   })
 
-  // Delete Employees from Schedule
-  router.delete("/:id/employee", roles.requireAdmin, async (req, res) => {
-    try {
-      const employeeIds = req.body.employeeIds.map((val) => {
-        return { employeeId: val }
-      })
-      const response = await models.ScheduleEmployee.destroy({
-        where: {
-          [sequelize.Op.and]: [
-            { scheduleId: req.params.id },
-            {
-              [sequelize.Op.or]: [...employeeIds],
-            },
-          ],
-        },
-      })
-      response > 0
-        ? res.status(200).send({ message: "Deleted successfully" })
-        : res.status(404).send({ message: "Not found" })
-    } catch (error) {
-      return res.status(400).send({ error: error })
-    }
-  })
-
-  // Get all shifts from schedule
-  // TODO: return shift table
-  router.get("/:id/shift", roles.requireAdmin, async (req, res) => {
-    const response = await models.ScheduleShift.findAll({
-      where: { scheduleId: req.params.id }
-    })
-    if (response.length === 0) return res.sendStatus(404)
-    return res.send({ response: response })
-  })
 
   // update schedule shifts
   router.put("/:id/shifts", roles.requireAdmin, async (req, res) => {
@@ -164,45 +130,6 @@ module.exports = (models, sequelize) => {
 
     } catch (error) {
       return res.status(400).send({ error: error.message })
-    }
-  })
-  // Add Shifts to Schedule
-  router.post("/:id/shift", roles.requireAdmin, async (req, res) => {
-    try {
-      const response = await models.ScheduleShift.bulkCreate(
-        req.body.shiftIds.map((shiftId) => ({
-          scheduleId: req.params.id,
-          shiftId: shiftId,
-        }))
-      )
-      if (response.length === 0) return res.sendStatus(404)
-      return res.send({ response: response })
-    } catch (error) {
-      return res.status(400).send({ error: error })
-    }
-  })
-
-  // Delete Shifts from Schedule
-  router.delete("/:id/shift", roles.requireAdmin, async (req, res) => {
-    try {
-      const shiftIds = req.body.shiftIds.map((val) => {
-        return { shiftId: val }
-      })
-      const response = await models.ScheduleShift.destroy({
-        where: {
-          [sequelize.Op.and]: [
-            { scheduleId: req.params.id },
-            {
-              [sequelize.Op.or]: [...shiftIds],
-            },
-          ],
-        },
-      })
-      if (response === undefined)
-        return res.status(404).send({ message: "Not found" })
-      return res.status(200).send({ message: "Deleted successfully" })
-    } catch (error) {
-      res.status(400).send({ error: error })
     }
   })
 

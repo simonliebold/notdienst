@@ -23,7 +23,8 @@ function MultiSelect({ valueType, objectType, objectId, defaultValues }) {
 
     setOptions(
       res?.data?.values.map((value) => {
-        return { value: value.id, label: value.title }
+        const data = Object.values(value)
+        return { value: data[0], label: data[1] }
       })
     )
   }, [handleError, valueType])
@@ -48,7 +49,8 @@ function MultiSelect({ valueType, objectType, objectId, defaultValues }) {
 
   useEffect(() => {
     const newDefaults = defaultValues?.map((value) => {
-      return { value: value.id, label: value.title }
+      const data = Object.values(value)
+      return { value: data[0], label: data[1] }
     })
     setDefaults(newDefaults)
     setValues(newDefaults)
@@ -69,7 +71,8 @@ function MultiSelect({ valueType, objectType, objectId, defaultValues }) {
     return sortedValues === sortedDefault
   }, [values, defaults])
 
-  if (!defaults || !values || !options) return <Select isDisabled isLoading placeholder="Aktualisiert..." />
+  if (!defaults || !values || !options)
+    return <Select isDisabled isLoading placeholder="Aktualisiert..." />
 
   return (
     <div className="d-flex align-items-end">
