@@ -5,8 +5,20 @@ module.exports = (models) => {
 
   // Get all
   router.get("/", roles.requireAdmin, async (req, res) => {
-    const employees = await models.Employee.findAll()
-    return res.send({ values: employees })
+    const employees = await models.Employee.findAll({
+      include: [
+        models.Employment,
+        models.Job,
+        models.Schedule,
+        {
+          model: models.Work,
+          where: { end: { [Op.gt]: new Date() } },
+          required: false,
+          include: [models.Schedule],
+        },
+      ],
+    })
+    return res.send(employees)
   })
 
   // Get self

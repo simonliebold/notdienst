@@ -14,6 +14,7 @@ import AlertBox from "./components/AlertBox"
 import Logout from "./pages/Logout"
 import Elements from "./pages/admin/Elements"
 import Works from "./pages/admin/Works"
+import Employees from "./pages/admin/Employees"
 
 function App() {
   const home = (
@@ -40,6 +41,12 @@ function App() {
     </Prot>
   )
 
+  const employees = (
+    <Prot>
+      <Employees />
+    </Prot>
+  )
+
   return (
     <AuthProvider>
       <AlertProvider>
@@ -56,6 +63,7 @@ function App() {
               <Route path="elements" element={elements} />
               <Route path="logout" element={logout} />
               <Route path="works" element={works} />
+              <Route path="employees" element={employees} />
             </Routes>
           </div>
         </Container>

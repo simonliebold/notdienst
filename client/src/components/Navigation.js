@@ -60,6 +60,11 @@ function Navigation() {
       icon: icons.work,
       path: "/works",
     },
+    {
+      name: "Mitarbeiter",
+      icon: icons.employee,
+      path: "/employees",
+    },
   ]
 
   const logout = { name: "Logout", path: "/logout", icon: faRightFromBracket }
