@@ -35,12 +35,14 @@ function authenticateToken(req, res, next) {
 
 // Error handling
 const handleError = (err, req, res, next) => {
-  if (err) {
-    console.log(err)
-    return res.status(400).send({ error: err.message })
-  } else {
-    return res.send({ error: "No content" })
+  console.error("Error:", err.stack || err) 
+  if (res.headersSent) {
+    return next(err)
   }
+  if (err.status) {
+    return res.status(err.status).send({ error: err.message })
+  }
+  return res.status(500).send({ error: "Internal Server Error" })
 }
 
 const routes = require("./routes.js")

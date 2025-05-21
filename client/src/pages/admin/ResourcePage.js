@@ -433,6 +433,14 @@ export const SchedulePage = () => {
           onInput={onInput}
           edit={edit}
         />
+        <AsyncAllocateWorksButton
+          schedule={schedule}
+          updateResource={refreshResource}
+          className="me-3"
+          onInput={onInput}
+          linear={false}
+          edit={edit}
+        />
         <AsyncCreateReportButton
           schedule={schedule}
           updateResource={refreshResource}

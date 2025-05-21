@@ -66,8 +66,12 @@ def allocate(works, employees):
 
     for employee in employees:
         emp_id = employee['short']
-        emp_works = works  # Filter this if possible
-
+        emp_works = [
+            work for work in works
+            if work['_id'] in [
+                work_id for work_id, emp in works_employees.keys() if emp == emp_id
+            ]
+        ]
         # 1. Keine überlappenden Schichten
         for id1, id2 in overlapping_pairs:
             problem += (
@@ -80,6 +84,13 @@ def allocate(works, employees):
             ((work_times[work['_id']][1] - work_times[work['_id']][0]).total_seconds() / 3600)
             for work in emp_works
         ) <= employee['maxHours'], f"Max_Hours_Limit_{emp_id}"
+        
+        problem += lpSum(
+            works_employees[(work['_id'], emp_id)] *
+            ((work_times[work['_id']][1] - work_times[work['_id']][0]).total_seconds() / 3600)
+            for work in emp_works
+        ) >= employee['minHours'], f"Min_Hours_Limit_{emp_id}"
+        
         # 3. Freizeit 
         freetime_periods = [
             (
@@ -119,15 +130,12 @@ def allocate(works, employees):
     return allocated_works
 
 if __name__ == "__main__":
-    # Read input from stdin
     input_data = sys.stdin.read()
     data = json.loads(input_data)
 
-    # Process the data
     works, employees = get_data(data)
     
     allocated_works = allocate(works, employees)
 
     print("START_JSON_OUTPUT")
-    # Output the result as JSON
     print(json.dumps(allocated_works))

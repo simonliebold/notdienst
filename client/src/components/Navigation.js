@@ -91,26 +91,26 @@ function Navigation() {
       icon: icons.employee,
       path: "/employees",
     },
-    {
-      name: titles.job,
-      icon: icons.job,
-      path: "/jobs",
-    },
+    // {
+    //   name: titles.job,
+    //   icon: icons.job,
+    //   path: "/jobs",
+    // },
     {
       name: titles.employment,
       icon: icons.employment,
       path: "/employments",
     },
-    {
-      name: titles.mission,
-      icon: icons.mission,
-      path: "/missions",
-    },
-    {
-      name: titles.exchange,
-      icon: icons.exchange,
-      path: "/exchanges",
-    },
+    // {
+    //   name: titles.mission,
+    //   icon: icons.mission,
+    //   path: "/missions",
+    // },
+    // {
+    //   name: titles.exchange,
+    //   icon: icons.exchange,
+    //   path: "/exchanges",
+    // },
   ]
 
   const logout = { name: "Logout", path: "/logout", icon: faRightFromBracket }

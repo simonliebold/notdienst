@@ -6,7 +6,11 @@ import Badge from "./Badge"
 
 const ReportPopup = ({ show, close, report }) => {
   const generateLatexTable = (report) => {
-    if (!report || report.length === 0) {
+    if (
+      !report ||
+      !report["employeesReport"] ||
+      report["employeesReport"].length === 0
+    ) {
       return "Kein Bericht verfügbar."
     }
 
@@ -18,10 +22,17 @@ const ReportPopup = ({ show, close, report }) => {
   Mitarbeiter & Min Std. & Stunden & Max Std. & Min Pause & Frei erfüllt & Keine Überlappungen \\\\ \\hline
   `
 
-    report.forEach((entry) => {
+    report.employeesReport.forEach((entry) => {
       const totalWork = entry.totalWorkHours.toFixed(2)
       const minHours = entry.employee?.minHours
       const maxHours = entry.employee?.maxHours
+
+      const minHourColor =
+        totalWork >= minHours ? "\\cellcolor{dkgreen}" : "\\cellcolor{orange}"
+
+      const maxHourColor =
+        totalWork <= maxHours ? "\\cellcolor{dkgreen}" : "\\cellcolor{orange}"
+
       const hourColor =
         totalWork <= maxHours && totalWork >= minHours
           ? "\\cellcolor{dkgreen}"
@@ -42,18 +53,45 @@ const ReportPopup = ({ show, close, report }) => {
 
       latex += `
   ${entry.employee?.short || "N/A"} & 
-  ${entry.employee?.minHours || "N/A"} & 
+  ${minHourColor + (entry.employee?.minHours || "N/A")} & 
   ${hourColor + entry.totalWorkHours.toFixed(2)} & 
-  ${entry.employee?.maxHours || "N/A"} & 
-  ${breakColor + (entry.smallestBreak !== null ? entry.smallestBreak.toFixed(2) : "N/A")} & 
+  ${maxHourColor + (entry.employee?.maxHours || "N/A")} & 
+  ${
+    breakColor +
+    (entry.smallestBreak !== null ? entry.smallestBreak.toFixed(2) : "N/A")
+  } & 
   ${freetimeColor + (!entry.freetimeOverlaps ? "Ja" : "Nein")} & 
   ${overlapColor + (!entry.hasOverlappingShifts ? "Ja" : "Nein")} \\\\ \\hline
   `
     })
 
+    // Add the sum row
+    const totalMinHoursColor =
+      report.totalMinHours <= report.totalMaxHours
+        ? "\\cellcolor{dkgreen}"
+        : "\\cellcolor{orange}"
+
+    const totalWorkHoursColor =
+      report.totalMaxHours >= report.totalWorkHoursForMonth &&
+      report.totalMinHours <= report.totalMaxHours
+        ? "\\cellcolor{dkgreen}"
+        : "\\cellcolor{orange}"
+
+    const totalMaxHoursColor =
+      report.totalMaxHours >= report.totalWorkHoursForMonth
+        ? "\\cellcolor{dkgreen}"
+        : "\\cellcolor{orange}"
+
+    latex += `
+  \\textbf{Summe:} & 
+  ${totalMinHoursColor + report.totalMinHours} & 
+  ${totalWorkHoursColor + report.totalWorkHoursForMonth} & 
+  ${totalMaxHoursColor + report.totalMaxHours} \\\\ \\hline
+  `
+
     latex += `
   \\end{tabular}
-  \\caption{Berichtstabelle}
+  \\caption{Generierungsergebnis für ${report.totalWorkHoursForMonth} Dienststunden bei ${report.totalMinHours} bis ${report.totalMaxHours} verfügbaren Mitarbeiterstunden}
   \\end{table}
   `
 
@@ -65,7 +103,9 @@ const ReportPopup = ({ show, close, report }) => {
         <Modal.Title>Bericht</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        {report && report.length > 0 ? (
+        {report &&
+        report["employeesReport"] &&
+        report["employeesReport"].length > 0 ? (
           <>
             <textarea value={generateLatexTable(report)}></textarea>
 
@@ -82,7 +122,7 @@ const ReportPopup = ({ show, close, report }) => {
                 </tr>
               </thead>
               <tbody>
-                {report.map((entry, index) => (
+                {report["employeesReport"].map((entry, index) => (
                   <tr key={index}>
                     <td>
                       <Badge
@@ -90,7 +130,15 @@ const ReportPopup = ({ show, close, report }) => {
                         resourceName="employee"
                       />
                     </td>
-                    <td>{entry.employee?.minHours}</td>
+                    <td
+                      className={
+                        entry.employee?.minHours <= entry.totalWorkHours
+                          ? "table-success"
+                          : "table-danger"
+                      }
+                    >
+                      {entry.employee?.minHours}
+                    </td>
                     <td
                       className={
                         entry.withinHours ? "table-success" : "table-danger"
@@ -98,7 +146,15 @@ const ReportPopup = ({ show, close, report }) => {
                     >
                       {entry.totalWorkHours.toFixed(2)}
                     </td>
-                    <td>{entry.employee?.maxHours}</td>
+                    <td
+                      className={
+                        entry.employee?.maxHours >= entry.totalWorkHours
+                          ? "table-success"
+                          : "table-danger"
+                      }
+                    >
+                      {entry.employee?.maxHours}
+                    </td>
                     <td
                       className={
                         entry.has12HourBreaks ? "table-success" : "table-danger"
@@ -128,8 +184,47 @@ const ReportPopup = ({ show, close, report }) => {
                     </td>
                   </tr>
                 ))}
+                <tr>
+                  <td colSpan="1" className="text-end">
+                    <strong>Summe:</strong>
+                  </td>
+                  <td
+                    className={
+                      report.totalMinHours <= report.totalMaxHours
+                        ? "table-success"
+                        : "table-danger"
+                    }
+                  >
+                    <strong>{report.totalMinHours}</strong>
+                  </td>
+                  <td
+                    className={
+                      report.totalMaxHours >= report.totalWorkHoursForMonth &&
+                      report.totalMinHours <= report.totalMaxHours
+                        ? "table-success"
+                        : "table-danger"
+                    }
+                  >
+                    <strong>{report.totalWorkHoursForMonth}</strong>
+                  </td>
+                  <td
+                    className={
+                      report.totalMaxHours >= report.totalWorkHoursForMonth
+                        ? "table-success"
+                        : "table-danger"
+                    }
+                  >
+                    <strong>{report.totalMaxHours}</strong>
+                  </td>
+                  <td colSpan="4"></td>
+                </tr>
               </tbody>
             </Table>
+            <p>
+              Generierungsergebnis für{" "}
+              <strong>{report.totalWorkHoursForMonth} / </strong>
+              <strong>{report.totalWorkHoursAllWorks}</strong>
+            </p>
           </>
         ) : (
           <p>Kein Bericht verfügbar.</p>

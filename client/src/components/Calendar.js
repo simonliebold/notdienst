@@ -141,7 +141,7 @@ export const EmployeeCalendar = ({ employee, ...props }) => {
   if (!employee.works || employee.works.length === 0) return
   return (
     <>
-      <h1>Stunden: {employee?.employment?.minHours} ≤ {workHours} ≤ {employee?.employment?.maxHours}</h1>
+      {/* <h1>Stunden: {employee?.employment?.minHours} ≤ {workHours} ≤ {employee?.employment?.maxHours}</h1> */}
       <Calendar
         works={employee.works}
         view="listMonth"

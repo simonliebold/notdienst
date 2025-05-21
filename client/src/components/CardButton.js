@@ -151,9 +151,10 @@ export const AsyncAllocateWorksButton = ({
   schedule,
   updateResource,
   edit,
+  linear = true,
   ...props
 }) => {
-  const allocate = useAllocateWorks()
+  const allocate = useAllocateWorks(linear)
   const [loading, setLoading] = useState(false)
 
   const allocateWorks = useCallback(async () => {
@@ -165,10 +166,7 @@ export const AsyncAllocateWorksButton = ({
 
   if (schedule?.works?.length == 0) return
 
-  if (loading)
-    return (
-      <LoadingButton>{title.schedule + " wird generiert..."}</LoadingButton>
-    )
+  if (loading) return <LoadingButton>{"Dienste werden verteilt"}</LoadingButton>
 
   return (
     <CardButton
@@ -178,7 +176,7 @@ export const AsyncAllocateWorksButton = ({
       variant="primary"
       onClick={allocateWorks}
     >
-      {"Dienste verteilen"}
+      Dienste verteilen {linear && "(LP)"} {!linear && "(Heuristik)"}
     </CardButton>
   )
 }
@@ -231,7 +229,7 @@ export const AsyncCreateReportButton = ({
   const handleCreateReport = useCallback(async () => {
     setLoading(true)
     const response = await createReport(schedule?._id)
-    setReport(response.report)
+    setReport(response)
     setLoading(false)
     setShow(true)
   }, [createReport, schedule, updateResource, setShow, setLoading, setReport])

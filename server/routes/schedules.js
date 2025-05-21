@@ -339,49 +339,46 @@ const sortWorks = async (works, employees) => {
 
 // Find employees for work
 const allocateWorks = async (works, employees, scheduleId) => {
-  let workEmployees = []
+  const workEmployees = []
   const protocol = []
+
   while (works.length > 0) {
-    let bestEmployee
-    let bestEmployeeRemainingHours
-    const work = works[0]
+    const work = works.shift() // Get the first work
     const duration =
       (work.end.getTime() - work.start.getTime()) / (1000 * 60 * 60)
-    work.employeeIds.forEach((employeeId) => {
+
+    let bestEmployee = null
+    let bestEmployeeRemainingHours = null
+
+    for (const employeeId of work.employeeIds) {
       const employee = employees.find(
-        (employee) => employee._id.toString() === employeeId.toString()
+        (emp) => emp._id.toString() === employeeId.toString()
       )
+      if (!employee) continue
 
-      employee.availableTime -= duration
-
-      let employeeRemainingHours = employee.maxHours
-      if (employee.minHours !== null)
-        employeeRemainingHours = employee.minHours - employee.workTime
+      const remainingHours =
+        employee.minHours !== null
+          ? employee.minHours - employee.workTime
+          : Infinity
 
       const newWorkHours = employee.workTime + duration
 
-      // Unter Max Stunden
-      const maxHoursCorrect =
+      const isWithinMaxHours =
         employee.maxHours === null || newWorkHours <= employee.maxHours
-
-      // Platz zum Minimum
-      const isBest =
-        bestEmployee === undefined ||
-        employeeRemainingHours >= bestEmployeeRemainingHours
-
+      const isBestCandidate =
+        bestEmployee === null || remainingHours >= bestEmployeeRemainingHours
       const isFree = employee.freetimes.every(
         (freetime) =>
           new Date(freetime.end).getTime() <= work.start.getTime() ||
           new Date(freetime.start).getTime() >= work.end.getTime()
       )
 
-      // TODO: Generierungsbericht
       protocol.push({
         work: work.title,
         employee: employee.short,
-        isFree: isFree,
-        isBest: isBest,
-        maxHoursCorrect: maxHoursCorrect,
+        isFree,
+        isBest: isBestCandidate,
+        maxHoursCorrect: isWithinMaxHours,
         freetimes: employee.freetimes
           .filter(
             (freetime) =>
@@ -391,23 +388,15 @@ const allocateWorks = async (works, employees, scheduleId) => {
           .map((freetime) => freetime.work || "Wunschfrei"),
       })
 
-      if (maxHoursCorrect && isBest && isFree) {
+      if (isWithinMaxHours && isBestCandidate && isFree) {
         bestEmployee = employee
-        bestEmployeeRemainingHours = employeeRemainingHours
+        bestEmployeeRemainingHours = remainingHours
       }
-    })
-    if (!bestEmployee) {
-      await Work.deleteMany({ scheduleId: scheduleId })
-      throw new Error(
-        "Es stehen zu wenig Mitarbeiter für die Anzahl an Diensten zur Verfügung."
-      )
     }
-    workEmployees.push({
-      workId: work._id,
-      employeeId: bestEmployee._id,
-    })
 
-    // await Work.updateOne({ _id: work._id }, { employeeIds: [bestEmployee._id] })
+    if (!bestEmployee) throw new Error("Es kein passender Mitarbeiter gefunden")
+
+    workEmployees.push({ workId: work._id, employeeId: bestEmployee._id })
 
     bestEmployee.freetimes.push({
       start: new Date(
@@ -419,7 +408,6 @@ const allocateWorks = async (works, employees, scheduleId) => {
       work: work._id,
     })
     bestEmployee.workTime += duration
-    works.shift()
   }
 
   const bulkUpdateOperations = workEmployees.map(({ workId, employeeId }) => ({
@@ -433,13 +421,12 @@ const allocateWorks = async (works, employees, scheduleId) => {
   return protocol
 }
 
-const allocate = async (schedule) => {
+const allocateHeuristic = async (schedule) => {
   const works = await getWorks(schedule?._id)
   const employees = await getEmployees(schedule)
   await sortWorks(works, employees)
   const protocol = await allocateWorks(works, employees, schedule?._id)
-  return { protocol, employees }
-  // return employees
+  return protocol
 }
 
 router.post("/:id/allocate", roles.requireAdmin, async (req, res, next) => {
@@ -503,6 +490,16 @@ router.post("/:id/allocate", roles.requireAdmin, async (req, res, next) => {
   }
 })
 
+router.post("/:id/allocate2", roles.requireAdmin, async (req, res, next) => {
+  try {
+    const schedule = await getSchedule(req.params.id)
+    const protocol = await allocateHeuristic(schedule)
+    res.send({ protocol: protocol })
+  } catch (err) {
+    return next(err)
+  }
+})
+
 router.delete("/:id/works", roles.requireAdmin, async (req, res, next) => {
   try {
     const schedule = await getSchedule(req.params.id)
@@ -527,7 +524,19 @@ router.get("/:id/report", roles.requireAdmin, async (req, res, next) => {
     const employees = await getEmployees(schedule)
     const works = await getWorks(schedule._id)
 
-    const report = employees.map((employee) => {
+    let totalWorkHoursForMonth = 0
+    let totalMinHours = 0
+    let totalMaxHours = 0
+    let totalWorkHoursAllWorks = 0 // New variable to track total hours of all works
+
+    // Calculate total hours for all works
+    totalWorkHoursAllWorks = works.reduce((sum, work) => {
+      return (
+        sum + (work.end.getTime() - work.start.getTime()) / (1000 * 60 * 60)
+      )
+    }, 0)
+
+    const employeesReport = employees.map((employee) => {
       const employeeWorks = works.filter((work) =>
         work.employeeIds.some(
           (employeeId) => employeeId.toString() === employee._id.toString()
@@ -540,6 +549,10 @@ router.get("/:id/report", roles.requireAdmin, async (req, res, next) => {
           sum + (work.end.getTime() - work.start.getTime()) / (1000 * 60 * 60)
         )
       }, 0)
+
+      totalWorkHoursForMonth += totalWorkHours
+      totalMinHours += employee.minHours || 0
+      totalMaxHours += employee.maxHours || 0
 
       const withinHours =
         (employee.minHours === null || totalWorkHours >= employee.minHours) &&
@@ -592,7 +605,13 @@ router.get("/:id/report", roles.requireAdmin, async (req, res, next) => {
       }
     })
 
-    res.send({ report })
+    res.send({
+      employeesReport,
+      totalWorkHoursForMonth,
+      totalMinHours,
+      totalMaxHours,
+      totalWorkHoursAllWorks, // Include the new total hours in the response
+    })
   } catch (err) {
     return next(err)
   }

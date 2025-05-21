@@ -121,16 +121,18 @@ export const useGenerateWorks = () => {
   return generate
 }
 
-export const useAllocateWorks = () => {
+export const useAllocateWorks = (linear = true) => {
   const handleError = useErrorMessage()
   const handleSuccess = useSuccessMessage()
+
+  const url = linear ? "/allocate"  : "/allocate2"
 
   const allocate = useCallback(
     async (scheduleId) => {
       if (!scheduleId) return
       const response = await axios
         .post(
-          process.env.REACT_APP_URL + "schedules/" + scheduleId + "/allocate"
+          process.env.REACT_APP_URL + "schedules/" + scheduleId + url
         )
         .catch(handleError)
       if (process.env.NODE_ENV === "development")
