@@ -408,14 +408,14 @@ export const SchedulePage = () => {
           onInput={onInput}
           edit={edit}
         />
-        {/* <AsyncGenerateWorksButton
+        <AsyncGenerateWorksButton
           schedule={schedule}
           updateResource={refreshResource}
           className="me-3"
           variant="warning"
           onInput={onInput}
           edit={edit}
-          /> */}
+          />
         <AsyncAllocateWorksButton
           schedule={schedule}
           updateResource={refreshResource}
