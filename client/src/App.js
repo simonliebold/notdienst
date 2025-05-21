@@ -175,8 +175,8 @@ function App() {
               <Route path="rrule/:rruleId/:action" element={rrule} />
 
               <Route path="employees" element={employees} />
-              <Route path="employee/:employeeId" element={employee} />
-              <Route path="employee/:employeeId/:action" element={employee} />
+              <Route path="employee/:id" element={employee} />
+              <Route path="employee/:id/:action" element={employee} />
 
               <Route path="jobs" element={jobs} />
               <Route path="job/:jobId" element={job} />
