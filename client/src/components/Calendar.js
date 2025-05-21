@@ -10,6 +10,29 @@ import { useNavigate } from "react-router-dom"
 
 function Calendar({ works, view, ...props }) {
   const navigate = useNavigate()
+
+  const eventContent = (arg) => {
+    // console.log(arg.event._def.extendProps.work)
+
+    const props = arg.event.extendedProps
+
+    return (
+      <div className="">
+        {props.work.title}
+        <br />
+        {props.work?.employees?.map((employee) => {
+          return (
+            <Badge
+              resource={employee}
+              resourceName="employee"
+              className="me-1"
+            />
+          )
+        })}
+      </div>
+    )
+  }
+
   if (!works) return <MultiBadge resourceName="work" />
   return (
     <FullCalendar
@@ -18,16 +41,16 @@ function Calendar({ works, view, ...props }) {
       initialView={view ? view : "listWeek"}
       headerToolbar={{
         right: "prev,next",
-        left: "timeGridWeek,timeGridDay,listWeek",
+        // left: "timeGridWeek,timeGridDay,listWeek",
         //  center: "title",
         // left: "",
       }}
-      footerToolbar={
-        {
-          // right: "today,prev,next",
-          // center: "title",
-        }
-      }
+      // footerToolbar={
+      //   {
+      //     // right: "today,prev,next",
+      //     // center: "title",
+      //   }
+      // }
       buttonText={{
         today: "Heute",
         month: "Monat",
@@ -40,15 +63,17 @@ function Calendar({ works, view, ...props }) {
       eventClick={(e) => navigate("./../../works/" + e.event.id)}
       events={works.map((work) => {
         return {
+          id: work.id,
           start: work.start,
           end: work.end,
-          title:
-            work.short + " " + work.employees.map((employee) => employee.title),
-          id: work.id,
+          title: work.title,
+          // color: "#fff",
+          work: work,
+          // abcd: "rcftvgzh"
         }
       })}
       locale="de"
-      // eventContent={renderEventContent}
+      eventContent={eventContent}
     />
   )
 }
@@ -60,12 +85,7 @@ export const ScheduleCalendar = ({
   ...props
 }) => {
   if (!schedule) return
-  if (!schedule.works || schedule.works.length === 0)
-    return (
-      <div className="mt-4">
-        
-      </div>
-    )
+  if (!schedule.works || schedule.works.length === 0) return
   return (
     <div className="mt-4">
       <Calendar works={schedule?.works} view="timeGridWeek" {...props} />
