@@ -129,7 +129,14 @@ export function JobsPage() {
 export function MissionsPage() {
   const [missions] = useResource("missions")
   return (
-    <ResourcesPage resources={missions} resourceName="mission"></ResourcesPage>
+    <ResourcesPage resources={missions} resourceName="mission">
+      <EditableText label="type" />
+      <EditableText label="info" />
+      <EditableText label="time" />
+      <EditableText label="km" />
+      <hr />
+      <EditableBadge resourceName="work" />
+    </ResourcesPage>
   )
 }
 
