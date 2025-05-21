@@ -16,8 +16,14 @@ import ListGroup from "react-bootstrap/ListGroup"
 import Alert from "react-bootstrap/Alert"
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { faCalendarDays, faUser } from "@fortawesome/free-solid-svg-icons"
-import Button from "react-bootstrap/esm/Button"
+import {
+  faCalendarDays,
+  faPlus,
+  faUser,
+} from "@fortawesome/free-solid-svg-icons"
+import Button from "react-bootstrap/Button"
+import { useAuthUpdate } from "../contexts/AuthContext"
+import Placeholder from "react-bootstrap/Placeholder"
 
 const dateOptions = {
   weekday: "long",
@@ -73,8 +79,10 @@ const EmployeeModal = () => {
   const [employmentId, setEmploymentId] = useState()
   const [jobs, setJobs] = useState()
 
-  const [isDisabled, setIsDisabled] = useState(true)
-  const [isLoading, setIsLoading] = useState(false)
+  const [isButtonDisabled, setIsButtonDisabled] = useState(true)
+  const [isButtonLoading, setIsButtonLoading] = useState(false)
+
+  const [isLoading, setIsLoading] = useState(true)
 
   const close = () => {
     navigate("/employees")
@@ -82,12 +90,14 @@ const EmployeeModal = () => {
   }
 
   const fetchEmployee = async () => {
+    setIsLoading(true)
+    setShowModal(true)
     fetchAllEmployments()
     fetchAllJobs()
 
     try {
       const response = await axios.get(
-        "http://192.168.178.44:3000/employees/" + employeeInitials
+        "http://localhost:3000/employees/" + employeeInitials
       )
       if (!response.data.employee) return
 
@@ -97,7 +107,7 @@ const EmployeeModal = () => {
       setInitials(response.data.employee.initials)
       setEmploymentId(response.data.employee.employmentId)
       setJobs(response.data.employee.jobs.map((job) => job.id))
-      setShowModal(true)
+      setIsButtonLoading(false)
       setIsLoading(false)
     } catch (error) {
       if (error.response.data.error) {
@@ -109,9 +119,7 @@ const EmployeeModal = () => {
 
   const fetchAllEmployments = async () => {
     try {
-      const response = await axios.get(
-        "http://192.168.178.44:3000/employments/"
-      )
+      const response = await axios.get("http://localhost:3000/employments/")
       if (response.data.employments)
         setAllEmployments(
           response.data.employments.map((employment) => {
@@ -125,7 +133,7 @@ const EmployeeModal = () => {
 
   const fetchAllJobs = async () => {
     try {
-      const response = await axios.get("http://192.168.178.44:3000/jobs/")
+      const response = await axios.get("http://localhost:3000/jobs/")
       if (response.data.jobs)
         setAllJobs(
           response.data.jobs.map((job) => {
@@ -138,7 +146,7 @@ const EmployeeModal = () => {
   }
 
   const updateEmployee = async () => {
-    setIsLoading(true)
+    setIsButtonLoading(true)
     try {
       const response = await axios.put(
         "http://localhost:3000/employees/" + employeeInitials,
@@ -153,7 +161,7 @@ const EmployeeModal = () => {
       close()
     } catch (error) {
       if (error.response.data.error) addAlert(error.response.data.error)
-    } 
+    }
   }
 
   useEffect(() => {
@@ -172,7 +180,7 @@ const EmployeeModal = () => {
         .sort()
         .toString() !== jobs.sort().toString()
 
-    setIsDisabled(!(newName || newInitials || newEmploymentId || newJobs))
+    setIsButtonDisabled(!(newName || newInitials || newEmploymentId || newJobs))
   }, [name, initials, employmentId, jobs])
 
   if (!employee) return
@@ -184,72 +192,101 @@ const EmployeeModal = () => {
       className="modal-lg"
     >
       <Modal.Header closeButton>
-        <Modal.Title>
-          <Badge className="me-2">
-            <FontAwesomeIcon icon={faUser} className="me-2" />
-            {employee.initials}
-          </Badge>{" "}
-          {employee.name}
-        </Modal.Title>
+        {isLoading && (
+          <Modal.Title>
+            <Placeholder as={Badge} className="text-primary me-2">
+              <FontAwesomeIcon icon={faUser} className="me-1" />
+              MUS
+            </Placeholder>
+            <Placeholder>Max Mustermann</Placeholder>
+          </Modal.Title>
+        )}
+        {!isLoading && (
+          <Modal.Title>
+            <Badge className="me-2">
+              <FontAwesomeIcon icon={faUser} className="me-2" />
+              {employee.initials}
+            </Badge>{" "}
+            {employee.name}
+          </Modal.Title>
+        )}
       </Modal.Header>
       <Modal.Body>
         <h2 className="fs-6">Name</h2>
-        <Form.Control
-          defaultValue={employee.name}
-          onChange={(e) => setName(e.target.value)}
-        />
+        {isLoading && <Placeholder disabled as={Form.Control} />}
+        {!isLoading && (
+          <Form.Control
+            defaultValue={employee.name}
+            onChange={(e) => setName(e.target.value)}
+          />
+        )}
         <h2 className="fs-6 mt-3">Kürzel</h2>
-        <Form.Control
-          defaultValue={employee.initials}
-          onChange={(e) => setInitials(e.target.value)}
-        />
+        {isLoading && <Placeholder disabled as={Form.Control} />}
+        {!isLoading && (
+          <Form.Control
+            defaultValue={employee.initials}
+            onChange={(e) => setInitials(e.target.value)}
+          />
+        )}
         <h2 className="fs-6 mt-3">Anstellungsverhältnis</h2>
-        <Select
-          defaultValue={{
-            value: employee.employment.id,
-            label: employee.employment.title,
-          }}
-          name="employment"
-          options={allEmployments}
-          className="basic-multi-select"
-          classNamePrefix="select"
-          onChange={(value) => setEmploymentId(value.value)}
-        />
+        {isLoading && <Placeholder disabled as={Form.Control} />}
+        {!isLoading && (
+          <Select
+            defaultValue={{
+              value: employee.employment.id,
+              label: employee.employment.title,
+            }}
+            name="employment"
+            options={allEmployments}
+            className="basic-multi-select"
+            classNamePrefix="select"
+            onChange={(value) => setEmploymentId(value.value)}
+          />
+        )}
         <h2 className="fs-6 mt-3">Jobs</h2>
-        <Select
-          defaultValue={employee.jobs.map((job) => {
-            return { value: job.id, label: job.title }
-          })}
-          isMulti
-          name="jobs"
-          options={allJobs}
-          className="basic-multi-select"
-          classNamePrefix="select"
-          onChange={(values) =>
-            setJobs(
-              values.map((value) => {
-                return value.value
-              })
-            )
-          }
-        />
-        <Button
-          className="mt-3"
-          onClick={updateEmployee}
-          disabled={isDisabled || isLoading}
-        >
-          {isLoading && "Lädt..."}
-          {!isLoading && "Speichern"}
-        </Button>
+        {isLoading && <Placeholder disabled as={Form.Control} />}
+        {!isLoading && (
+          <Select
+            defaultValue={employee.jobs.map((job) => {
+              return { value: job.id, label: job.title }
+            })}
+            isMulti
+            name="jobs"
+            options={allJobs}
+            className="basic-multi-select"
+            classNamePrefix="select"
+            onChange={(values) =>
+              setJobs(
+                values.map((value) => {
+                  return value.value
+                })
+              )
+            }
+          />
+        )}
+        {isLoading && (
+          <Placeholder.Button className="mt-3">Speichern</Placeholder.Button>
+        )}
+        {!isLoading && (
+          <Button
+            className="mt-3"
+            onClick={updateEmployee}
+            disabled={isButtonDisabled || isButtonLoading}
+          >
+            {isButtonLoading && "Lädt..."}
+            {!isButtonLoading && "Speichern"}
+          </Button>
+        )}
         <hr />
         <h2 className="fs-6 mt-3">Arbeitsplanung</h2>
-        {works.length === 0 && (
+        {(works.length === 0) && (
           <Alert variant="secondary">Keine aktuellen Schichten gefunden</Alert>
         )}
         <Row className="g-3" xs={1} lg={2}>
-          {works.map((work) => {
-            return <WorkCard key={"work-" + work.id} work={work} />
-          })}
+          {!isLoading &&
+            works.map((work) => {
+              return <WorkCard key={"work-" + work.id} work={work} />
+            })}
         </Row>
       </Modal.Body>
     </Modal>
@@ -260,20 +297,16 @@ const EmployeeCard = ({ employee }) => {
   return (
     <Col>
       <Card>
-        <Card.Body>
+        <Card.Body
+          as={Link}
+          to={"/employees/" + employee.initials.toLowerCase()}
+          className="text-decoration-none"
+        >
           <Badge className="me-2">
             <FontAwesomeIcon icon={faUser} className="me-1" />
             {employee.initials}
           </Badge>
           {employee.name}
-        </Card.Body>
-        <Card.Body className="border-top">
-          <Card.Link
-            as={Link}
-            to={"/employees/" + employee.initials.toLowerCase()}
-          >
-            Bearbeiten
-          </Card.Link>
         </Card.Body>
       </Card>
     </Col>
@@ -283,16 +316,19 @@ const EmployeeCard = ({ employee }) => {
 function Employees() {
   const { employeeInitials } = useParams()
   const addAlert = useAlertUpdate()
+  const setToken = useAuthUpdate()
 
   const [employees, setEmployees] = useState([])
 
   const fetchEmployees = async () => {
     try {
-      const response = await axios.get("http://192.168.178.44:3000/employees/")
+      const response = await axios.get("http://localhost:3000/employees/")
       if (response.data.employees) setEmployees(response.data.employees)
       else addAlert("Keine Mitarbeiter gefunden", "secondary")
     } catch (error) {
+      console.log(error)
       if (error.response.data.error) addAlert(error.response.data.error)
+      if (error.response.status === 403) setToken(undefined)
     }
   }
 
@@ -305,6 +341,14 @@ function Employees() {
       {employees.map((employee, i) => {
         return <EmployeeCard key={"employee-" + i} employee={employee} />
       })}
+      <Col className="mb-3" as={Link} onClick={(e) => alert("rftgzhuj")}>
+        <Card bg="primary" text="light" className="opacity-75">
+          <Card.Body>
+            <FontAwesomeIcon className="me-2" icon={faPlus} />
+            Neuen Mitarbeiter anlegen
+          </Card.Body>
+        </Card>
+      </Col>
       <EmployeeModal />
     </Row>
   )

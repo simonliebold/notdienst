@@ -11,15 +11,9 @@ function Navigation() {
   const location = useLocation()
 
   const routes = [
-    { name: "Home", path: "/" },
     {
-      name: "Employees",
+      name: "Mitarbeiter",
       path: "/employees",
-    },
-    { name: "Login", path: "/login" },
-    {
-      name: "Credentials",
-      path: "/credentials",
     },
   ]
 

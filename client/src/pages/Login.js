@@ -40,7 +40,7 @@ function Login() {
     setLoading(true)
     e.preventDefault()
     try {
-      const response = await axios.post("http://192.168.178.44:4000/login", {
+      const response = await axios.post("http://localhost:4000/login", {
         email: email,
         password: password,
       })

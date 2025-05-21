@@ -34,7 +34,7 @@ function EditCredentials({ result, setLoggedIn, oldEmail }) {
       if (password.length > 0) req.password = password
 
       const res = await axios.post(
-        "http://192.168.178.44:4000/credentials/change/" + result,
+        "http://localhost:4000/credentials/change/" + result,
         req
       )
 
@@ -157,7 +157,7 @@ function InputCode({ result, setResult, setLoggedIn, setOldEmail }) {
     e.preventDefault()
     try {
       const code = await axios.get(
-        "http://192.168.178.44:4000/credentials/check/" + result
+        "http://localhost:4000/credentials/check/" + result
       )
       setOldEmail(code.data.email)
       setLoggedIn(true)
