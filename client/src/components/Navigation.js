@@ -83,6 +83,11 @@ function Navigation() {
       path: "/jobs",
     },
     {
+      name: "Rrules",
+      icon: icons.rrule,
+      path: "/rrules",
+    },
+    {
       name: "Elemente",
       icon: faCube,
       path: "/elements",

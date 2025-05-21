@@ -18,6 +18,7 @@ import Employees from "./pages/admin/Employees"
 import Employments from "./pages/admin/Employments"
 import Freetimes from "./pages/admin/Freetimes"
 import Jobs from "./pages/admin/Jobs"
+import Rrules from "./pages/admin/Rrules"
 
 function App() {
   const home = (
@@ -68,6 +69,12 @@ function App() {
     </Prot>
   )
 
+  const rrules = (
+    <Prot>
+      <Rrules />
+    </Prot>
+  )
+
   return (
     <AuthProvider>
       <AlertProvider>
@@ -88,6 +95,7 @@ function App() {
               <Route path="employments" element={employments} />
               <Route path="freetimes" element={freetimes} />
               <Route path="jobs" element={jobs} />
+              <Route path="rrules" element={rrules} />
             </Routes>
           </div>
         </Container>
