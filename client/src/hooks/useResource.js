@@ -11,7 +11,7 @@ const useResource = (resourceUrl) => {
       .get(process.env.REACT_APP_URL + resourceUrl)
       .catch(handleError)
     if (process.env.NODE_ENV === "development")
-      console.log("useResource", resourceUrl + ":", response?.data)
+      console.log("useResource", resourceUrl + ":", response)
 
     setData(response?.data)
   }, [resourceUrl])
@@ -38,7 +38,7 @@ export const useResourceUpdate = (resourceUrl) => {
           resourceUrl,
           updatedData,
           ":",
-          response?.data?.message
+          response
         )
 
       handleSuccess(response?.data?.message)
@@ -78,7 +78,7 @@ export const useResourceCreate = (resourceUrl) => {
         .post(process.env.REACT_APP_URL + resourceUrl, data)
         .catch(handleError)
       if (process.env.NODE_ENV === "development")
-        console.log("useResourceCreate:", resourceUrl, response?.data)
+        console.log("useResourceCreate:", resourceUrl, response)
 
       // handleSuccess(response?.data?.message)
       return response?.data

@@ -74,8 +74,8 @@ export const EmployeesPage = () => {
       <hr />
       <EditableBadge resourceName="employment" />
       {/* <MultiBadge edit resourceName="work" />
-      <MultiBadge edit resourceName="schedule" />
-      <MultiBadge edit resourceName="job" /> */}
+      <MultiBadge edit resourceName="schedule" /> */}
+      <MultiBadge edit resourceName="job" /> 
     </ResourcesPage>
   )
 }

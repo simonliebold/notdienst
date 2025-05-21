@@ -32,8 +32,9 @@ module.exports = () => {
           as: "employment",
         },
       },
-      { $unwind: "$employment" },
+      { $unwind: { path: "$employment", preserveNullAndEmptyArrays: true } },
     ]).catch(next)
+    console.log("employee")
     if (!employee) return next(new Error("Nicht gefunden"))
     return res.send(employee[0])
   })
