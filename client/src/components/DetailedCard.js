@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useEffect, useState } from "react"
 
 import Card from "react-bootstrap/Card"
 import Placeholder from "react-bootstrap/Placeholder"
@@ -6,7 +6,14 @@ import CloseButton from "react-bootstrap/CloseButton"
 import Spinner from "react-bootstrap/Spinner"
 
 import Badge from "./Badge"
-import { CardDeleteButton, CardEditButton, CardSaveButton } from "./CardButton"
+import CardButton, {
+  CardDeleteButton,
+  CardEditButton,
+  CardSaveButton,
+  ExpandButton,
+} from "./CardButton"
+import { Link } from "react-router-dom"
+import Button from "react-bootstrap/esm/Button"
 
 const DetailedCard = ({
   resource,
@@ -22,6 +29,16 @@ const DetailedCard = ({
   onDeleteRequest,
 }) => {
   const { title } = resource || {}
+
+  const [expanded, setExpanded] = useState(true)
+
+  useEffect(() => {
+    if (resourceName === "schedule" && resource?.works?.length === 0)
+      setExpanded(true)
+    if (resourceName === "schedule" && resource?.works?.length !== 0)
+      setExpanded(false)
+  }, [resource, resourceName])
+
   if (loading || saving)
     return (
       <Card>
@@ -50,7 +67,13 @@ const DetailedCard = ({
 
   return (
     <Card className={"text-decoration-none " + className}>
-      <Card.Header className="fs-6 m-0 d-flex align-items-center justify-content-between">
+      <Card.Header
+        onClick={(e) => {
+          if (resourceName === "schedule" && resource?.works?.length !== 0)
+            setExpanded(!expanded)
+        }}
+        className="fs-6 m-0 d-flex align-items-center justify-content-between"
+      >
         <div>
           <Badge
             resourceName={resourceName}
@@ -61,21 +84,31 @@ const DetailedCard = ({
           {edit && " bearbeiten "}
         </div>
         {edit && <CloseButton onClick={onCloseRequest} />}
+        {!edit && resourceName === "schedule" && resource?.works?.length !== 0 && (
+          <ExpandButton expanded={expanded} />
+        )}
       </Card.Header>
-      <Card.Body>{children}</Card.Body>
-      <Card.Footer className="d-flex justify-content-end align-items-center">
-        {edit && (
-          <>
-            <CardDeleteButton onClick={onDeleteRequest} className="me-auto" />
-            <CardSaveButton onClick={onSaveRequest} />
-          </>
-        )}
-        {!edit && (
-          <>
-            <CardEditButton onClick={onEditRequest} />
-          </>
-        )}
-      </Card.Footer>
+      {expanded && (
+        <>
+          <Card.Body>{children}</Card.Body>
+          <Card.Footer className="d-flex justify-content-end align-items-center">
+            {edit && (
+              <>
+                <CardDeleteButton
+                  onClick={onDeleteRequest}
+                  className="me-auto"
+                />
+                <CardSaveButton onClick={onSaveRequest} />
+              </>
+            )}
+            {!edit && (
+              <>
+                <CardEditButton onClick={onEditRequest} />
+              </>
+            )}
+          </Card.Footer>
+        </>
+      )}
     </Card>
   )
 }

@@ -20,8 +20,9 @@ import Row from "react-bootstrap/Row"
 import Col from "react-bootstrap/esm/Col"
 
 import { ScheduleCalendar } from "../../components/Calendar"
+import { AsyncAllocateWorksButton } from "../../components/CardButton"
 
-function ResourcePage({ resourceName, setData, children }) {
+function ResourcePage({ resourceName, setData, buttons, children }) {
   const navigate = useNavigate()
 
   // fetch data
@@ -230,6 +231,7 @@ export const SchedulePage = () => {
         {/* <MultiBadge items={schedule?.works} resourceName="work" disabled /> */}
         <MultiBadge items={schedule?.shifts} resourceName="shift" />
         <MultiBadge items={schedule?.employees} resourceName="employee" />
+        <AsyncAllocateWorksButton schedule={schedule} className="me-3" />
       </ResourcePage>
       <ScheduleCalendar schedule={schedule} />
     </>

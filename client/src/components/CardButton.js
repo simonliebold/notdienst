@@ -3,6 +3,10 @@ import {
   faCalendarDays,
   faCalendarPlus,
   faCancel,
+  faCaretDown,
+  faCaretLeft,
+  faCaretRight,
+  faExpand,
   faPen,
   faPlus,
   faSave,
@@ -133,7 +137,7 @@ export const AsyncGenerateWorksButton = ({ id, updateResource, ...props }) => {
 }
 
 export const AsyncAllocateWorksButton = ({
-  id,
+  schedule,
   updateResource,
   edit,
   ...props
@@ -143,12 +147,17 @@ export const AsyncAllocateWorksButton = ({
 
   const allocateWorks = useCallback(async () => {
     setLoading(true)
-    await allocate(id)
+    await allocate(schedule?.id)
     await updateResource()
     setLoading(false)
   })
 
-  if(loading) return <LoadingButton>{title.schedule + " wird generiert..."}</LoadingButton>
+  if (schedule?.works.length !== 0) return
+
+  if (loading)
+    return (
+      <LoadingButton>{title.schedule + " wird generiert..."}</LoadingButton>
+    )
 
   return (
     <CardButton
@@ -160,6 +169,17 @@ export const AsyncAllocateWorksButton = ({
     >
       {title.schedule + " generieren"}
     </CardButton>
+  )
+}
+
+export const ExpandButton = ({ expanded, ...props }) => {
+  return (
+    <CardButton
+      icon={expanded ? faCaretDown : faCaretLeft}
+      variant="link"
+      className="text-decoration-none text-secondary p-0"
+      {...props}
+    ></CardButton>
   )
 }
 

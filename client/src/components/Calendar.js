@@ -22,10 +22,12 @@ function Calendar({ works, view, ...props }) {
         //  center: "title",
         // left: "",
       }}
-      footerToolbar={{
-        // right: "today,prev,next",
-        // center: "title",
-      }}
+      footerToolbar={
+        {
+          // right: "today,prev,next",
+          // center: "title",
+        }
+      }
       buttonText={{
         today: "Heute",
         month: "Monat",
@@ -33,8 +35,7 @@ function Calendar({ works, view, ...props }) {
         day: "Tag",
         list: "Liste",
       }}
-      height={850}
-
+      height={"80vh"}
       allDaySlot={false}
       eventClick={(e) => navigate("./../../works/" + e.event.id)}
       events={works.map((work) => {
@@ -61,20 +62,14 @@ export const ScheduleCalendar = ({
   if (!schedule) return
   if (!schedule.works || schedule.works.length === 0)
     return (
-      <>
-        Dienste: <br />
-        <AsyncAllocateWorksButton
-          edit={edit}
-          updateResource={updateResource}
-          id={schedule.id}
-        />
-      </>
+      <div className="mt-4">
+        
+      </div>
     )
   return (
-    <>
-      Dienste: <br />
+    <div className="mt-4">
       <Calendar works={schedule?.works} view="timeGridWeek" {...props} />
-    </>
+    </div>
   )
 }
 
