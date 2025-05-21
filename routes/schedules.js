@@ -162,17 +162,7 @@ module.exports = (models, sequelize) => {
   // TODO: just safe employee-ids
   const getEvents = async (req, res, next) => {
     const [results, metadata] = await sequelize.query(
-      `SELECT shifts.id "shiftId", events.id "eventId", events.title "eventTitle", events.requiredEmployees "eventRequiredEmployees", events.timeStart "eventTimeStart", events.timeEnd "eventTimeEnd", events.repeatWeekday "eventRepeatWeekday", employees.id "employeeId", employees.initials "employeeInitials", employees.name "employeeName", employments.minHours "employeeMinHours", employments.maxHours "employeeMaxHours"
-      FROM schedules, schedules_shifts, shifts, events, jobs_shifts, jobs, jobs_employees, employees, employments
-      WHERE schedules.id = schedules_shifts.scheduleId
-      AND schedules_shifts.shiftId = shifts.id
-      AND shifts.id = events.shiftId
-      AND jobs_shifts.shiftId = shifts.id
-      AND jobs_shifts.jobId = jobs.id
-      AND jobs_employees.jobId = jobs.id
-      AND jobs_employees.employeeId = employees.id
-      AND employees.id NOT IN (SELECT employeeId FROM schedules_employees WHERE scheduleId = schedules.id)
-      AND employees.employmentId = employments.id;`
+      `SELECT shifts.id "shiftId", events.id "eventId", events.title "eventTitle", events.requiredEmployees "eventRequiredEmployees", events.timeStart "eventTimeStart", events.timeEnd "eventTimeEnd", events.repeatWeekday "eventRepeatWeekday", employees.id "employeeId", employees.initials "employeeInitials", employees.name "employeeName", employments.minHours "employeeMinHours", employments.maxHours "employeeMaxHours" FROM schedules, schedules_shifts, shifts, events, jobs_shifts, jobs, jobs_employees, employees, employments WHERE schedules.id = schedules_shifts.scheduleId AND schedules_shifts.shiftId = shifts.id AND shifts.id = events.shiftId AND jobs_shifts.shiftId = shifts.id AND jobs_shifts.jobId = jobs.id AND jobs_employees.jobId = jobs.id AND jobs_employees.employeeId = employees.id AND employees.id NOT IN (SELECT employeeId FROM schedules_employees WHERE scheduleId = schedules.id) AND employees.employmentId = employments.id;`
     )
 
     const events = {}
@@ -314,17 +304,6 @@ module.exports = (models, sequelize) => {
     next()
   }
 
-  // Order employees by possibleHours
-  const orderEmployees = (req, res, next) => {
-    // req.employees = Object.values(req.employees)
-    // req.employees.sort((a, b) => {
-    //   if (a.possibleHours < b.possibleHours) return -1
-    //   else if (a.possibleHours > b.possibleHours) return 1
-    //   else return 0
-    // })
-    next()
-  }
-
   // TODO: check event requiredEmployees
   // Find employees for work
   const matchWorkEmployees = async (req, res, next) => {
@@ -339,12 +318,13 @@ module.exports = (models, sequelize) => {
         const employee = req.employees[employeeId]
         employee.possibleHours -= req.works[0].duration
         const employeeRatio = employee.minHours - employee.workHours
-        // (employee.minHours - employee.workHours) / employee.possibleHours
+        const newWorkHours = employee.workHours + req.works[0].duration
 
+        // TODO: first fill minHours, then fill maxHours
         if (
           firstIteration ||
           (employeeRatio > bestEmployeeRatio &&
-            employee.workHours + req.works[0].duration < employee.maxHours)
+            newWorkHours < employee.maxHours)
         ) {
           bestEmployee = employee
           bestEmployeeRatio = employeeRatio
@@ -367,17 +347,6 @@ module.exports = (models, sequelize) => {
     next()
   }
 
-  const showDifference = async (req, res, next) => {
-    for (employeeId in req.employees) {
-      console.log(
-        req.employees[employeeId].name,
-        req.employees[employeeId].workHours - req.employees[employeeId].minHours,
-        req.employees[employeeId].maxHours - req.employees[employeeId].workHours
-      )
-    }
-    next()
-  }
-  // TODO: order employees by (minHours - workHours) / possibleHours = (remaining hours / possible hours)
   router.post(
     "/:id/plan",
     getSchedule,
@@ -386,9 +355,7 @@ module.exports = (models, sequelize) => {
     getFreetimes,
     getWorks,
     orderWorks,
-    orderEmployees,
     matchWorkEmployees,
-    showDifference,
     async (req, res) => {
       res.send({
         schedule: req.schedule,

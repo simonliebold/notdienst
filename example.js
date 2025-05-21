@@ -258,7 +258,7 @@ module.exports = async (models) => {
 
   await models.Employment.create({
     title: "Minijob",
-    minHours: 20,
+    minHours: 30,
     maxHours: 40,
   })
   await models.Employment.create({

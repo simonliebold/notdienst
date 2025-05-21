@@ -71,7 +71,6 @@ module.exports = (models) => {
   })
 
   // Delete one
-  // TODO: delete by schedule id
   router.delete("/:id", async (req, res) => {
     try {
       const response = await models.Freetime.destroy({
