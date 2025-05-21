@@ -14,7 +14,7 @@ import { EditableBadge } from "../../components/Badge"
 import MultiBadge from "../../components/MultiBadge"
 import { titles } from "../../variables"
 import MultiTitleCard from "../../components/MultiTitleCard"
-import { AsyncGenerateWorksButton } from "../../components/CardButton"
+import { AsyncAllocateWorksButton, AsyncGenerateWorksButton } from "../../components/CardButton"
 
 function ResourcePage({ resourceName, setData, children }) {
   const navigate = useNavigate()
@@ -109,6 +109,7 @@ function ResourcePage({ resourceName, setData, children }) {
           if (React.isValidElement(child))
             return React.cloneElement(child, {
               onInput,
+              updateResource,
               className: "mb-3",
               edit,
             })
@@ -221,6 +222,8 @@ export const SchedulePage = () => {
       <MultiBadge items={schedule?.employees} resourceName="employee" />
       <hr />
       <AsyncGenerateWorksButton id={schedule?.id} />
+      <br />
+      <AsyncAllocateWorksButton id={schedule?.id} />
     </ResourcePage>
   )
 }

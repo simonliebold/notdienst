@@ -158,7 +158,7 @@ module.exports = (models, sequelize) => {
 
   const getSchedule = async (req, res, next) => {
     const schedule = await models.Schedule.findByPk(req.params.id, {
-      include: models.Shift,
+      include: [models.Shift],
     })
     if (!schedule)
       return res.status(404).send({ error: "Dienstplan konnte nicht gefunden" })
@@ -183,6 +183,10 @@ module.exports = (models, sequelize) => {
         where: { id: { [Op.in]: req.schedule.shiftIds } },
       },
     })
+    if (rrules.length === 0)
+      return res
+        .status(400)
+        .send({ error: "Es müssen aktive Schichten verknüpft werden." })
     req.rrules = rrules
     next()
   }
@@ -243,6 +247,21 @@ module.exports = (models, sequelize) => {
     }
   )
 
+  // Get works
+  const getWorks = async (req, res, next) => {
+    const works = await models.Work.findAll({
+      where: { scheduleId: req.schedule.id },
+    })
+
+    if (works.length === 0)
+      return res
+        .status(400)
+        .send({ error: "Es wurden noch keine Dienste generiert." })
+
+    req.works = works
+    next()
+  }
+
   // Get employees
   const getEmployees = async (req, res, next) => {
     const employees = await models.Employee.findAll({
@@ -252,55 +271,35 @@ module.exports = (models, sequelize) => {
       ],
     })
 
-    const employeesObj = {}
+    req.employees = {}
+    const employeeIds = []
 
-    for (const employeeInd in employees) {
-      const employee = employees[employeeInd].dataValues
-      employee.minHours = employee.employment.minHours
-      employee.maxHours = employee.employment.maxHours
-      delete employee.schedules
-      delete employee.employment
-      employeesObj[employee.id] = {
-        ...employee,
+    employees.forEach((employee) => {
+      req.employees[employee.id] = {
+        ...employee.dataValues,
+        freetimes: [],
+        minHours: employee.employment.minHours,
+        maxHours: employee.employment.maxHours,
         possibleHours: 0,
         workHours: 0,
-        freetimes: [],
       }
-    }
+      employeeIds.push(employee.id)
+    })
 
-    req.employees = employeesObj
-
-    if (req.events !== undefined) {
-      for (const eventInd in req.events) {
-        const event = req.events[eventInd]
-        const shift = event.shift.dataValues
-        event.employees = {}
-        for (const jobInd in shift.jobs) {
-          const job = shift.jobs[jobInd].dataValues
-          for (const employeeInd in job.employees) {
-            const employee = job.employees[employeeInd].dataValues
-            if (req.employees[employee.id] !== undefined)
-              event.employees[employee.id] = employee
-          }
-        }
-        req.events[eventInd] = event
-      }
-    }
-    next()
-  }
-
-  // Get freetimes
-  const getFreetimes = async (req, res, next) => {
+    // Get freetimes
     const freetimes = await models.Freetime.findAll({
-      where: { scheduleId: req.params.id },
+      where: {
+        [Op.and]: [
+          { employeeId: { [Op.in]: employeeIds } },
+          { date: { [Op.between]: [req.schedule.start, req.schedule.end] } },
+        ],
+      },
     })
-    freetimes.forEach((freetime) => {
-      if (req.employees[freetime.employeeId] !== undefined) {
-        if (req.employees[freetime.employeeId]["freetimes"] !== undefined) {
-          req.employees[freetime.employeeId]["freetimes"].push(freetime)
-        }
-      }
+
+    freetimes?.forEach((freetime) => {
+      req.employees[freetime.employeeId].freetimes.push(freetime.dataValues)
     })
+
     next()
   }
 
@@ -396,14 +395,13 @@ module.exports = (models, sequelize) => {
     "/:id/allocate",
     roles.requireAdmin,
     getSchedule,
-    // getEvents,
+    getWorks,
     getEmployees,
-    getFreetimes,
-    checkAvailability,
-    orderWorks,
-    allocateWorks,
+    // checkAvailability,
+    // orderWorks,
+    // allocateWorks,
     async (req, res) => {
-      return res.send({ message: "Dienste erfolgreich verteilt" })
+      return res.send(req.employees)
     }
   )
 

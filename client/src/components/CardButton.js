@@ -11,9 +11,9 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import React, { useCallback } from "react"
 import Button from "react-bootstrap/esm/Button"
 import { Link } from "react-router-dom"
-import { title, titles } from "../variables"
+import { icons, title, titles } from "../variables"
 import Spinner from "react-bootstrap/esm/Spinner"
-import { useGenerateWorks } from "../hooks/useResource"
+import { useAllocateWorks, useGenerateWorks } from "../hooks/useResource"
 
 function CardButton({ icon, children, ...props }) {
   return (
@@ -99,16 +99,31 @@ export const ConfirmCreateNewButton = ({
   )
 }
 
-export const AsyncGenerateWorksButton = ({ id, ...props }) => {
+export const AsyncGenerateWorksButton = ({ id, updateResource, ...props }) => {
   const generate = useGenerateWorks()
 
   const generateWorks = useCallback(async () => {
     await generate(id)
+    await updateResource()
   }, [])
 
   return (
     <CardButton {...props} icon={faCalendarPlus} onClick={generateWorks}>
       {titles.work + " generieren"}
+    </CardButton>
+  )
+}
+
+export const AsyncAllocateWorksButton = ({id, updateResource, ...props}) => {
+  const allocate = useAllocateWorks()
+  
+  const allocateWorks = useCallback(async () => {
+    await allocate(id)
+    await updateResource()
+  })
+  return (
+    <CardButton {...props} icon={icons.employee} onClick={allocateWorks}>
+      {titles.work + " verteilen"}
     </CardButton>
   )
 }

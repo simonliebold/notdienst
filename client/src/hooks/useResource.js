@@ -111,4 +111,26 @@ export const useGenerateWorks = () => {
   return generate
 }
 
+export const useAllocateWorks = () => {
+  const handleError = useErrorMessage()
+  const handleSuccess = useSuccessMessage()
+
+  const allocate = useCallback(
+    async (scheduleId) => {
+      if(!scheduleId) return 
+      const response = await axios
+        .post(process.env.REACT_APP_URL + "schedules/" + scheduleId + "/allocate")
+        .catch(handleError)
+      if (process.env.NODE_ENV === "development")
+        console.log("useAllocateWorks:", response?.data)
+
+      // handleSuccess(response?.data?.message)
+      return response?.data
+    },
+    [handleError, handleSuccess]
+  )
+
+  return allocate
+}
+
 export default useResource
