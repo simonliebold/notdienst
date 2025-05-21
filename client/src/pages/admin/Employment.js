@@ -1,34 +1,21 @@
-import React, { useEffect, useState } from "react"
-
-import { Link, useParams } from "react-router-dom"
-
-import useResource from "../../hooks/useResource"
-import { EmploymentDetailedCard } from "../../components/DetailedCard"
-import Breadcrumb from "../../components/Breadcrumb"
+import React, { useState } from "react"
+import EditableText from "../../components/EditableText"
+import { EditableBadge } from "../../components/Badge"
+import MultiBadge from "../../components/MultiBadge"
+import Resource from "./ResourcePage"
 
 function Employment() {
-  const { employmentId } = useParams()
-  const getEmployment = useResource("employments/" + employmentId)
   const [employment, setEmployment] = useState(null)
 
-  const refresh = async () => {
-    const newEmployment = await getEmployment()
-    setEmployment(newEmployment)
-  }
-
-  useEffect(() => {
-    refresh()
-  }, [employmentId])
   return (
-    <>
-      <Breadcrumb resourceName="employment" resource={employment} />
-      <EmploymentDetailedCard
-        employment={employment}
-        refresh={refresh}
-        className="mt-3"
-      />
-    </>
+    <Resource resourceName="employment" setData={setEmployment}>
+      <EditableText value={employment?.short} label="short" />
+      <EditableText value={employment?.title} label="title" />
+      <EditableText value={employment?.minHours || ""} label="minHours" />
+      <EditableText value={employment?.maxHours || ""} label="maxHours" />
+      <hr />
+      <MultiBadge items={employment?.employees} resourceName="employee" />
+    </Resource>
   )
 }
-
 export default Employment

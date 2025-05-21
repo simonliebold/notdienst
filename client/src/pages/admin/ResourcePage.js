@@ -34,6 +34,7 @@ function ResourcePage({ resourceName, setData, children }) {
       setLoading(true)
       await save(input)
       await updateResource()
+      setInput({})
       navigate("./../")
       setLoading(false)
     })()
