@@ -19,13 +19,13 @@ module.exports = (sequelize) => {
       title: {
         type: Sequelize.VIRTUAL,
         get() {
-          return this.employeeId + " " + this.date + " " + this.type
+          return this.type + " am " + new Date(this.date).toLocaleDateString("de-DE")
         },
       },
       type: {
         type: Sequelize.STRING,
         allowNull: false,
-        defaultValue: "X",
+        defaultValue: "Wunschfrei",
       },
       date: {
         type: Sequelize.DATEONLY,
