@@ -38,7 +38,7 @@ module.exports = (sequelize) => {
       if (req.user.role < 10 && req.user.id !== Math.floor(req.params.id))
         return res.sendStatus(403)
       let user = await sequelize.models.users.findByPk(req.params.id)
-      if (user === null) return res.sendStatus(404)
+      if (user === null) return res.status(404).send({error: "Nutzer konnte nicht gefunden werden"})
 
       const now = new Date()
       const expiresAt = now.setDate(now.getDate() + 1)

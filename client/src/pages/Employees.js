@@ -60,6 +60,10 @@ const WorkCard = ({ work }) => {
   )
 }
 
+const TokenModal = ({ code, expiresAt, employee }) => {
+  return <Modal>Hallo</Modal>
+}
+
 const EmployeeModal = () => {
   const { employeeInitials } = useParams()
 
@@ -84,6 +88,8 @@ const EmployeeModal = () => {
 
   const [isLoading, setIsLoading] = useState(true)
 
+  const [token, setToken] = useState(false)
+
   const close = () => {
     navigate("/employees")
     setShowModal(false)
@@ -92,6 +98,7 @@ const EmployeeModal = () => {
   const fetchEmployee = async () => {
     setIsLoading(true)
     setShowModal(true)
+    setToken()
     fetchAllEmployments()
     fetchAllJobs()
 
@@ -159,6 +166,21 @@ const EmployeeModal = () => {
       )
       if (response.data.message) addAlert(response.data.message, "success")
       close()
+    } catch (error) {
+      if (error.response.data.error) addAlert(error.response.data.error)
+    }
+  }
+
+  const createToken = async () => {
+    try {
+      const response = await axios.post(
+        "http://localhost:4000/credentials/generate/" + employee.id
+      )
+      if (response.data.code && response.data.expiresAt)
+        setToken({
+          code: response.data.code,
+          expiresAt: response.data.expiresAt,
+        })
     } catch (error) {
       if (error.response.data.error) addAlert(error.response.data.error)
     }
@@ -298,6 +320,27 @@ const EmployeeModal = () => {
             {isButtonLoading && "Lädt..."}
             {!isButtonLoading && "Speichern"}
           </Button>
+        )}
+        <hr />
+        <h2 className="fs-6 mt-3">Account-Daten ändern</h2>
+        {!token && (
+          <Button onClick={createToken} variant="primary">
+            Token generieren
+          </Button>
+        )}
+        {token && (
+          <Card bg="" text="">
+            <Card.Body>
+              <Card.Title>Code: {token.code}</Card.Title>
+              Besuche folgende Seite, um die Account-Daten festzulegen:{" "}
+              <a href={"http://localhost:3001/credentials/" + token.code}>
+                {"http://localhost:3001/credentials/" + token.code}
+              </a>
+            </Card.Body>
+            <Card.Footer>
+              Gültig bis: {new Date(token.expiresAt).toLocaleString("de-DE")}
+            </Card.Footer>
+          </Card>
         )}
         <hr />
         <h2 className="fs-6 mt-3">Arbeitsplanung</h2>
