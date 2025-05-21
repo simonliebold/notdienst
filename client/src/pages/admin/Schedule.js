@@ -1,9 +1,11 @@
 import React from "react"
-import { ScheduleDetailedCard } from "../../components/DetailedCard"
-import useResource from "../../hooks/useResource"
+
 import { Link, useParams } from "react-router-dom"
+
 import Breadcrumb from "react-bootstrap/Breadcrumb"
-import Badge from "../../components/Badge"
+
+import useResource from "../../hooks/useResource"
+import { ScheduleDetailedCard } from "../../components/DetailedCard"
 
 function Schedule() {
   const { scheduleId } = useParams()

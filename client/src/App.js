@@ -23,6 +23,7 @@ import Schedules from "./pages/admin/Schedules"
 import Shifts from "./pages/admin/Shifts"
 import { ScheduleDetailedCard } from "./components/DetailedCard"
 import Schedule from "./pages/admin/Schedule"
+import Freetime from "./pages/admin/Freetime"
 
 function App() {
   const home = (
@@ -97,6 +98,12 @@ function App() {
     </Prot>
   )
 
+  const freetime = (
+    <Prot>
+      <Freetime />
+    </Prot>
+  )
+
   return (
     <AuthProvider>
       <AlertProvider>
@@ -115,12 +122,15 @@ function App() {
               <Route path="works" element={works} />
               <Route path="employees" element={employees} />
               <Route path="employments" element={employments} />
-              <Route path="freetimes" element={freetimes} />
               <Route path="jobs" element={jobs} />
               <Route path="rrules" element={rrules} />
+              <Route path="shifts" element={shifts} />
+
               <Route path="schedules" element={schedules} />
               <Route path="schedule/:scheduleId" element={schedule} />
-              <Route path="shifts" element={shifts} />
+              
+              <Route path="freetimes" element={freetimes} />
+              <Route path="freetime/:freetimeId" element={freetime} />
             </Routes>
           </div>
         </Container>
