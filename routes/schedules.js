@@ -159,6 +159,7 @@ module.exports = (models, sequelize) => {
     next()
   }
 
+  // TODO: just safe employee-ids
   const getEvents = async (req, res, next) => {
     const [results, metadata] = await sequelize.query(
       `SELECT shifts.id "shiftId", events.id "eventId", events.title "eventTitle", events.requiredEmployees "eventRequiredEmployees", events.timeStart "eventTimeStart", events.timeEnd "eventTimeEnd", events.repeatWeekday "eventRepeatWeekday", employees.id "employeeId", employees.initials "employeeInitials", employees.name "employeeName", employments.minHours "employeeMinHours", employments.maxHours "employeeMaxHours"
@@ -270,14 +271,18 @@ module.exports = (models, sequelize) => {
 
         let possibleEmployeeIds = []
         for (const [employeeId, employee] of Object.entries(event.employees)) {
-          if (
-            req.employees[employeeId].freetimes.every(
-              (freetime) =>
-                new Date(freetime.end).getTime() <= start.getTime() ||
-                new Date(freetime.start).getTime() >= end.getTime()
-            )
+          const isFree = req.employees[employeeId].freetimes.every(
+            (freetime) =>
+              new Date(freetime.end).getTime() <= start.getTime() ||
+              new Date(freetime.start).getTime() >= end.getTime()
           )
+          if (isFree) {
+            const possibleHours =
+              (end.getTime() - start.getTime()) / 3600000
             possibleEmployeeIds.push(employeeId)
+            req.employees[employeeId].possibleHours += possibleHours
+            // console.log(start, employeeId, possibleHours)
+          }
         }
 
         workEmployees.push(possibleEmployeeIds)

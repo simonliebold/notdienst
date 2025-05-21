@@ -276,10 +276,12 @@ module.exports = async (models) => {
 
   for (let i = 1; i <= names.length; i++) {
     await models.JobEmployee.create({
-      jobId: Math.floor(Math.random() * 3) + 1,
+      jobId: 1,
       employeeId: i,
     })
   }
+
+  // Math.floor(Math.random() * 3) + 1
 
   await models.Shift.create({ title: "A1 früh" })
   await models.Shift.create({ title: "A2 früh" })
@@ -310,18 +312,16 @@ module.exports = async (models) => {
     deadline: "2023-09-29",
   })
 
-  // for (let i = 1; i <= names.length; i++) {
-  //   await models.ScheduleEmployee.create({ scheduleId: 1, employeeId: i })
-  // }
-
   for (let i = 1; i <= 10; i++) {
     await models.ScheduleShift.create({ scheduleId: 1, shiftId: i })
   }
 
-  await models.Freetime.create({
-    start: "2023-10-01T08:00:00.000Z",
-    end: "2023-10-01T19:00:00.000Z",
-    scheduleId: 1,
-    employeeId: 2,
-  })
+  for (let i = 1; i <= 2; i++) {
+    await models.Freetime.create({
+      start: "2023-10-01T06:00:00.000Z",
+      end: "2023-10-01T17:00:00.000Z",
+      scheduleId: 1,
+      employeeId: i,
+    })
+  }
 }
