@@ -65,7 +65,7 @@ function Navigation() {
     {
       name: titles.freetime,
       icon: icons.freetime,
-      // path: "/freetimes",
+      path: "/freetimes",
     },
     {
       name: titles.work,
