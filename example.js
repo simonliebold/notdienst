@@ -1,38 +1,47 @@
-module.exports = (models) => {
-  models.Job.create({ title: "ÄNoD Fahrer/-in" })
-  models.Job.create({ title: "EZ Dispo" })
-  models.Job.create({ title: "MTD / HNR Fahrer/-in" })
-  models.Job.create({ title: "RH" })
-  models.Job.create({ title: "RS" })
-  models.Job.create({ title: "SH" })
-  models.Job.create({ title: "NFS" })
+module.exports = async (models) => {
+  await models.Job.create({ title: "ÄNoD Fahrer/-in" })
+  await models.Job.create({ title: "EZ Dispo" })
+  await models.Job.create({ title: "MTD / HNR Fahrer/-in" })
+  await models.Job.create({ title: "RH" })
+  await models.Job.create({ title: "RS" })
+  await models.Job.create({ title: "SH" })
+  await models.Job.create({ title: "NFS" })
 
-  models.Employment.create({ title: "Minijob", minHours: 10, maxHours: 40 })
-  models.Employment.create({ title: "Teilzeit", minHours: 80, maxHours: 200 })
-  models.Employment.create({ title: "Vollzeit", minHours: 160, maxHours: 200 })
-
-  models.Employee.create({
+  await models.Employment.create({ title: "Minijob", minHours: 10, maxHours: 40 })
+  await models.Employment.create({ title: "Teilzeit", minHours: 80, maxHours: 200 })
+  await models.Employment.create({ title: "Vollzeit", minHours: 160, maxHours: 200 })
+  
+  await models.Employee.create({
     initials: "RER",
     name: "Tom Rerucha",
     employmentId: 3,
   })
-  models.Employee.create({
+  await models.Employee.create({
     initials: "LIEB",
     name: "Simon Liebold",
     employmentId: 1,
   })
-  models.Employee.create({
+  await models.Employee.create({
     initials: "PAP",
     name: "Niklas Pape",
     employmentId: 2,
   })
+  
+  await models.JobEmployee.create({
+    jobId: 1,
+    employeeId: 3
+  })
+  await models.JobEmployee.create({
+    jobId: 1,
+    employeeId: 2
+  })
 
-  models.Shift.create({ title: "A1" })
-  models.Shift.create({ title: "A2" })
-  models.Shift.create({ title: "C1" })
-  models.Shift.create({ title: "C2" })
+  await models.Shift.create({ title: "A1" })
+  await models.Shift.create({ title: "A2" })
+  await models.Shift.create({ title: "C1" })
+  await models.Shift.create({ title: "C2" })
 
-  models.Event.create({
+  await models.Event.create({
     title: "A1 spät Mittwoch",
     dateStart: "2023-11-1",
     timeStart: "13:00",
@@ -40,7 +49,7 @@ module.exports = (models) => {
     repeatWeekday: 2,
     shiftId: 1,
   })
-  models.Event.create({
+  await models.Event.create({
     title: "A1 spät Freitag",
     dateStart: "2023-11-1",
     timeStart: "13:00",
@@ -48,7 +57,7 @@ module.exports = (models) => {
     repeatWeekday: 4,
     shiftId: 1,
   })
-  models.Event.create({
+  await models.Event.create({
     title: "A1 früh Samstag",
     dateStart: "2023-11-1",
     timeStart: "8:00",
@@ -56,7 +65,7 @@ module.exports = (models) => {
     repeatWeekday: 5,
     shiftId: 1,
   })
-  models.Event.create({
+  await models.Event.create({
     title: "A1 früh Sonntag",
     dateStart: "2023-11-1",
     timeStart: "8:00",
@@ -64,7 +73,7 @@ module.exports = (models) => {
     repeatWeekday: 6,
     shiftId: 1,
   })
-  models.Event.create({
+  await models.Event.create({
     title: "A1 früh Feiertag",
     dateStart: "2023-11-1",
     timeStart: "8:00",
@@ -72,7 +81,7 @@ module.exports = (models) => {
     repeatWeekday: 7,
     shiftId: 1,
   })
-  models.Event.create({
+  await models.Event.create({
     title: "A2 spät Mittwoch",
     dateStart: "2023-11-1",
     timeStart: "13:00",
@@ -80,7 +89,7 @@ module.exports = (models) => {
     repeatWeekday: 2,
     shiftId: 2,
   })
-  models.Event.create({
+  await models.Event.create({
     title: "A2 spät Freitag",
     dateStart: "2023-11-1",
     timeStart: "13:00",
@@ -88,7 +97,7 @@ module.exports = (models) => {
     repeatWeekday: 4,
     shiftId: 2,
   })
-  models.Event.create({
+  await models.Event.create({
     title: "A2 früh Samstag",
     dateStart: "2023-11-1",
     timeStart: "8:00",
@@ -96,7 +105,7 @@ module.exports = (models) => {
     repeatWeekday: 5,
     shiftId: 2,
   })
-  models.Event.create({
+  await models.Event.create({
     title: "A2 früh Sonntag",
     dateStart: "2023-11-1",
     timeStart: "8:00",
@@ -104,7 +113,7 @@ module.exports = (models) => {
     repeatWeekday: 6,
     shiftId: 2,
   })
-  models.Event.create({
+  await models.Event.create({
     title: "A2 früh Feiertag",
     dateStart: "2023-11-1",
     timeStart: "8:00",
@@ -113,7 +122,7 @@ module.exports = (models) => {
     shiftId: 2,
   })
 
-  models.Schedule.create({
+  await models.Schedule.create({
     title: "November ÄNoD",
     start: "2023-11-01",
     end: "2023-11-30",

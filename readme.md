@@ -218,3 +218,83 @@ content-type: application/json
 ## Freetimes
 
 ## Schedules
+### Get all schedules
+<pre>GET /schedules</pre>
+
+### Get one schedule
+<pre>GET /schedules/:id</pre>
+
+### Create one schedule
+<pre>
+POST /schedules
+
+content-type: application/json
+{
+    title: String,
+    start: Date,
+    end: Date,
+    deadline: Timestamp
+}
+</pre>
+
+### Update one schedule
+<pre>
+PUT /schedules/:id
+
+content-type: application/json
+{
+    title?: String,
+    start?: Date,
+    end?: Date,
+    deadline?: Timestamp
+}
+</pre>
+
+### Delete one schedule
+<pre>DELETE /schedules/:id</pre>
+
+### Get all employees from schedule
+<pre>GET /schedules/:id/employee</pre>
+
+### Add employees to schedule
+<pre>
+POST /schedules/:id/employee
+
+content-type: application/json
+{
+    employeeIds: [int]
+}
+</pre>
+
+### Delete employee from schedule
+<pre>
+DELETE /schedules/:id/employee
+
+content-type: application/json
+{
+    employeeIds: [int]
+}
+</pre>
+
+### Get all shifts from schedule
+<pre>GET /schedules/:id/employee</pre>
+
+### Add shifts to schedule
+<pre>
+POST /schedules/:id/employee
+
+content-type: application/json
+{
+    shiftIds: [int]
+}
+</pre>
+
+### Delete shifts from schedule
+<pre>
+DELETE /schedules/:id/employee
+
+content-type: application/json
+{
+    shiftIds: [int]
+}
+</pre>
