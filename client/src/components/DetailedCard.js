@@ -183,8 +183,8 @@ export const EmployeeDetailedCard = ({ employee }) => {
 export const ScheduleDetailedCard = ({ schedule }) => {
   const { employees, shifts, works } = schedule || {}
 
-  const start = new Date(schedule?.start).toLocaleString(localeString.country)
-  const end = new Date(schedule?.end).toLocaleString(localeString.country)
+  const start = new Date(schedule?.start).toLocaleDateString(localeString.country)
+  const end = new Date(schedule?.end).toLocaleDateString(localeString.country)
   const deadline = new Date(schedule?.deadline).toLocaleString(
     localeString.country
   )

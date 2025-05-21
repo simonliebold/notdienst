@@ -60,11 +60,11 @@ module.exports = async (models) => {
   rrules = await models.Rrule.bulkCreate(rrules)
 
   await models.Schedule.create({
-    title: "November 2023",
-    short: "NOV 23",
-    start: "2023-10-01",
-    end: "2023-10-31",
-    deadline: "2023-10-29",
+    title: "Januar 2024",
+    short: "JAN 24",
+    start: "2024-01-01",
+    end: "2024-01-31",
+    deadline: "2023-12-10 9:00",
   })
 
   let works = [
