@@ -17,14 +17,14 @@ function TitleCard({ resource, resourceName, className }) {
     )
   return (
     <Card className={className}>
-      <Card.Body className="text-decoration-none">
+      <Card.Header className="text-decoration-none">
         <Badge
           className="me-2"
           resource={resource}
           resourceName={resourceName}
         />
         {title}
-      </Card.Body>
+      </Card.Header>
     </Card>
   )
 }
