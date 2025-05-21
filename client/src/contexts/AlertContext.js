@@ -27,17 +27,27 @@ export const AlertProvider = ({ children }) => {
     setAlert({ message: message, variant: "success" })
   }
 
-  const handleError = async (error) => {
-    if (error.response?.status === 401) {
-      const response = await axios
-        .post(process.env.REACT_APP_AUTH_URL + "token", {
-          token: refreshToken,
-        })
-        .catch(handleError)
-      if (response?.data?.accessToken) setToken(response.data.accessToken)
-      else setToken()
-      return
+  const handleRefresh = async () => {
+    const response = await axios
+      .post(process.env.REACT_APP_AUTH_URL + "token", {
+        token: refreshToken,
+      })
+      .catch(handleError)
+    if (response?.data?.accessToken) {
+      setToken(response.data.accessToken)
+      handleSuccess("Erfolgreich authentifiziert")
+    } else {
+      setToken()
+      setAlert({
+        message: "Authentifizierung fehlgeschlagen",
+        variant: "danger",
+      })
     }
+  }
+
+  const handleError = async (error) => {
+    if (error.response?.status === 401) return handleRefresh()
+
     if (error.response?.status === 403) {
       setAlert({
         message: error.response?.data?.error,
